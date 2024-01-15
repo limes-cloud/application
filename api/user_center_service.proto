@@ -1,0 +1,75 @@
+syntax = "proto3";
+
+package user_center;
+option go_package = "./v1;v1";
+
+import "google/api/annotations.proto";
+import "user_center_user.proto";
+import "google/protobuf/empty.proto";
+
+service Service {
+  rpc GetUser (GetUserRequest)  returns (User) {
+    option (google.api.http) = {
+      get: "/user-center/v1/user",
+    };
+  }
+
+  rpc PageUser (PageUserRequest)  returns (PageUserReply) {
+    option (google.api.http) = {
+      get: "/user-center/v1/users",
+    };
+  }
+
+  rpc AddUser (AddUserRequest)  returns (AddUserReply) {
+    option (google.api.http) = {
+      post: "/user-center/v1/user",
+      body:"*"
+    };
+  }
+
+  rpc ImportUser (ImportUserRequest)  returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/user-center/v1/users",
+      body:"*"
+    };
+  }
+
+  rpc UpdateUser (UpdateUserRequest)  returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/user-center/v1/user",
+      body:"*"
+    };
+  }
+
+  rpc DeleteUser (DeleteUserRequest)  returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/user-center/v1/user",
+    };
+  }
+
+  // DisableUser 禁用用户
+  rpc DisableUser (DisableUserRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/user-center/v1/user/disable",
+      body: "*",
+    };
+  }
+
+  // DisableUser 禁用用户
+  rpc EnableUser (EnableUserRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/user-center/v1/user/enable",
+      body: "*",
+    };
+  }
+
+  // DisableUser 禁用用户
+  rpc OfflineUser (OfflineUserRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/user-center/v1/user/offline",
+      body: "*",
+    };
+  }
+}
+
+
