@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package user_center;
+
+option go_package = "./v1;v1";
+
+import "validate/validate.proto";
+
+
+
+message Agreement {
+  uint32 id = 1;
+  string name = 2;
+  bool status = 3;
+  string content = 4;
+  string description = 5;
+  uint32 created_at = 6;
+  uint32 updated_at = 7;
+}
+
+message PageAgreementRequest{
+  uint32 page = 1[(validate.rules).uint32 = {gt: 0}];
+  uint32 page_size = 2[(validate.rules).uint32 = {gt: 0,lte:50}];
+  optional string name = 3;
+}
+
+message GetAgreementRequest{
+  uint32 id = 1[(validate.rules).uint32 = {gt: 0}];
+}
+
+message PageAgreementReply{
+  uint32 total = 1;
+  repeated Agreement list = 2;
+}
+
+message AddAgreementRequest {
+  string name = 1[(validate.rules).string = {min_len:1}];
+  bool status = 2;
+  string content = 3[(validate.rules).string = {min_len:1}];
+  string description = 4[(validate.rules).string = {min_len:1}];
+}
+
+message AddAgreementReply {
+  uint32 id = 1;
+}
+
+message UpdateAgreementRequest {
+  uint32  id = 1[(validate.rules).uint32 = {gt:0}];
+  string name = 2[(validate.rules).string = {min_len:1}];
+  optional bool status = 3;
+  string content = 4[(validate.rules).string = {min_len:1}];
+  string description = 5[(validate.rules).string = {min_len:1}];
+}
+
+message DeleteAgreementRequest{
+  uint32 id = 1[(validate.rules).uint32 = {gt:0}];
+}

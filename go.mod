@@ -4,12 +4,14 @@ go 1.21.1
 
 require (
 	github.com/envoyproxy/protoc-gen-validate v1.0.2
+	github.com/forgoer/openssl v1.6.0
 	github.com/go-kratos/kratos/v2 v2.7.1
 	github.com/golang/protobuf v1.5.3
 	github.com/gookit/color v1.5.4
+	github.com/jinzhu/copier v0.4.0
 	github.com/json-iterator/go v1.1.12
-	github.com/limes-cloud/configure v1.0.14
-	github.com/limes-cloud/kratosx v1.0.7
+	github.com/limes-cloud/kratosx v1.0.12
+	github.com/limes-cloud/resource v1.0.2
 	github.com/mbndr/figlet4go v0.0.0-20190224160619-d6cef5b186ea
 	go.uber.org/automaxprocs v1.5.1
 	golang.org/x/crypto v0.14.0
@@ -62,6 +64,7 @@ require (
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect
+	github.com/limes-cloud/configure v1.0.14 // indirect
 	github.com/lufia/plan9stats v0.0.0-20230326075908-cb1d2100619a // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/microsoft/go-mssqldb v1.6.0 // indirect
@@ -115,4 +118,4 @@ require (
 	modernc.org/sqlite v1.26.0 // indirect
 )
 
-replace github.com/limes-cloud/kratosx v1.0.0 => ../kratosx
+replace github.com/limes-cloud/kratosx v1.0.12 => ../kratosx

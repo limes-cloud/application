@@ -20,25 +20,105 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Service_GetUser_FullMethodName     = "/user_center.Service/GetUser"
-	Service_PageUser_FullMethodName    = "/user_center.Service/PageUser"
-	Service_AddUser_FullMethodName     = "/user_center.Service/AddUser"
-	Service_ImportUser_FullMethodName  = "/user_center.Service/ImportUser"
-	Service_UpdateUser_FullMethodName  = "/user_center.Service/UpdateUser"
-	Service_DeleteUser_FullMethodName  = "/user_center.Service/DeleteUser"
-	Service_DisableUser_FullMethodName = "/user_center.Service/DisableUser"
-	Service_EnableUser_FullMethodName  = "/user_center.Service/EnableUser"
-	Service_OfflineUser_FullMethodName = "/user_center.Service/OfflineUser"
+	Service_LoginImageCaptcha_FullMethodName     = "/user_center.Service/LoginImageCaptcha"
+	Service_BindImageCaptcha_FullMethodName      = "/user_center.Service/BindImageCaptcha"
+	Service_RegisterImageCaptcha_FullMethodName  = "/user_center.Service/RegisterImageCaptcha"
+	Service_LoginByPassword_FullMethodName       = "/user_center.Service/LoginByPassword"
+	Service_BindByPassword_FullMethodName        = "/user_center.Service/BindByPassword"
+	Service_RegisterUsernameCheck_FullMethodName = "/user_center.Service/RegisterUsernameCheck"
+	Service_RegisterByPassword_FullMethodName    = "/user_center.Service/RegisterByPassword"
+	Service_LoginEmailCaptcha_FullMethodName     = "/user_center.Service/LoginEmailCaptcha"
+	Service_LoginByEmail_FullMethodName          = "/user_center.Service/LoginByEmail"
+	Service_BindEmailCaptcha_FullMethodName      = "/user_center.Service/BindEmailCaptcha"
+	Service_BindByEmail_FullMethodName           = "/user_center.Service/BindByEmail"
+	Service_RegisterEmailCaptcha_FullMethodName  = "/user_center.Service/RegisterEmailCaptcha"
+	Service_RegisterByEmail_FullMethodName       = "/user_center.Service/RegisterByEmail"
+	Service_Auth_FullMethodName                  = "/user_center.Service/Auth"
+	Service_PageAgreement_FullMethodName         = "/user_center.Service/PageAgreement"
+	Service_GetAgreement_FullMethodName          = "/user_center.Service/GetAgreement"
+	Service_AddAgreement_FullMethodName          = "/user_center.Service/AddAgreement"
+	Service_UpdateAgreement_FullMethodName       = "/user_center.Service/UpdateAgreement"
+	Service_DeleteAgreement_FullMethodName       = "/user_center.Service/DeleteAgreement"
+	Service_PageScene_FullMethodName             = "/user_center.Service/PageScene"
+	Service_GetSceneByKeyword_FullMethodName     = "/user_center.Service/GetSceneByKeyword"
+	Service_AddScene_FullMethodName              = "/user_center.Service/AddScene"
+	Service_UpdateScene_FullMethodName           = "/user_center.Service/UpdateScene"
+	Service_DeleteScene_FullMethodName           = "/user_center.Service/DeleteScene"
+	Service_AllChannel_FullMethodName            = "/user_center.Service/AllChannel"
+	Service_AddChannel_FullMethodName            = "/user_center.Service/AddChannel"
+	Service_UpdateChannel_FullMethodName         = "/user_center.Service/UpdateChannel"
+	Service_DeleteChannel_FullMethodName         = "/user_center.Service/DeleteChannel"
+	Service_PageApp_FullMethodName               = "/user_center.Service/PageApp"
+	Service_GetAppByKeyword_FullMethodName       = "/user_center.Service/GetAppByKeyword"
+	Service_AddApp_FullMethodName                = "/user_center.Service/AddApp"
+	Service_UpdateApp_FullMethodName             = "/user_center.Service/UpdateApp"
+	Service_DeleteApp_FullMethodName             = "/user_center.Service/DeleteApp"
+	Service_AllExtraFieldType_FullMethodName     = "/user_center.Service/AllExtraFieldType"
+	Service_PageExtraField_FullMethodName        = "/user_center.Service/PageExtraField"
+	Service_AddExtraField_FullMethodName         = "/user_center.Service/AddExtraField"
+	Service_UpdateExtraField_FullMethodName      = "/user_center.Service/UpdateExtraField"
+	Service_DeleteExtraField_FullMethodName      = "/user_center.Service/DeleteExtraField"
+	Service_AllLoginPlatform_FullMethodName      = "/user_center.Service/AllLoginPlatform"
+	Service_GetUser_FullMethodName               = "/user_center.Service/GetUser"
+	Service_GetCurrentUser_FullMethodName        = "/user_center.Service/GetCurrentUser"
+	Service_PageUser_FullMethodName              = "/user_center.Service/PageUser"
+	Service_AddUser_FullMethodName               = "/user_center.Service/AddUser"
+	Service_UpdateUser_FullMethodName            = "/user_center.Service/UpdateUser"
+	Service_DeleteUser_FullMethodName            = "/user_center.Service/DeleteUser"
+	Service_DisableUser_FullMethodName           = "/user_center.Service/DisableUser"
+	Service_EnableUser_FullMethodName            = "/user_center.Service/EnableUser"
+	Service_OfflineUser_FullMethodName           = "/user_center.Service/OfflineUser"
+	Service_AddUserApp_FullMethodName            = "/user_center.Service/AddUserApp"
+	Service_DeleteUserApp_FullMethodName         = "/user_center.Service/DeleteUserApp"
 )
 
 // ServiceClient is the client API for Service service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ServiceClient interface {
+	LoginImageCaptcha(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ImageCaptchaReply, error)
+	BindImageCaptcha(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ImageCaptchaReply, error)
+	RegisterImageCaptcha(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ImageCaptchaReply, error)
+	LoginByPassword(ctx context.Context, in *LoginByPasswordRequest, opts ...grpc.CallOption) (*LoginReply, error)
+	BindByPassword(ctx context.Context, in *LoginByPasswordRequest, opts ...grpc.CallOption) (*LoginReply, error)
+	RegisterUsernameCheck(ctx context.Context, in *RegisterUsernameCheckRequest, opts ...grpc.CallOption) (*RegisterUsernameCheckReply, error)
+	RegisterByPassword(ctx context.Context, in *RegisterByPasswordRequest, opts ...grpc.CallOption) (*RegisterReply, error)
+	LoginEmailCaptcha(ctx context.Context, in *LoginEmailCaptchaRequest, opts ...grpc.CallOption) (*EmailCaptchaReply, error)
+	LoginByEmail(ctx context.Context, in *LoginByEmailRequest, opts ...grpc.CallOption) (*LoginReply, error)
+	BindEmailCaptcha(ctx context.Context, in *BindEmailCaptchaRequest, opts ...grpc.CallOption) (*EmailCaptchaReply, error)
+	BindByEmail(ctx context.Context, in *BindByEmailRequest, opts ...grpc.CallOption) (*LoginReply, error)
+	RegisterEmailCaptcha(ctx context.Context, in *RegisterEmailCaptchaRequest, opts ...grpc.CallOption) (*EmailCaptchaReply, error)
+	RegisterByEmail(ctx context.Context, in *RegisterByEmailRequest, opts ...grpc.CallOption) (*RegisterReply, error)
+	Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	PageAgreement(ctx context.Context, in *PageAgreementRequest, opts ...grpc.CallOption) (*PageAgreementReply, error)
+	GetAgreement(ctx context.Context, in *GetAgreementRequest, opts ...grpc.CallOption) (*Agreement, error)
+	AddAgreement(ctx context.Context, in *AddAgreementRequest, opts ...grpc.CallOption) (*AddAgreementReply, error)
+	UpdateAgreement(ctx context.Context, in *UpdateAgreementRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteAgreement(ctx context.Context, in *DeleteAgreementRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	PageScene(ctx context.Context, in *PageSceneRequest, opts ...grpc.CallOption) (*PageSceneReply, error)
+	GetSceneByKeyword(ctx context.Context, in *GetSceneByKeywordRequest, opts ...grpc.CallOption) (*Scene, error)
+	AddScene(ctx context.Context, in *AddSceneRequest, opts ...grpc.CallOption) (*AddSceneReply, error)
+	UpdateScene(ctx context.Context, in *UpdateSceneRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteScene(ctx context.Context, in *DeleteSceneRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AllChannel(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AllChannelReply, error)
+	AddChannel(ctx context.Context, in *AddChannelRequest, opts ...grpc.CallOption) (*AddChannelReply, error)
+	UpdateChannel(ctx context.Context, in *UpdateChannelRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteChannel(ctx context.Context, in *DeleteChannelRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	PageApp(ctx context.Context, in *PageAppRequest, opts ...grpc.CallOption) (*PageAppReply, error)
+	GetAppByKeyword(ctx context.Context, in *GetAppByKeywordRequest, opts ...grpc.CallOption) (*App, error)
+	AddApp(ctx context.Context, in *AddAppRequest, opts ...grpc.CallOption) (*AddAppReply, error)
+	UpdateApp(ctx context.Context, in *UpdateAppRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteApp(ctx context.Context, in *DeleteAppRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AllExtraFieldType(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AllExtraFieldTypeReply, error)
+	PageExtraField(ctx context.Context, in *PageExtraFieldRequest, opts ...grpc.CallOption) (*PageExtraFieldReply, error)
+	AddExtraField(ctx context.Context, in *AddExtraFieldRequest, opts ...grpc.CallOption) (*AddExtraFieldReply, error)
+	UpdateExtraField(ctx context.Context, in *UpdateExtraFieldRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteExtraField(ctx context.Context, in *DeleteExtraFieldRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AllLoginPlatform(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AllLoginPlatformReply, error)
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*User, error)
+	GetCurrentUser(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*User, error)
 	PageUser(ctx context.Context, in *PageUserRequest, opts ...grpc.CallOption) (*PageUserReply, error)
 	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserReply, error)
-	ImportUser(ctx context.Context, in *ImportUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// DisableUser 禁用用户
@@ -47,6 +127,8 @@ type ServiceClient interface {
 	EnableUser(ctx context.Context, in *EnableUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// DisableUser 禁用用户
 	OfflineUser(ctx context.Context, in *OfflineUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	AddUserApp(ctx context.Context, in *AddUserAppRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteUserApp(ctx context.Context, in *DeleteUserAppRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type serviceClient struct {
@@ -57,9 +139,369 @@ func NewServiceClient(cc grpc.ClientConnInterface) ServiceClient {
 	return &serviceClient{cc}
 }
 
+func (c *serviceClient) LoginImageCaptcha(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ImageCaptchaReply, error) {
+	out := new(ImageCaptchaReply)
+	err := c.cc.Invoke(ctx, Service_LoginImageCaptcha_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) BindImageCaptcha(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ImageCaptchaReply, error) {
+	out := new(ImageCaptchaReply)
+	err := c.cc.Invoke(ctx, Service_BindImageCaptcha_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) RegisterImageCaptcha(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ImageCaptchaReply, error) {
+	out := new(ImageCaptchaReply)
+	err := c.cc.Invoke(ctx, Service_RegisterImageCaptcha_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) LoginByPassword(ctx context.Context, in *LoginByPasswordRequest, opts ...grpc.CallOption) (*LoginReply, error) {
+	out := new(LoginReply)
+	err := c.cc.Invoke(ctx, Service_LoginByPassword_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) BindByPassword(ctx context.Context, in *LoginByPasswordRequest, opts ...grpc.CallOption) (*LoginReply, error) {
+	out := new(LoginReply)
+	err := c.cc.Invoke(ctx, Service_BindByPassword_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) RegisterUsernameCheck(ctx context.Context, in *RegisterUsernameCheckRequest, opts ...grpc.CallOption) (*RegisterUsernameCheckReply, error) {
+	out := new(RegisterUsernameCheckReply)
+	err := c.cc.Invoke(ctx, Service_RegisterUsernameCheck_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) RegisterByPassword(ctx context.Context, in *RegisterByPasswordRequest, opts ...grpc.CallOption) (*RegisterReply, error) {
+	out := new(RegisterReply)
+	err := c.cc.Invoke(ctx, Service_RegisterByPassword_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) LoginEmailCaptcha(ctx context.Context, in *LoginEmailCaptchaRequest, opts ...grpc.CallOption) (*EmailCaptchaReply, error) {
+	out := new(EmailCaptchaReply)
+	err := c.cc.Invoke(ctx, Service_LoginEmailCaptcha_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) LoginByEmail(ctx context.Context, in *LoginByEmailRequest, opts ...grpc.CallOption) (*LoginReply, error) {
+	out := new(LoginReply)
+	err := c.cc.Invoke(ctx, Service_LoginByEmail_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) BindEmailCaptcha(ctx context.Context, in *BindEmailCaptchaRequest, opts ...grpc.CallOption) (*EmailCaptchaReply, error) {
+	out := new(EmailCaptchaReply)
+	err := c.cc.Invoke(ctx, Service_BindEmailCaptcha_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) BindByEmail(ctx context.Context, in *BindByEmailRequest, opts ...grpc.CallOption) (*LoginReply, error) {
+	out := new(LoginReply)
+	err := c.cc.Invoke(ctx, Service_BindByEmail_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) RegisterEmailCaptcha(ctx context.Context, in *RegisterEmailCaptchaRequest, opts ...grpc.CallOption) (*EmailCaptchaReply, error) {
+	out := new(EmailCaptchaReply)
+	err := c.cc.Invoke(ctx, Service_RegisterEmailCaptcha_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) RegisterByEmail(ctx context.Context, in *RegisterByEmailRequest, opts ...grpc.CallOption) (*RegisterReply, error) {
+	out := new(RegisterReply)
+	err := c.cc.Invoke(ctx, Service_RegisterByEmail_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_Auth_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) PageAgreement(ctx context.Context, in *PageAgreementRequest, opts ...grpc.CallOption) (*PageAgreementReply, error) {
+	out := new(PageAgreementReply)
+	err := c.cc.Invoke(ctx, Service_PageAgreement_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) GetAgreement(ctx context.Context, in *GetAgreementRequest, opts ...grpc.CallOption) (*Agreement, error) {
+	out := new(Agreement)
+	err := c.cc.Invoke(ctx, Service_GetAgreement_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) AddAgreement(ctx context.Context, in *AddAgreementRequest, opts ...grpc.CallOption) (*AddAgreementReply, error) {
+	out := new(AddAgreementReply)
+	err := c.cc.Invoke(ctx, Service_AddAgreement_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) UpdateAgreement(ctx context.Context, in *UpdateAgreementRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_UpdateAgreement_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) DeleteAgreement(ctx context.Context, in *DeleteAgreementRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_DeleteAgreement_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) PageScene(ctx context.Context, in *PageSceneRequest, opts ...grpc.CallOption) (*PageSceneReply, error) {
+	out := new(PageSceneReply)
+	err := c.cc.Invoke(ctx, Service_PageScene_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) GetSceneByKeyword(ctx context.Context, in *GetSceneByKeywordRequest, opts ...grpc.CallOption) (*Scene, error) {
+	out := new(Scene)
+	err := c.cc.Invoke(ctx, Service_GetSceneByKeyword_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) AddScene(ctx context.Context, in *AddSceneRequest, opts ...grpc.CallOption) (*AddSceneReply, error) {
+	out := new(AddSceneReply)
+	err := c.cc.Invoke(ctx, Service_AddScene_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) UpdateScene(ctx context.Context, in *UpdateSceneRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_UpdateScene_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) DeleteScene(ctx context.Context, in *DeleteSceneRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_DeleteScene_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) AllChannel(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AllChannelReply, error) {
+	out := new(AllChannelReply)
+	err := c.cc.Invoke(ctx, Service_AllChannel_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) AddChannel(ctx context.Context, in *AddChannelRequest, opts ...grpc.CallOption) (*AddChannelReply, error) {
+	out := new(AddChannelReply)
+	err := c.cc.Invoke(ctx, Service_AddChannel_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) UpdateChannel(ctx context.Context, in *UpdateChannelRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_UpdateChannel_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) DeleteChannel(ctx context.Context, in *DeleteChannelRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_DeleteChannel_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) PageApp(ctx context.Context, in *PageAppRequest, opts ...grpc.CallOption) (*PageAppReply, error) {
+	out := new(PageAppReply)
+	err := c.cc.Invoke(ctx, Service_PageApp_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) GetAppByKeyword(ctx context.Context, in *GetAppByKeywordRequest, opts ...grpc.CallOption) (*App, error) {
+	out := new(App)
+	err := c.cc.Invoke(ctx, Service_GetAppByKeyword_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) AddApp(ctx context.Context, in *AddAppRequest, opts ...grpc.CallOption) (*AddAppReply, error) {
+	out := new(AddAppReply)
+	err := c.cc.Invoke(ctx, Service_AddApp_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) UpdateApp(ctx context.Context, in *UpdateAppRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_UpdateApp_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) DeleteApp(ctx context.Context, in *DeleteAppRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_DeleteApp_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) AllExtraFieldType(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AllExtraFieldTypeReply, error) {
+	out := new(AllExtraFieldTypeReply)
+	err := c.cc.Invoke(ctx, Service_AllExtraFieldType_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) PageExtraField(ctx context.Context, in *PageExtraFieldRequest, opts ...grpc.CallOption) (*PageExtraFieldReply, error) {
+	out := new(PageExtraFieldReply)
+	err := c.cc.Invoke(ctx, Service_PageExtraField_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) AddExtraField(ctx context.Context, in *AddExtraFieldRequest, opts ...grpc.CallOption) (*AddExtraFieldReply, error) {
+	out := new(AddExtraFieldReply)
+	err := c.cc.Invoke(ctx, Service_AddExtraField_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) UpdateExtraField(ctx context.Context, in *UpdateExtraFieldRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_UpdateExtraField_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) DeleteExtraField(ctx context.Context, in *DeleteExtraFieldRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_DeleteExtraField_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) AllLoginPlatform(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AllLoginPlatformReply, error) {
+	out := new(AllLoginPlatformReply)
+	err := c.cc.Invoke(ctx, Service_AllLoginPlatform_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *serviceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
 	err := c.cc.Invoke(ctx, Service_GetUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) GetCurrentUser(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*User, error) {
+	out := new(User)
+	err := c.cc.Invoke(ctx, Service_GetCurrentUser_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,15 +520,6 @@ func (c *serviceClient) PageUser(ctx context.Context, in *PageUserRequest, opts 
 func (c *serviceClient) AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserReply, error) {
 	out := new(AddUserReply)
 	err := c.cc.Invoke(ctx, Service_AddUser_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *serviceClient) ImportUser(ctx context.Context, in *ImportUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, Service_ImportUser_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -138,14 +571,71 @@ func (c *serviceClient) OfflineUser(ctx context.Context, in *OfflineUserRequest,
 	return out, nil
 }
 
+func (c *serviceClient) AddUserApp(ctx context.Context, in *AddUserAppRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_AddUserApp_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) DeleteUserApp(ctx context.Context, in *DeleteUserAppRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_DeleteUserApp_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ServiceServer is the server API for Service service.
 // All implementations must embed UnimplementedServiceServer
 // for forward compatibility
 type ServiceServer interface {
+	LoginImageCaptcha(context.Context, *emptypb.Empty) (*ImageCaptchaReply, error)
+	BindImageCaptcha(context.Context, *emptypb.Empty) (*ImageCaptchaReply, error)
+	RegisterImageCaptcha(context.Context, *emptypb.Empty) (*ImageCaptchaReply, error)
+	LoginByPassword(context.Context, *LoginByPasswordRequest) (*LoginReply, error)
+	BindByPassword(context.Context, *LoginByPasswordRequest) (*LoginReply, error)
+	RegisterUsernameCheck(context.Context, *RegisterUsernameCheckRequest) (*RegisterUsernameCheckReply, error)
+	RegisterByPassword(context.Context, *RegisterByPasswordRequest) (*RegisterReply, error)
+	LoginEmailCaptcha(context.Context, *LoginEmailCaptchaRequest) (*EmailCaptchaReply, error)
+	LoginByEmail(context.Context, *LoginByEmailRequest) (*LoginReply, error)
+	BindEmailCaptcha(context.Context, *BindEmailCaptchaRequest) (*EmailCaptchaReply, error)
+	BindByEmail(context.Context, *BindByEmailRequest) (*LoginReply, error)
+	RegisterEmailCaptcha(context.Context, *RegisterEmailCaptchaRequest) (*EmailCaptchaReply, error)
+	RegisterByEmail(context.Context, *RegisterByEmailRequest) (*RegisterReply, error)
+	Auth(context.Context, *AuthRequest) (*emptypb.Empty, error)
+	PageAgreement(context.Context, *PageAgreementRequest) (*PageAgreementReply, error)
+	GetAgreement(context.Context, *GetAgreementRequest) (*Agreement, error)
+	AddAgreement(context.Context, *AddAgreementRequest) (*AddAgreementReply, error)
+	UpdateAgreement(context.Context, *UpdateAgreementRequest) (*emptypb.Empty, error)
+	DeleteAgreement(context.Context, *DeleteAgreementRequest) (*emptypb.Empty, error)
+	PageScene(context.Context, *PageSceneRequest) (*PageSceneReply, error)
+	GetSceneByKeyword(context.Context, *GetSceneByKeywordRequest) (*Scene, error)
+	AddScene(context.Context, *AddSceneRequest) (*AddSceneReply, error)
+	UpdateScene(context.Context, *UpdateSceneRequest) (*emptypb.Empty, error)
+	DeleteScene(context.Context, *DeleteSceneRequest) (*emptypb.Empty, error)
+	AllChannel(context.Context, *emptypb.Empty) (*AllChannelReply, error)
+	AddChannel(context.Context, *AddChannelRequest) (*AddChannelReply, error)
+	UpdateChannel(context.Context, *UpdateChannelRequest) (*emptypb.Empty, error)
+	DeleteChannel(context.Context, *DeleteChannelRequest) (*emptypb.Empty, error)
+	PageApp(context.Context, *PageAppRequest) (*PageAppReply, error)
+	GetAppByKeyword(context.Context, *GetAppByKeywordRequest) (*App, error)
+	AddApp(context.Context, *AddAppRequest) (*AddAppReply, error)
+	UpdateApp(context.Context, *UpdateAppRequest) (*emptypb.Empty, error)
+	DeleteApp(context.Context, *DeleteAppRequest) (*emptypb.Empty, error)
+	AllExtraFieldType(context.Context, *emptypb.Empty) (*AllExtraFieldTypeReply, error)
+	PageExtraField(context.Context, *PageExtraFieldRequest) (*PageExtraFieldReply, error)
+	AddExtraField(context.Context, *AddExtraFieldRequest) (*AddExtraFieldReply, error)
+	UpdateExtraField(context.Context, *UpdateExtraFieldRequest) (*emptypb.Empty, error)
+	DeleteExtraField(context.Context, *DeleteExtraFieldRequest) (*emptypb.Empty, error)
+	AllLoginPlatform(context.Context, *emptypb.Empty) (*AllLoginPlatformReply, error)
 	GetUser(context.Context, *GetUserRequest) (*User, error)
+	GetCurrentUser(context.Context, *emptypb.Empty) (*User, error)
 	PageUser(context.Context, *PageUserRequest) (*PageUserReply, error)
 	AddUser(context.Context, *AddUserRequest) (*AddUserReply, error)
-	ImportUser(context.Context, *ImportUserRequest) (*emptypb.Empty, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error)
 	DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error)
 	// DisableUser 禁用用户
@@ -154,6 +644,8 @@ type ServiceServer interface {
 	EnableUser(context.Context, *EnableUserRequest) (*emptypb.Empty, error)
 	// DisableUser 禁用用户
 	OfflineUser(context.Context, *OfflineUserRequest) (*emptypb.Empty, error)
+	AddUserApp(context.Context, *AddUserAppRequest) (*emptypb.Empty, error)
+	DeleteUserApp(context.Context, *DeleteUserAppRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedServiceServer()
 }
 
@@ -161,17 +653,134 @@ type ServiceServer interface {
 type UnimplementedServiceServer struct {
 }
 
+func (UnimplementedServiceServer) LoginImageCaptcha(context.Context, *emptypb.Empty) (*ImageCaptchaReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginImageCaptcha not implemented")
+}
+func (UnimplementedServiceServer) BindImageCaptcha(context.Context, *emptypb.Empty) (*ImageCaptchaReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BindImageCaptcha not implemented")
+}
+func (UnimplementedServiceServer) RegisterImageCaptcha(context.Context, *emptypb.Empty) (*ImageCaptchaReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterImageCaptcha not implemented")
+}
+func (UnimplementedServiceServer) LoginByPassword(context.Context, *LoginByPasswordRequest) (*LoginReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginByPassword not implemented")
+}
+func (UnimplementedServiceServer) BindByPassword(context.Context, *LoginByPasswordRequest) (*LoginReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BindByPassword not implemented")
+}
+func (UnimplementedServiceServer) RegisterUsernameCheck(context.Context, *RegisterUsernameCheckRequest) (*RegisterUsernameCheckReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterUsernameCheck not implemented")
+}
+func (UnimplementedServiceServer) RegisterByPassword(context.Context, *RegisterByPasswordRequest) (*RegisterReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterByPassword not implemented")
+}
+func (UnimplementedServiceServer) LoginEmailCaptcha(context.Context, *LoginEmailCaptchaRequest) (*EmailCaptchaReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginEmailCaptcha not implemented")
+}
+func (UnimplementedServiceServer) LoginByEmail(context.Context, *LoginByEmailRequest) (*LoginReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginByEmail not implemented")
+}
+func (UnimplementedServiceServer) BindEmailCaptcha(context.Context, *BindEmailCaptchaRequest) (*EmailCaptchaReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BindEmailCaptcha not implemented")
+}
+func (UnimplementedServiceServer) BindByEmail(context.Context, *BindByEmailRequest) (*LoginReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BindByEmail not implemented")
+}
+func (UnimplementedServiceServer) RegisterEmailCaptcha(context.Context, *RegisterEmailCaptchaRequest) (*EmailCaptchaReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterEmailCaptcha not implemented")
+}
+func (UnimplementedServiceServer) RegisterByEmail(context.Context, *RegisterByEmailRequest) (*RegisterReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterByEmail not implemented")
+}
+func (UnimplementedServiceServer) Auth(context.Context, *AuthRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Auth not implemented")
+}
+func (UnimplementedServiceServer) PageAgreement(context.Context, *PageAgreementRequest) (*PageAgreementReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PageAgreement not implemented")
+}
+func (UnimplementedServiceServer) GetAgreement(context.Context, *GetAgreementRequest) (*Agreement, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAgreement not implemented")
+}
+func (UnimplementedServiceServer) AddAgreement(context.Context, *AddAgreementRequest) (*AddAgreementReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddAgreement not implemented")
+}
+func (UnimplementedServiceServer) UpdateAgreement(context.Context, *UpdateAgreementRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAgreement not implemented")
+}
+func (UnimplementedServiceServer) DeleteAgreement(context.Context, *DeleteAgreementRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAgreement not implemented")
+}
+func (UnimplementedServiceServer) PageScene(context.Context, *PageSceneRequest) (*PageSceneReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PageScene not implemented")
+}
+func (UnimplementedServiceServer) GetSceneByKeyword(context.Context, *GetSceneByKeywordRequest) (*Scene, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSceneByKeyword not implemented")
+}
+func (UnimplementedServiceServer) AddScene(context.Context, *AddSceneRequest) (*AddSceneReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddScene not implemented")
+}
+func (UnimplementedServiceServer) UpdateScene(context.Context, *UpdateSceneRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateScene not implemented")
+}
+func (UnimplementedServiceServer) DeleteScene(context.Context, *DeleteSceneRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteScene not implemented")
+}
+func (UnimplementedServiceServer) AllChannel(context.Context, *emptypb.Empty) (*AllChannelReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllChannel not implemented")
+}
+func (UnimplementedServiceServer) AddChannel(context.Context, *AddChannelRequest) (*AddChannelReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddChannel not implemented")
+}
+func (UnimplementedServiceServer) UpdateChannel(context.Context, *UpdateChannelRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateChannel not implemented")
+}
+func (UnimplementedServiceServer) DeleteChannel(context.Context, *DeleteChannelRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteChannel not implemented")
+}
+func (UnimplementedServiceServer) PageApp(context.Context, *PageAppRequest) (*PageAppReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PageApp not implemented")
+}
+func (UnimplementedServiceServer) GetAppByKeyword(context.Context, *GetAppByKeywordRequest) (*App, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAppByKeyword not implemented")
+}
+func (UnimplementedServiceServer) AddApp(context.Context, *AddAppRequest) (*AddAppReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddApp not implemented")
+}
+func (UnimplementedServiceServer) UpdateApp(context.Context, *UpdateAppRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateApp not implemented")
+}
+func (UnimplementedServiceServer) DeleteApp(context.Context, *DeleteAppRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteApp not implemented")
+}
+func (UnimplementedServiceServer) AllExtraFieldType(context.Context, *emptypb.Empty) (*AllExtraFieldTypeReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllExtraFieldType not implemented")
+}
+func (UnimplementedServiceServer) PageExtraField(context.Context, *PageExtraFieldRequest) (*PageExtraFieldReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PageExtraField not implemented")
+}
+func (UnimplementedServiceServer) AddExtraField(context.Context, *AddExtraFieldRequest) (*AddExtraFieldReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddExtraField not implemented")
+}
+func (UnimplementedServiceServer) UpdateExtraField(context.Context, *UpdateExtraFieldRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateExtraField not implemented")
+}
+func (UnimplementedServiceServer) DeleteExtraField(context.Context, *DeleteExtraFieldRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteExtraField not implemented")
+}
+func (UnimplementedServiceServer) AllLoginPlatform(context.Context, *emptypb.Empty) (*AllLoginPlatformReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllLoginPlatform not implemented")
+}
 func (UnimplementedServiceServer) GetUser(context.Context, *GetUserRequest) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+}
+func (UnimplementedServiceServer) GetCurrentUser(context.Context, *emptypb.Empty) (*User, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCurrentUser not implemented")
 }
 func (UnimplementedServiceServer) PageUser(context.Context, *PageUserRequest) (*PageUserReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PageUser not implemented")
 }
 func (UnimplementedServiceServer) AddUser(context.Context, *AddUserRequest) (*AddUserReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddUser not implemented")
-}
-func (UnimplementedServiceServer) ImportUser(context.Context, *ImportUserRequest) (*emptypb.Empty, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ImportUser not implemented")
 }
 func (UnimplementedServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
@@ -188,6 +797,12 @@ func (UnimplementedServiceServer) EnableUser(context.Context, *EnableUserRequest
 func (UnimplementedServiceServer) OfflineUser(context.Context, *OfflineUserRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method OfflineUser not implemented")
 }
+func (UnimplementedServiceServer) AddUserApp(context.Context, *AddUserAppRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddUserApp not implemented")
+}
+func (UnimplementedServiceServer) DeleteUserApp(context.Context, *DeleteUserAppRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteUserApp not implemented")
+}
 func (UnimplementedServiceServer) mustEmbedUnimplementedServiceServer() {}
 
 // UnsafeServiceServer may be embedded to opt out of forward compatibility for this service.
@@ -199,6 +814,708 @@ type UnsafeServiceServer interface {
 
 func RegisterServiceServer(s grpc.ServiceRegistrar, srv ServiceServer) {
 	s.RegisterService(&Service_ServiceDesc, srv)
+}
+
+func _Service_LoginImageCaptcha_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).LoginImageCaptcha(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_LoginImageCaptcha_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).LoginImageCaptcha(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_BindImageCaptcha_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).BindImageCaptcha(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_BindImageCaptcha_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).BindImageCaptcha(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_RegisterImageCaptcha_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).RegisterImageCaptcha(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_RegisterImageCaptcha_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).RegisterImageCaptcha(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_LoginByPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginByPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).LoginByPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_LoginByPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).LoginByPassword(ctx, req.(*LoginByPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_BindByPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginByPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).BindByPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_BindByPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).BindByPassword(ctx, req.(*LoginByPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_RegisterUsernameCheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterUsernameCheckRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).RegisterUsernameCheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_RegisterUsernameCheck_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).RegisterUsernameCheck(ctx, req.(*RegisterUsernameCheckRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_RegisterByPassword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterByPasswordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).RegisterByPassword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_RegisterByPassword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).RegisterByPassword(ctx, req.(*RegisterByPasswordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_LoginEmailCaptcha_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginEmailCaptchaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).LoginEmailCaptcha(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_LoginEmailCaptcha_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).LoginEmailCaptcha(ctx, req.(*LoginEmailCaptchaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_LoginByEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginByEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).LoginByEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_LoginByEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).LoginByEmail(ctx, req.(*LoginByEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_BindEmailCaptcha_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BindEmailCaptchaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).BindEmailCaptcha(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_BindEmailCaptcha_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).BindEmailCaptcha(ctx, req.(*BindEmailCaptchaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_BindByEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BindByEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).BindByEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_BindByEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).BindByEmail(ctx, req.(*BindByEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_RegisterEmailCaptcha_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterEmailCaptchaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).RegisterEmailCaptcha(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_RegisterEmailCaptcha_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).RegisterEmailCaptcha(ctx, req.(*RegisterEmailCaptchaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_RegisterByEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterByEmailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).RegisterByEmail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_RegisterByEmail_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).RegisterByEmail(ctx, req.(*RegisterByEmailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_Auth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).Auth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_Auth_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).Auth(ctx, req.(*AuthRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_PageAgreement_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PageAgreementRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).PageAgreement(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_PageAgreement_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).PageAgreement(ctx, req.(*PageAgreementRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_GetAgreement_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAgreementRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).GetAgreement(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_GetAgreement_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).GetAgreement(ctx, req.(*GetAgreementRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_AddAgreement_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddAgreementRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).AddAgreement(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_AddAgreement_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).AddAgreement(ctx, req.(*AddAgreementRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_UpdateAgreement_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAgreementRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).UpdateAgreement(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_UpdateAgreement_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).UpdateAgreement(ctx, req.(*UpdateAgreementRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_DeleteAgreement_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAgreementRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).DeleteAgreement(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_DeleteAgreement_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).DeleteAgreement(ctx, req.(*DeleteAgreementRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_PageScene_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PageSceneRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).PageScene(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_PageScene_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).PageScene(ctx, req.(*PageSceneRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_GetSceneByKeyword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSceneByKeywordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).GetSceneByKeyword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_GetSceneByKeyword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).GetSceneByKeyword(ctx, req.(*GetSceneByKeywordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_AddScene_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddSceneRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).AddScene(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_AddScene_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).AddScene(ctx, req.(*AddSceneRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_UpdateScene_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateSceneRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).UpdateScene(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_UpdateScene_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).UpdateScene(ctx, req.(*UpdateSceneRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_DeleteScene_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteSceneRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).DeleteScene(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_DeleteScene_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).DeleteScene(ctx, req.(*DeleteSceneRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_AllChannel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).AllChannel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_AllChannel_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).AllChannel(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_AddChannel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddChannelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).AddChannel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_AddChannel_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).AddChannel(ctx, req.(*AddChannelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_UpdateChannel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateChannelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).UpdateChannel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_UpdateChannel_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).UpdateChannel(ctx, req.(*UpdateChannelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_DeleteChannel_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteChannelRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).DeleteChannel(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_DeleteChannel_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).DeleteChannel(ctx, req.(*DeleteChannelRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_PageApp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PageAppRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).PageApp(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_PageApp_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).PageApp(ctx, req.(*PageAppRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_GetAppByKeyword_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAppByKeywordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).GetAppByKeyword(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_GetAppByKeyword_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).GetAppByKeyword(ctx, req.(*GetAppByKeywordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_AddApp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddAppRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).AddApp(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_AddApp_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).AddApp(ctx, req.(*AddAppRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_UpdateApp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAppRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).UpdateApp(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_UpdateApp_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).UpdateApp(ctx, req.(*UpdateAppRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_DeleteApp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAppRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).DeleteApp(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_DeleteApp_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).DeleteApp(ctx, req.(*DeleteAppRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_AllExtraFieldType_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).AllExtraFieldType(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_AllExtraFieldType_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).AllExtraFieldType(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_PageExtraField_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PageExtraFieldRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).PageExtraField(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_PageExtraField_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).PageExtraField(ctx, req.(*PageExtraFieldRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_AddExtraField_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddExtraFieldRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).AddExtraField(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_AddExtraField_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).AddExtraField(ctx, req.(*AddExtraFieldRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_UpdateExtraField_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateExtraFieldRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).UpdateExtraField(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_UpdateExtraField_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).UpdateExtraField(ctx, req.(*UpdateExtraFieldRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_DeleteExtraField_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteExtraFieldRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).DeleteExtraField(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_DeleteExtraField_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).DeleteExtraField(ctx, req.(*DeleteExtraFieldRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_AllLoginPlatform_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).AllLoginPlatform(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_AllLoginPlatform_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).AllLoginPlatform(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Service_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -215,6 +1532,24 @@ func _Service_GetUser_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ServiceServer).GetUser(ctx, req.(*GetUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_GetCurrentUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).GetCurrentUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_GetCurrentUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).GetCurrentUser(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -251,24 +1586,6 @@ func _Service_AddUser_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ServiceServer).AddUser(ctx, req.(*AddUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Service_ImportUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ImportUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ServiceServer).ImportUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Service_ImportUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).ImportUser(ctx, req.(*ImportUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -363,6 +1680,42 @@ func _Service_OfflineUser_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Service_AddUserApp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddUserAppRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).AddUserApp(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_AddUserApp_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).AddUserApp(ctx, req.(*AddUserAppRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_DeleteUserApp_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteUserAppRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).DeleteUserApp(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_DeleteUserApp_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).DeleteUserApp(ctx, req.(*DeleteUserAppRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Service_ServiceDesc is the grpc.ServiceDesc for Service service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -371,8 +1724,168 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "LoginImageCaptcha",
+			Handler:    _Service_LoginImageCaptcha_Handler,
+		},
+		{
+			MethodName: "BindImageCaptcha",
+			Handler:    _Service_BindImageCaptcha_Handler,
+		},
+		{
+			MethodName: "RegisterImageCaptcha",
+			Handler:    _Service_RegisterImageCaptcha_Handler,
+		},
+		{
+			MethodName: "LoginByPassword",
+			Handler:    _Service_LoginByPassword_Handler,
+		},
+		{
+			MethodName: "BindByPassword",
+			Handler:    _Service_BindByPassword_Handler,
+		},
+		{
+			MethodName: "RegisterUsernameCheck",
+			Handler:    _Service_RegisterUsernameCheck_Handler,
+		},
+		{
+			MethodName: "RegisterByPassword",
+			Handler:    _Service_RegisterByPassword_Handler,
+		},
+		{
+			MethodName: "LoginEmailCaptcha",
+			Handler:    _Service_LoginEmailCaptcha_Handler,
+		},
+		{
+			MethodName: "LoginByEmail",
+			Handler:    _Service_LoginByEmail_Handler,
+		},
+		{
+			MethodName: "BindEmailCaptcha",
+			Handler:    _Service_BindEmailCaptcha_Handler,
+		},
+		{
+			MethodName: "BindByEmail",
+			Handler:    _Service_BindByEmail_Handler,
+		},
+		{
+			MethodName: "RegisterEmailCaptcha",
+			Handler:    _Service_RegisterEmailCaptcha_Handler,
+		},
+		{
+			MethodName: "RegisterByEmail",
+			Handler:    _Service_RegisterByEmail_Handler,
+		},
+		{
+			MethodName: "Auth",
+			Handler:    _Service_Auth_Handler,
+		},
+		{
+			MethodName: "PageAgreement",
+			Handler:    _Service_PageAgreement_Handler,
+		},
+		{
+			MethodName: "GetAgreement",
+			Handler:    _Service_GetAgreement_Handler,
+		},
+		{
+			MethodName: "AddAgreement",
+			Handler:    _Service_AddAgreement_Handler,
+		},
+		{
+			MethodName: "UpdateAgreement",
+			Handler:    _Service_UpdateAgreement_Handler,
+		},
+		{
+			MethodName: "DeleteAgreement",
+			Handler:    _Service_DeleteAgreement_Handler,
+		},
+		{
+			MethodName: "PageScene",
+			Handler:    _Service_PageScene_Handler,
+		},
+		{
+			MethodName: "GetSceneByKeyword",
+			Handler:    _Service_GetSceneByKeyword_Handler,
+		},
+		{
+			MethodName: "AddScene",
+			Handler:    _Service_AddScene_Handler,
+		},
+		{
+			MethodName: "UpdateScene",
+			Handler:    _Service_UpdateScene_Handler,
+		},
+		{
+			MethodName: "DeleteScene",
+			Handler:    _Service_DeleteScene_Handler,
+		},
+		{
+			MethodName: "AllChannel",
+			Handler:    _Service_AllChannel_Handler,
+		},
+		{
+			MethodName: "AddChannel",
+			Handler:    _Service_AddChannel_Handler,
+		},
+		{
+			MethodName: "UpdateChannel",
+			Handler:    _Service_UpdateChannel_Handler,
+		},
+		{
+			MethodName: "DeleteChannel",
+			Handler:    _Service_DeleteChannel_Handler,
+		},
+		{
+			MethodName: "PageApp",
+			Handler:    _Service_PageApp_Handler,
+		},
+		{
+			MethodName: "GetAppByKeyword",
+			Handler:    _Service_GetAppByKeyword_Handler,
+		},
+		{
+			MethodName: "AddApp",
+			Handler:    _Service_AddApp_Handler,
+		},
+		{
+			MethodName: "UpdateApp",
+			Handler:    _Service_UpdateApp_Handler,
+		},
+		{
+			MethodName: "DeleteApp",
+			Handler:    _Service_DeleteApp_Handler,
+		},
+		{
+			MethodName: "AllExtraFieldType",
+			Handler:    _Service_AllExtraFieldType_Handler,
+		},
+		{
+			MethodName: "PageExtraField",
+			Handler:    _Service_PageExtraField_Handler,
+		},
+		{
+			MethodName: "AddExtraField",
+			Handler:    _Service_AddExtraField_Handler,
+		},
+		{
+			MethodName: "UpdateExtraField",
+			Handler:    _Service_UpdateExtraField_Handler,
+		},
+		{
+			MethodName: "DeleteExtraField",
+			Handler:    _Service_DeleteExtraField_Handler,
+		},
+		{
+			MethodName: "AllLoginPlatform",
+			Handler:    _Service_AllLoginPlatform_Handler,
+		},
+		{
 			MethodName: "GetUser",
 			Handler:    _Service_GetUser_Handler,
+		},
+		{
+			MethodName: "GetCurrentUser",
+			Handler:    _Service_GetCurrentUser_Handler,
 		},
 		{
 			MethodName: "PageUser",
@@ -381,10 +1894,6 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddUser",
 			Handler:    _Service_AddUser_Handler,
-		},
-		{
-			MethodName: "ImportUser",
-			Handler:    _Service_ImportUser_Handler,
 		},
 		{
 			MethodName: "UpdateUser",
@@ -405,6 +1914,14 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "OfflineUser",
 			Handler:    _Service_OfflineUser_Handler,
+		},
+		{
+			MethodName: "AddUserApp",
+			Handler:    _Service_AddUserApp_Handler,
+		},
+		{
+			MethodName: "DeleteUserApp",
+			Handler:    _Service_DeleteUserApp_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

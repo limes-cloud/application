@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package user_center;
+
+option go_package = "./v1;v1";
+
+import "validate/validate.proto";
+import "resource/resource.proto";
+import "user_center_channel.proto";
+
+
+message Scene {
+  message Agreement {
+    uint32 id = 1;
+    string name = 2;
+  }
+  uint32 id = 1;
+  string keyword = 2;
+  string name = 3;
+  string description = 4;
+  repeated Agreement agreements = 5;
+  uint32 created_at = 6;
+  uint32 updated_at = 7;
+}
+
+message GetSceneByKeywordRequest{
+  string keyword = 1[(validate.rules).string = {min_len: 1}];
+}
+
+message PageSceneRequest{
+  uint32 page = 1[(validate.rules).uint32 = {gt: 0}];
+  uint32 page_size = 2[(validate.rules).uint32 = {gt: 0,lte:50}];
+  optional string name = 3;
+}
+
+message PageSceneReply{
+  uint32 total = 1;
+  repeated Scene list = 2;
+}
+
+message AddSceneRequest {
+  string keyword = 1[(validate.rules).string = {min_len:1}];
+  string name = 2[(validate.rules).string = {min_len:1}];
+  string description = 3[(validate.rules).string = {min_len:1}];
+  repeated uint32 agreement_ids = 4;
+}
+
+message AddSceneReply {
+  uint32 id = 1;
+}
+
+message UpdateSceneRequest {
+  uint32  id = 5[(validate.rules).uint32 = {gt:0}];
+  string keyword = 1[(validate.rules).string = {min_len:1}];
+  string name = 2[(validate.rules).string = {min_len:1}];
+  string description = 3[(validate.rules).string = {min_len:1}];
+  repeated uint32 agreement_ids = 4;
+}
+
+message DeleteSceneRequest{
+  uint32 id = 1[(validate.rules).uint32 = {gt:0}];
+}

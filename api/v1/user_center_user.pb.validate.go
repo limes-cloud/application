@@ -58,19 +58,9 @@ func (m *User) validate(all bool) error {
 
 	// no validation rules for Id
 
-	// no validation rules for Phone
-
-	// no validation rules for Email
-
-	// no validation rules for Username
-
-	// no validation rules for Password
-
 	// no validation rules for NickName
 
 	// no validation rules for RealName
-
-	// no validation rules for IdCard
 
 	// no validation rules for Avatar
 
@@ -78,11 +68,15 @@ func (m *User) validate(all bool) error {
 
 	// no validation rules for Status
 
+	// no validation rules for From
+
+	// no validation rules for FromDesc
+
 	// no validation rules for CreatedAt
 
 	// no validation rules for UpdatedAt
 
-	for idx, item := range m.GetUserApps() {
+	for idx, item := range m.GetApps() {
 		_, _ = idx, item
 
 		if all {
@@ -90,7 +84,7 @@ func (m *User) validate(all bool) error {
 			case interface{ ValidateAll() error }:
 				if err := v.ValidateAll(); err != nil {
 					errors = append(errors, UserValidationError{
-						field:  fmt.Sprintf("UserApps[%v]", idx),
+						field:  fmt.Sprintf("Apps[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
 					})
@@ -98,7 +92,7 @@ func (m *User) validate(all bool) error {
 			case interface{ Validate() error }:
 				if err := v.Validate(); err != nil {
 					errors = append(errors, UserValidationError{
-						field:  fmt.Sprintf("UserApps[%v]", idx),
+						field:  fmt.Sprintf("Apps[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
 					})
@@ -107,7 +101,7 @@ func (m *User) validate(all bool) error {
 		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
 			if err := v.Validate(); err != nil {
 				return UserValidationError{
-					field:  fmt.Sprintf("UserApps[%v]", idx),
+					field:  fmt.Sprintf("Apps[%v]", idx),
 					reason: "embedded message failed validation",
 					cause:  err,
 				}
@@ -116,7 +110,7 @@ func (m *User) validate(all bool) error {
 
 	}
 
-	for idx, item := range m.GetUserExtras() {
+	for idx, item := range m.GetChannels() {
 		_, _ = idx, item
 
 		if all {
@@ -124,7 +118,7 @@ func (m *User) validate(all bool) error {
 			case interface{ ValidateAll() error }:
 				if err := v.ValidateAll(); err != nil {
 					errors = append(errors, UserValidationError{
-						field:  fmt.Sprintf("UserExtras[%v]", idx),
+						field:  fmt.Sprintf("Channels[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
 					})
@@ -132,7 +126,7 @@ func (m *User) validate(all bool) error {
 			case interface{ Validate() error }:
 				if err := v.Validate(); err != nil {
 					errors = append(errors, UserValidationError{
-						field:  fmt.Sprintf("UserExtras[%v]", idx),
+						field:  fmt.Sprintf("Channels[%v]", idx),
 						reason: "embedded message failed validation",
 						cause:  err,
 					})
@@ -141,13 +135,109 @@ func (m *User) validate(all bool) error {
 		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
 			if err := v.Validate(); err != nil {
 				return UserValidationError{
-					field:  fmt.Sprintf("UserExtras[%v]", idx),
+					field:  fmt.Sprintf("Channels[%v]", idx),
 					reason: "embedded message failed validation",
 					cause:  err,
 				}
 			}
 		}
 
+	}
+
+	{
+		sorted_keys := make([]string, len(m.GetExtra()))
+		i := 0
+		for key := range m.GetExtra() {
+			sorted_keys[i] = key
+			i++
+		}
+		sort.Slice(sorted_keys, func(i, j int) bool { return sorted_keys[i] < sorted_keys[j] })
+		for _, key := range sorted_keys {
+			val := m.GetExtra()[key]
+			_ = val
+
+			// no validation rules for Extra[key]
+
+			if all {
+				switch v := interface{}(val).(type) {
+				case interface{ ValidateAll() error }:
+					if err := v.ValidateAll(); err != nil {
+						errors = append(errors, UserValidationError{
+							field:  fmt.Sprintf("Extra[%v]", key),
+							reason: "embedded message failed validation",
+							cause:  err,
+						})
+					}
+				case interface{ Validate() error }:
+					if err := v.Validate(); err != nil {
+						errors = append(errors, UserValidationError{
+							field:  fmt.Sprintf("Extra[%v]", key),
+							reason: "embedded message failed validation",
+							cause:  err,
+						})
+					}
+				}
+			} else if v, ok := interface{}(val).(interface{ Validate() error }); ok {
+				if err := v.Validate(); err != nil {
+					return UserValidationError{
+						field:  fmt.Sprintf("Extra[%v]", key),
+						reason: "embedded message failed validation",
+						cause:  err,
+					}
+				}
+			}
+
+		}
+	}
+
+	for idx, item := range m.GetExtraList() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, UserValidationError{
+						field:  fmt.Sprintf("ExtraList[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, UserValidationError{
+						field:  fmt.Sprintf("ExtraList[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return UserValidationError{
+					field:  fmt.Sprintf("ExtraList[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if m.Phone != nil {
+		// no validation rules for Phone
+	}
+
+	if m.Email != nil {
+		// no validation rules for Email
+	}
+
+	if m.Username != nil {
+		// no validation rules for Username
+	}
+
+	if m.IdCard != nil {
+		// no validation rules for IdCard
 	}
 
 	if m.DisableDesc != nil {
@@ -444,6 +534,18 @@ func (m *GetUserRequest) validate(all bool) error {
 			errors = append(errors, err)
 		}
 		// no validation rules for Id
+	case *GetUserRequest_IdCard:
+		if v == nil {
+			err := GetUserRequestValidationError{
+				field:  "Condition",
+				reason: "oneof value cannot be a typed-nil",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+		// no validation rules for IdCard
 	default:
 		_ = v // ensures v is used
 	}
@@ -684,40 +786,6 @@ func (m *AddUserRequest) validate(all bool) error {
 
 	var errors []error
 
-	for idx, item := range m.GetUserApps() {
-		_, _ = idx, item
-
-		if all {
-			switch v := interface{}(item).(type) {
-			case interface{ ValidateAll() error }:
-				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, AddUserRequestValidationError{
-						field:  fmt.Sprintf("UserApps[%v]", idx),
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			case interface{ Validate() error }:
-				if err := v.Validate(); err != nil {
-					errors = append(errors, AddUserRequestValidationError{
-						field:  fmt.Sprintf("UserApps[%v]", idx),
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			}
-		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
-			if err := v.Validate(); err != nil {
-				return AddUserRequestValidationError{
-					field:  fmt.Sprintf("UserApps[%v]", idx),
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
-			}
-		}
-
-	}
-
 	for idx, item := range m.GetUserExtras() {
 		_, _ = idx, item
 
@@ -880,6 +948,36 @@ func (m *AddUserRequest) validate(all bool) error {
 			err := AddUserRequestValidationError{
 				field:  "Gender",
 				reason: "value must be in list [M F U]",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+
+	}
+
+	if m.From != nil {
+
+		if utf8.RuneCountInString(m.GetFrom()) < 1 {
+			err := AddUserRequestValidationError{
+				field:  "From",
+				reason: "value length must be at least 1 runes",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+
+	}
+
+	if m.FromDesc != nil {
+
+		if utf8.RuneCountInString(m.GetFromDesc()) < 1 {
+			err := AddUserRequestValidationError{
+				field:  "FromDesc",
+				reason: "value length must be at least 1 runes",
 			}
 			if !all {
 				return err
@@ -1123,142 +1221,6 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = AddUserReplyValidationError{}
-
-// Validate checks the field values on ImportUserRequest with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// first error encountered is returned, or nil if there are no violations.
-func (m *ImportUserRequest) Validate() error {
-	return m.validate(false)
-}
-
-// ValidateAll checks the field values on ImportUserRequest with the rules
-// defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// ImportUserRequestMultiError, or nil if none found.
-func (m *ImportUserRequest) ValidateAll() error {
-	return m.validate(true)
-}
-
-func (m *ImportUserRequest) validate(all bool) error {
-	if m == nil {
-		return nil
-	}
-
-	var errors []error
-
-	for idx, item := range m.GetList() {
-		_, _ = idx, item
-
-		if all {
-			switch v := interface{}(item).(type) {
-			case interface{ ValidateAll() error }:
-				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, ImportUserRequestValidationError{
-						field:  fmt.Sprintf("List[%v]", idx),
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			case interface{ Validate() error }:
-				if err := v.Validate(); err != nil {
-					errors = append(errors, ImportUserRequestValidationError{
-						field:  fmt.Sprintf("List[%v]", idx),
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			}
-		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
-			if err := v.Validate(); err != nil {
-				return ImportUserRequestValidationError{
-					field:  fmt.Sprintf("List[%v]", idx),
-					reason: "embedded message failed validation",
-					cause:  err,
-				}
-			}
-		}
-
-	}
-
-	if len(errors) > 0 {
-		return ImportUserRequestMultiError(errors)
-	}
-
-	return nil
-}
-
-// ImportUserRequestMultiError is an error wrapping multiple validation errors
-// returned by ImportUserRequest.ValidateAll() if the designated constraints
-// aren't met.
-type ImportUserRequestMultiError []error
-
-// Error returns a concatenation of all the error messages it wraps.
-func (m ImportUserRequestMultiError) Error() string {
-	var msgs []string
-	for _, err := range m {
-		msgs = append(msgs, err.Error())
-	}
-	return strings.Join(msgs, "; ")
-}
-
-// AllErrors returns a list of validation violation errors.
-func (m ImportUserRequestMultiError) AllErrors() []error { return m }
-
-// ImportUserRequestValidationError is the validation error returned by
-// ImportUserRequest.Validate if the designated constraints aren't met.
-type ImportUserRequestValidationError struct {
-	field  string
-	reason string
-	cause  error
-	key    bool
-}
-
-// Field function returns field value.
-func (e ImportUserRequestValidationError) Field() string { return e.field }
-
-// Reason function returns reason value.
-func (e ImportUserRequestValidationError) Reason() string { return e.reason }
-
-// Cause function returns cause value.
-func (e ImportUserRequestValidationError) Cause() error { return e.cause }
-
-// Key function returns key value.
-func (e ImportUserRequestValidationError) Key() bool { return e.key }
-
-// ErrorName returns error name.
-func (e ImportUserRequestValidationError) ErrorName() string {
-	return "ImportUserRequestValidationError"
-}
-
-// Error satisfies the builtin error interface
-func (e ImportUserRequestValidationError) Error() string {
-	cause := ""
-	if e.cause != nil {
-		cause = fmt.Sprintf(" | caused by: %v", e.cause)
-	}
-
-	key := ""
-	if e.key {
-		key = "key for "
-	}
-
-	return fmt.Sprintf(
-		"invalid %sImportUserRequest.%s: %s%s",
-		key,
-		e.field,
-		e.reason,
-		cause)
-}
-
-var _ error = ImportUserRequestValidationError{}
-
-var _ interface {
-	Field() string
-	Reason() string
-	Key() bool
-	Cause() error
-	ErrorName() string
-} = ImportUserRequestValidationError{}
 
 // Validate checks the field values on UpdateUserRequest with the rules defined
 // in the proto definition for this message. If any rules are violated, the
@@ -2029,297 +1991,80 @@ var _ interface {
 	ErrorName() string
 } = EnableUserRequestValidationError{}
 
-// Validate checks the field values on ImportUserRequest_ImportData with the
-// rules defined in the proto definition for this message. If any rules are
-// violated, the first error encountered is returned, or nil if there are no violations.
-func (m *ImportUserRequest_ImportData) Validate() error {
+// Validate checks the field values on User_App with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *User_App) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on ImportUserRequest_ImportData with the
-// rules defined in the proto definition for this message. If any rules are
-// violated, the result is a list of violation errors wrapped in
-// ImportUserRequest_ImportDataMultiError, or nil if none found.
-func (m *ImportUserRequest_ImportData) ValidateAll() error {
+// ValidateAll checks the field values on User_App with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in User_AppMultiError, or nil
+// if none found.
+func (m *User_App) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *ImportUserRequest_ImportData) validate(all bool) error {
+func (m *User_App) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
-	for idx, item := range m.GetUserApps() {
-		_, _ = idx, item
+	// no validation rules for Id
 
-		if all {
-			switch v := interface{}(item).(type) {
-			case interface{ ValidateAll() error }:
-				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, ImportUserRequest_ImportDataValidationError{
-						field:  fmt.Sprintf("UserApps[%v]", idx),
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			case interface{ Validate() error }:
-				if err := v.Validate(); err != nil {
-					errors = append(errors, ImportUserRequest_ImportDataValidationError{
-						field:  fmt.Sprintf("UserApps[%v]", idx),
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			}
-		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
-			if err := v.Validate(); err != nil {
-				return ImportUserRequest_ImportDataValidationError{
-					field:  fmt.Sprintf("UserApps[%v]", idx),
+	// no validation rules for Name
+
+	// no validation rules for Logo
+
+	// no validation rules for RegistryAt
+
+	// no validation rules for LoginAt
+
+	if all {
+		switch v := interface{}(m.GetResource()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, User_AppValidationError{
+					field:  "Resource",
 					reason: "embedded message failed validation",
 					cause:  err,
-				}
+				})
 			}
-		}
-
-	}
-
-	for idx, item := range m.GetUserExtras() {
-		_, _ = idx, item
-
-		if all {
-			switch v := interface{}(item).(type) {
-			case interface{ ValidateAll() error }:
-				if err := v.ValidateAll(); err != nil {
-					errors = append(errors, ImportUserRequest_ImportDataValidationError{
-						field:  fmt.Sprintf("UserExtras[%v]", idx),
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			case interface{ Validate() error }:
-				if err := v.Validate(); err != nil {
-					errors = append(errors, ImportUserRequest_ImportDataValidationError{
-						field:  fmt.Sprintf("UserExtras[%v]", idx),
-						reason: "embedded message failed validation",
-						cause:  err,
-					})
-				}
-			}
-		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+		case interface{ Validate() error }:
 			if err := v.Validate(); err != nil {
-				return ImportUserRequest_ImportDataValidationError{
-					field:  fmt.Sprintf("UserExtras[%v]", idx),
+				errors = append(errors, User_AppValidationError{
+					field:  "Resource",
 					reason: "embedded message failed validation",
 					cause:  err,
-				}
+				})
 			}
 		}
-
-	}
-
-	if m.Phone != nil {
-
-		if utf8.RuneCountInString(m.GetPhone()) != 11 {
-			err := ImportUserRequest_ImportDataValidationError{
-				field:  "Phone",
-				reason: "value length must be 11 runes",
-			}
-			if !all {
-				return err
-			}
-			errors = append(errors, err)
-
-		}
-
-	}
-
-	if m.Email != nil {
-
-		if err := m._validateEmail(m.GetEmail()); err != nil {
-			err = ImportUserRequest_ImportDataValidationError{
-				field:  "Email",
-				reason: "value must be a valid email address",
+	} else if v, ok := interface{}(m.GetResource()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return User_AppValidationError{
+				field:  "Resource",
+				reason: "embedded message failed validation",
 				cause:  err,
 			}
-			if !all {
-				return err
-			}
-			errors = append(errors, err)
 		}
-
-	}
-
-	if m.Username != nil {
-
-		if utf8.RuneCountInString(m.GetUsername()) < 6 {
-			err := ImportUserRequest_ImportDataValidationError{
-				field:  "Username",
-				reason: "value length must be at least 6 runes",
-			}
-			if !all {
-				return err
-			}
-			errors = append(errors, err)
-		}
-
-	}
-
-	if m.Password != nil {
-
-		if utf8.RuneCountInString(m.GetPassword()) < 6 {
-			err := ImportUserRequest_ImportDataValidationError{
-				field:  "Password",
-				reason: "value length must be at least 6 runes",
-			}
-			if !all {
-				return err
-			}
-			errors = append(errors, err)
-		}
-
-	}
-
-	if m.NickName != nil {
-
-		if utf8.RuneCountInString(m.GetNickName()) < 1 {
-			err := ImportUserRequest_ImportDataValidationError{
-				field:  "NickName",
-				reason: "value length must be at least 1 runes",
-			}
-			if !all {
-				return err
-			}
-			errors = append(errors, err)
-		}
-
-	}
-
-	if m.RealName != nil {
-
-		if utf8.RuneCountInString(m.GetRealName()) < 1 {
-			err := ImportUserRequest_ImportDataValidationError{
-				field:  "RealName",
-				reason: "value length must be at least 1 runes",
-			}
-			if !all {
-				return err
-			}
-			errors = append(errors, err)
-		}
-
-	}
-
-	if m.IdCard != nil {
-
-		if l := utf8.RuneCountInString(m.GetIdCard()); l < 15 || l > 18 {
-			err := ImportUserRequest_ImportDataValidationError{
-				field:  "IdCard",
-				reason: "value length must be between 15 and 18 runes, inclusive",
-			}
-			if !all {
-				return err
-			}
-			errors = append(errors, err)
-		}
-
-	}
-
-	if m.Avatar != nil {
-
-		if utf8.RuneCountInString(m.GetAvatar()) > 128 {
-			err := ImportUserRequest_ImportDataValidationError{
-				field:  "Avatar",
-				reason: "value length must be at most 128 runes",
-			}
-			if !all {
-				return err
-			}
-			errors = append(errors, err)
-		}
-
-	}
-
-	if m.Gender != nil {
-
-		if _, ok := _ImportUserRequest_ImportData_Gender_InLookup[m.GetGender()]; !ok {
-			err := ImportUserRequest_ImportDataValidationError{
-				field:  "Gender",
-				reason: "value must be in list [M F U]",
-			}
-			if !all {
-				return err
-			}
-			errors = append(errors, err)
-		}
-
 	}
 
 	if len(errors) > 0 {
-		return ImportUserRequest_ImportDataMultiError(errors)
+		return User_AppMultiError(errors)
 	}
 
 	return nil
 }
 
-func (m *ImportUserRequest_ImportData) _validateHostname(host string) error {
-	s := strings.ToLower(strings.TrimSuffix(host, "."))
-
-	if len(host) > 253 {
-		return errors.New("hostname cannot exceed 253 characters")
-	}
-
-	for _, part := range strings.Split(s, ".") {
-		if l := len(part); l == 0 || l > 63 {
-			return errors.New("hostname part must be non-empty and cannot exceed 63 characters")
-		}
-
-		if part[0] == '-' {
-			return errors.New("hostname parts cannot begin with hyphens")
-		}
-
-		if part[len(part)-1] == '-' {
-			return errors.New("hostname parts cannot end with hyphens")
-		}
-
-		for _, r := range part {
-			if (r < 'a' || r > 'z') && (r < '0' || r > '9') && r != '-' {
-				return fmt.Errorf("hostname parts can only contain alphanumeric characters or hyphens, got %q", string(r))
-			}
-		}
-	}
-
-	return nil
-}
-
-func (m *ImportUserRequest_ImportData) _validateEmail(addr string) error {
-	a, err := mail.ParseAddress(addr)
-	if err != nil {
-		return err
-	}
-	addr = a.Address
-
-	if len(addr) > 254 {
-		return errors.New("email addresses cannot exceed 254 characters")
-	}
-
-	parts := strings.SplitN(addr, "@", 2)
-
-	if len(parts[0]) > 64 {
-		return errors.New("email address local phrase cannot exceed 64 characters")
-	}
-
-	return m._validateHostname(parts[1])
-}
-
-// ImportUserRequest_ImportDataMultiError is an error wrapping multiple
-// validation errors returned by ImportUserRequest_ImportData.ValidateAll() if
-// the designated constraints aren't met.
-type ImportUserRequest_ImportDataMultiError []error
+// User_AppMultiError is an error wrapping multiple validation errors returned
+// by User_App.ValidateAll() if the designated constraints aren't met.
+type User_AppMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m ImportUserRequest_ImportDataMultiError) Error() string {
+func (m User_AppMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -2328,12 +2073,11 @@ func (m ImportUserRequest_ImportDataMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m ImportUserRequest_ImportDataMultiError) AllErrors() []error { return m }
+func (m User_AppMultiError) AllErrors() []error { return m }
 
-// ImportUserRequest_ImportDataValidationError is the validation error returned
-// by ImportUserRequest_ImportData.Validate if the designated constraints
-// aren't met.
-type ImportUserRequest_ImportDataValidationError struct {
+// User_AppValidationError is the validation error returned by
+// User_App.Validate if the designated constraints aren't met.
+type User_AppValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -2341,24 +2085,22 @@ type ImportUserRequest_ImportDataValidationError struct {
 }
 
 // Field function returns field value.
-func (e ImportUserRequest_ImportDataValidationError) Field() string { return e.field }
+func (e User_AppValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e ImportUserRequest_ImportDataValidationError) Reason() string { return e.reason }
+func (e User_AppValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e ImportUserRequest_ImportDataValidationError) Cause() error { return e.cause }
+func (e User_AppValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e ImportUserRequest_ImportDataValidationError) Key() bool { return e.key }
+func (e User_AppValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e ImportUserRequest_ImportDataValidationError) ErrorName() string {
-	return "ImportUserRequest_ImportDataValidationError"
-}
+func (e User_AppValidationError) ErrorName() string { return "User_AppValidationError" }
 
 // Error satisfies the builtin error interface
-func (e ImportUserRequest_ImportDataValidationError) Error() string {
+func (e User_AppValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -2370,14 +2112,14 @@ func (e ImportUserRequest_ImportDataValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sImportUserRequest_ImportData.%s: %s%s",
+		"invalid %sUser_App.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = ImportUserRequest_ImportDataValidationError{}
+var _ error = User_AppValidationError{}
 
 var _ interface {
 	Field() string
@@ -2385,10 +2127,278 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = ImportUserRequest_ImportDataValidationError{}
+} = User_AppValidationError{}
 
-var _ImportUserRequest_ImportData_Gender_InLookup = map[string]struct{}{
-	"M": {},
-	"F": {},
-	"U": {},
+// Validate checks the field values on User_Channel with the rules defined in
+// the proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *User_Channel) Validate() error {
+	return m.validate(false)
 }
+
+// ValidateAll checks the field values on User_Channel with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in User_ChannelMultiError, or
+// nil if none found.
+func (m *User_Channel) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *User_Channel) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Id
+
+	// no validation rules for Name
+
+	// no validation rules for Logo
+
+	// no validation rules for AuthAt
+
+	// no validation rules for LoginAt
+
+	if all {
+		switch v := interface{}(m.GetResource()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, User_ChannelValidationError{
+					field:  "Resource",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, User_ChannelValidationError{
+					field:  "Resource",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetResource()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return User_ChannelValidationError{
+				field:  "Resource",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return User_ChannelMultiError(errors)
+	}
+
+	return nil
+}
+
+// User_ChannelMultiError is an error wrapping multiple validation errors
+// returned by User_Channel.ValidateAll() if the designated constraints aren't met.
+type User_ChannelMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m User_ChannelMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m User_ChannelMultiError) AllErrors() []error { return m }
+
+// User_ChannelValidationError is the validation error returned by
+// User_Channel.Validate if the designated constraints aren't met.
+type User_ChannelValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e User_ChannelValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e User_ChannelValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e User_ChannelValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e User_ChannelValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e User_ChannelValidationError) ErrorName() string { return "User_ChannelValidationError" }
+
+// Error satisfies the builtin error interface
+func (e User_ChannelValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUser_Channel.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = User_ChannelValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = User_ChannelValidationError{}
+
+// Validate checks the field values on User_Extra with the rules defined in the
+// proto definition for this message. If any rules are violated, the first
+// error encountered is returned, or nil if there are no violations.
+func (m *User_Extra) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on User_Extra with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in User_ExtraMultiError, or
+// nil if none found.
+func (m *User_Extra) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *User_Extra) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Name
+
+	// no validation rules for Keyword
+
+	// no validation rules for Type
+
+	// no validation rules for TypeName
+
+	if all {
+		switch v := interface{}(m.GetValue()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, User_ExtraValidationError{
+					field:  "Value",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, User_ExtraValidationError{
+					field:  "Value",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetValue()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return User_ExtraValidationError{
+				field:  "Value",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return User_ExtraMultiError(errors)
+	}
+
+	return nil
+}
+
+// User_ExtraMultiError is an error wrapping multiple validation errors
+// returned by User_Extra.ValidateAll() if the designated constraints aren't met.
+type User_ExtraMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m User_ExtraMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m User_ExtraMultiError) AllErrors() []error { return m }
+
+// User_ExtraValidationError is the validation error returned by
+// User_Extra.Validate if the designated constraints aren't met.
+type User_ExtraValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e User_ExtraValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e User_ExtraValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e User_ExtraValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e User_ExtraValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e User_ExtraValidationError) ErrorName() string { return "User_ExtraValidationError" }
+
+// Error satisfies the builtin error interface
+func (e User_ExtraValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUser_Extra.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = User_ExtraValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = User_ExtraValidationError{}

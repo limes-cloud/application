@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package user_center;
+
+option go_package = "./v1;v1";
+
+import "validate/validate.proto";
+
+message AddUserChannelRequest {
+  uint32 user_id = 1[(validate.rules).uint32 = {gt: 0}];
+  uint32 channel_id = 2[(validate.rules).uint32 = {gt: 0}];
+}
+
+message DeleteUserChannelRequest {
+  uint32 user_id = 1[(validate.rules).uint32 = {gt: 0}];
+  uint32 channel_id = 2[(validate.rules).uint32 = {gt: 0}];
+}

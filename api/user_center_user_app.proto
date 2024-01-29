@@ -6,39 +6,12 @@ option go_package = "./v1;v1";
 
 import "validate/validate.proto";
 
-message UserApp {
-  uint32 user_id = 1;
-  string app = 2;
-  optional bool status = 3;
-  optional string last_login = 4;
-  optional string token = 5;
-  optional uint32 expired_at = 6;
-}
-
-message AllUserAppRequest {
-  uint32 user_id = 1[(validate.rules).uint32 = {gt:0}];
-}
-
-message AllUserAppReply {
-  repeated UserApp list = 1;
-}
-
 message AddUserAppRequest {
-  uint32 user_id = 1[(validate.rules).uint32 = {gt:0}];
-  string app = 2[(validate.rules).string = {min_len:1}];
+  uint32 user_id = 1[(validate.rules).uint32 = {gt: 0}];
+  uint32 app_id = 2[(validate.rules).uint32 = {gt: 0}];
 }
 
-message DisableUserAppRequest {
-  uint32 user_id = 1[(validate.rules).uint32 = {gt:0}];
-  string app = 2[(validate.rules).string = {min_len:1}];
-}
-
-message EnableUserAppRequest {
-  uint32 user_id = 1[(validate.rules).uint32 = {gt:0}];
-  string app = 2[(validate.rules).string = {min_len:1}];
-}
-
-message DeleteUserAppRequest{
-  uint32 user_id = 1[(validate.rules).uint32 = {gt:0}];
-  string app = 2[(validate.rules).string = {min_len:1}];
+message DeleteUserAppRequest {
+  uint32 user_id = 1[(validate.rules).uint32 = {gt: 0}];
+  uint32 app_id = 2[(validate.rules).uint32 = {gt: 0}];
 }

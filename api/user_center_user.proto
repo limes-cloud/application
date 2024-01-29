@@ -5,26 +5,56 @@ package user_center;
 option go_package = "./v1;v1";
 
 import "validate/validate.proto";
-import "user_center_user_app.proto";
 import "user_center_user_extra.proto";
+import "google/protobuf/struct.proto";
+import "resource/resource.proto";
 
 message User {
+  message App {
+    uint32 id = 1;
+    string name = 2;
+    string logo = 3;
+    uint32 registry_at = 4;
+    uint32 login_at = 5;
+    resource.File resource = 11;
+  }
+
+  message Channel {
+    uint32 id = 1;
+    string name = 2;
+    string logo = 3;
+    uint32 auth_at = 4;
+    uint32 login_at = 5;
+    resource.File resource = 11;
+  }
+
+  message Extra{
+    string name = 1;
+    string keyword = 2;
+    string type = 3;
+    string type_name = 4;
+    google.protobuf.Value value = 5;
+  }
+
   uint32 id = 1;
-  string phone = 2;
-  string email = 3;
-  string username = 4;
-  string password = 5;
+  optional string phone = 2;
+  optional string email = 3;
+  optional string username = 4;
   string nick_name = 6;
   string real_name = 7;
-  string id_card = 8;
+  optional string id_card = 8;
   string avatar = 9;
   string gender = 10;
   bool status = 11;
   optional string disable_desc = 12;
-  uint32 created_at = 13;
-  uint32 updated_at = 14;
-  repeated UserApp user_apps = 15;
-  repeated UserExtra user_extras = 16;
+  string from = 13;
+  string from_desc = 14;
+  uint32 created_at = 15;
+  uint32 updated_at = 16;
+  repeated App apps = 17;
+  repeated Channel channels = 19;
+  map<string,google.protobuf.Value> extra = 20;
+  repeated Extra extra_list = 21;
 }
 
 message PageUserRequest{
@@ -43,6 +73,7 @@ message GetUserRequest{
     string email = 2;
     string username = 3;
     uint32 id = 4;
+    string id_card = 5;
   }
 }
 
@@ -61,8 +92,9 @@ message AddUserRequest {
   optional string id_card = 7[(validate.rules).string = {min_len:15,max_len:18}];
   optional string avatar = 8[(validate.rules).string = {max_len:128}];
   optional string gender = 9[(validate.rules).string = {in: ["M","F","U"]}];
-  repeated UserApp user_apps = 10;
-  repeated UserExtra user_extras = 11;
+  optional string from  = 10[(validate.rules).string = {min_len:1}];
+  optional string from_desc = 11[(validate.rules).string = {min_len:1}];
+  repeated UserExtra user_extras = 13;
 }
 
 message AddUserReply {
@@ -70,22 +102,21 @@ message AddUserReply {
 }
 
 
-message ImportUserRequest {
-    message ImportData{
-      optional string phone = 1[(validate.rules).string = {len:11}];
-      optional string email = 2[(validate.rules).string = {email:true}];
-      optional string username = 3[(validate.rules).string = {min_len:6}];
-      optional string password = 4[(validate.rules).string = {min_len:6}];
-      optional string nick_name = 5[(validate.rules).string = {min_len:1}];
-      optional string real_name = 6[(validate.rules).string = {min_len:1}];
-      optional string id_card = 7[(validate.rules).string = {min_len:15,max_len:18}];
-      optional string avatar = 8[(validate.rules).string = {max_len:128}];
-      optional string gender = 9[(validate.rules).string = {in: ["M","F","U"]}];
-      repeated UserApp user_apps = 10;
-      repeated UserExtra user_extras = 11;
-    }
-    repeated ImportData list = 1;
-}
+//message ImportUserRequest {
+//    message ImportData{
+//      optional string phone = 1[(validate.rules).string = {len:11}];
+//      optional string email = 2[(validate.rules).string = {email:true}];
+//      optional string username = 3[(validate.rules).string = {min_len:6}];
+//      optional string password = 4[(validate.rules).string = {min_len:6}];
+//      optional string nick_name = 5[(validate.rules).string = {min_len:1}];
+//      optional string real_name = 6[(validate.rules).string = {min_len:1}];
+//      optional string id_card = 7[(validate.rules).string = {min_len:15,max_len:18}];
+//      optional string avatar = 8[(validate.rules).string = {max_len:128}];
+//      optional string gender = 9[(validate.rules).string = {in: ["M","F","U"]}];
+//      repeated UserExtra user_extras = 11;
+//    }
+//    repeated ImportData list = 1;
+//}
 
 message UpdateUserRequest {
   uint32  id = 10[(validate.rules).uint32 = {gt:0}];

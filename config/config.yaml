@@ -41,16 +41,112 @@ database:
       logLevel: 4 #日志等级
       slowThreshold: 2s #慢sql阈值
 redis:
-  catch: #redis实例名称,如有多个redis可新增
-    enable: false #是否启用redis
+  cache: #redis实例名称,如有多个redis可新增
+    enable: true #是否启用redis
     host: 127.0.0.1:6379 #redis地址
     username:  #连接账号
     password:  #连接密码
-pool: #并非池配置
-  size: 10000 #最大协程数量
-  expiryDuration: 30s #过期时间
-  preAlloc: true #是否预分配
-  maxBlockingTasks: 1000 #最大的并发任务
-  nonblocking: true #设置为true时maxBlockingTasks讲失效，不限制并发任务
+captcha:
+  loginImage:
+    type: image
+    length: 6
+    expire: 180s
+    redis: cache
+    height: 80
+    width: 200
+    skew: 0.7
+    dotCount: 80
+    refresh: true
+  bindImage:
+    type: image
+    length: 6
+    expire: 180s
+    redis: cache
+    height: 80
+    width: 200
+    skew: 0.7
+    dotCount: 80
+    refresh: true
+  registerImage:
+    type: image
+    length: 6
+    expire: 180s
+    redis: cache
+    height: 80
+    width: 200
+    skew: 0.7
+    dotCount: 80
+    refresh: true
+  loginEmail:
+    type: email
+    length: 6
+    expire: 180s
+    redis: cache
+    template: login
+    refresh: true
+  bindEmail:
+    type: email
+    length: 6
+    expire: 180s
+    redis: cache
+    template: bind
+  registerEmail:
+    type: email
+    length: 6
+    expire: 180s
+    redis: cache
+    template: register
+    refresh: true
+  changePassword:
+    type: email
+    length: 6
+    expire: 180s
+    redis: cache
+    template: bin
+loader:
+  password: static/cert/password.pem
+email:
+  template:
+    login:
+      subject: 登录验证码发送通知
+      path: static/template/email/default.html
+      type: text/html
+    bind:
+      subject: 绑定验证码发送通知
+      path: static/template/email/default.html
+      type: text/html
+    register:
+      subject: 注册验证码发送通知
+      path: static/template/email/default.html
+      type: text/html
+  user: 860808187@qq.com
+  name: 青岑云
+  host: smtp.qq.com
+  port: 25
+  password: fyudafdzqmhwbfbd
+jwt:
+  redis: cache
+  secret: limeschool
+  expire: 2h
+  renewal: 20s
+  prefix: /user-center/admin/
+  whitelist:
+    GET:/user-center/client/v1/scene: true
+    GET:/user-center/client/v1/agreement: true
+    GET:/user-center/client/v1/app: true
+    GET:/user-center/client/v1/login/image-captcha: true
+    GET:/user-center/client/v1/bind/image-captcha: true
+    GET:/user-center/client/v1/register/image-captcha: true
+    GET:/user-center/client/v1/register/username/check: true
+    POST:/user-center/client/v1/login/email-captcha: true
+    POST:/user-center/client/v1/bind/email-captcha: true
+    POST:/user-center/client/v1/register/email-captcha: true
+    POST:/user-center/client/v1/login/email: true
+    POST:/user-center/client/v1/bind/email: true
+    POST:/user-center/client/v1/register/email: true
+    POST:/user-center/client/v1/login/password: true
+    POST:/user-center/client/v1/bind/password: true
+    POST:/user-center/client/v1/register/password: true
 business:
-  sayText: "你好！"
+  service:
+    resource: 127.0.0.1:8003

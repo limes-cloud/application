@@ -2,24 +2,34 @@ package md
 
 import (
 	"github.com/limes-cloud/kratosx"
-
-	"github.com/limes-cloud/user-center/internal/model"
 )
 
 const (
-	uid = "user_id"
+	_uid = "user_id"
+	_aid = "app_id"
+	_cid = "channel_id"
 )
 
-func New(info *model.User) map[string]any {
+func New(uid, aid, cid uint32) map[string]any {
 	return map[string]any{
-		uid: info.ID,
+		_uid: uid,
+		_aid: aid,
+		_cid: cid,
 	}
 }
 
-func UserId(ctx kratosx.Context) uint32 {
+func UserID(ctx kratosx.Context) uint32 {
 	m, err := ctx.JWT().ParseMapClaims(ctx)
 	if err != nil {
 		return 0
 	}
-	return uint32(m[uid].(float64))
+	return uint32(m[_uid].(float64))
+}
+
+func AppID(ctx kratosx.Context) uint32 {
+	m, err := ctx.JWT().ParseMapClaims(ctx)
+	if err != nil {
+		return 0
+	}
+	return uint32(m[_aid].(float64))
 }

@@ -3,16 +3,35 @@ package service
 import (
 	v1 "github.com/limes-cloud/user-center/api/v1"
 	"github.com/limes-cloud/user-center/config"
-	"github.com/limes-cloud/user-center/internal/logic"
+	"github.com/limes-cloud/user-center/internal/biz"
+	"github.com/limes-cloud/user-center/internal/data"
 )
 
 type Service struct {
 	v1.UnimplementedServiceServer
-	user *logic.User
+	conf        *config.Config
+	agreement   *biz.AgreementUseCase
+	scene       *biz.SceneUseCase
+	channel     *biz.ChannelUseCase
+	app         *biz.AppUseCase
+	extraField  *biz.ExtraFieldUseCase
+	user        *biz.UserUseCase
+	userApp     *biz.UserAppUseCase
+	userChannel *biz.UserChannelUseCase
+	auth        *biz.AuthUseCase
 }
 
 func New(conf *config.Config) *Service {
 	return &Service{
-		user: logic.NewLogic(conf),
+		conf:        conf,
+		channel:     biz.NewChannelUseCase(conf, data.NewChannelRepo()),
+		app:         biz.NewAppUseCase(conf, data.NewAppRepo()),
+		extraField:  biz.NewExtraFieldUseCase(conf, data.NewExtraFieldRepo()),
+		user:        biz.NewUserUseCase(conf, data.NewUserRepo()),
+		userApp:     biz.NewUserAppUseCase(conf, data.NewUserAppRepo()),
+		userChannel: biz.NewUserChannelUseCase(conf, data.NewUserChannelRepo()),
+		agreement:   biz.NewAgreementUseCase(conf, data.NewAgreementRepo()),
+		scene:       biz.NewSceneUseCase(conf, data.NewSceneRepo()),
+		auth:        biz.NewAuthUseCase(conf, data.NewAuthRepo()),
 	}
 }

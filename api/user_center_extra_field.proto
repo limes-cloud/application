@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package user_center;
+
+option go_package = "./v1;v1";
+
+import "validate/validate.proto";
+import "resource/resource.proto";
+import "user_center_channel.proto";
+
+message ExtraField {
+  uint32 id = 1;
+  string keyword = 2;
+  string type = 3;
+  string name = 4;
+  string description = 5;
+  uint32 created_at = 6;
+  uint32 updated_at = 7;
+}
+
+message PageExtraFieldRequest{
+  uint32 page = 1[(validate.rules).uint32 = {gt: 0}];
+  uint32 page_size = 2[(validate.rules).uint32 = {gt: 0,lte:50}];
+  optional string keyword = 3;
+  optional string name = 4;
+}
+
+message AllExtraFieldTypeReply{
+   message data{
+     string type = 1;
+     string name = 2;
+   }
+   repeated data list=1;
+}
+
+message PageExtraFieldReply{
+  uint32 total = 1;
+  repeated ExtraField list = 2;
+}
+
+message AddExtraFieldRequest {
+  string keyword = 1[(validate.rules).string = {min_len:1}];
+  string type = 2[(validate.rules).string = {min_len:1}];
+  string name = 3[(validate.rules).string = {min_len:1}];
+  optional string description = 4;
+}
+
+message AddExtraFieldReply {
+  uint32 id = 1;
+}
+
+message UpdateExtraFieldRequest {
+  uint32  id = 5[(validate.rules).uint32 = {gt:0}];
+  string keyword = 1[(validate.rules).string = {min_len:1}];
+  string type = 2[(validate.rules).string = {min_len:1}];
+  string name = 3[(validate.rules).string = {min_len:1}];
+  optional string description = 4;
+}
+
+message DeleteExtraFieldRequest{
+  uint32 id = 1[(validate.rules).uint32 = {gt:0}];
+}

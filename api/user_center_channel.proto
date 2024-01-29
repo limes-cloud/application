@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package user_center;
+
+option go_package = "./v1;v1";
+
+import "validate/validate.proto";
+import "resource/resource.proto";
+
+message Channel {
+  uint32 id = 1;
+  string logo = 2;
+  string platform = 3;
+  string name = 4;
+  string ak = 5;
+  string sk = 6;
+  string extra = 7;
+  optional bool status = 8;
+  uint32 created_at = 9;
+  uint32 updated_at = 10;
+  resource.File resource = 11;
+}
+
+message OuterChannel {
+  uint32 id = 1;
+  string platform = 2;
+  string name = 3;
+  string logo = 4;
+}
+
+message AllChannelReply{
+  repeated Channel list = 2;
+}
+
+message AddChannelRequest {
+  string logo = 1[(validate.rules).string = {min_len:1}];
+  string platform = 2[(validate.rules).string = {min_len:1}];
+  string name = 3[(validate.rules).string = {min_len:1}];
+  optional string ak = 4;
+  optional string sk = 5;
+  optional string extra = 6;
+  optional bool status = 7;
+}
+
+message AddChannelReply {
+  uint32 id = 1;
+}
+
+message UpdateChannelRequest {
+  uint32  id = 8[(validate.rules).uint32 = {gt:0}];
+  string logo = 1[(validate.rules).string = {min_len:1}];
+  string platform = 2[(validate.rules).string = {min_len:1}];
+  string name = 3[(validate.rules).string = {min_len:1}];
+  optional string ak = 4;
+  optional string sk = 5;
+  optional string extra = 6;
+  optional bool status = 7;
+}
+
+message DeleteChannelRequest{
+  uint32 id = 1[(validate.rules).uint32 = {gt:0}];
+}
