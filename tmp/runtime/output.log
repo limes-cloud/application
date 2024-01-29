@@ -1296,3 +1296,5 @@
 {"level":"info","time":"2024-01-29 19:56:10.578","msg":"","id":"mac.local","name":"UserCenter","version":"","trace":"","span":"","err":"","sql":"SELECT count(*) FROM information_schema.tables WHERE table_schema = 'user_center' AND table_name = 'user_extra' AND table_type = 'BASE TABLE'","rows":-1,"time":"0.606583ms","slow":false,"title":"sql信息"}
 {"level":"info","time":"2024-01-29 19:56:10.579","msg":"","id":"mac.local","name":"UserCenter","version":"","trace":"","span":"","msg":"[HTTP] server listening on: 127.0.0.1:7004"}
 {"level":"info","time":"2024-01-29 19:56:10.579","msg":"","id":"mac.local","name":"UserCenter","version":"","trace":"","span":"","msg":"[gRPC] server listening on: 127.0.0.1:8004"}
+{"level":"info","time":"2024-01-29 20:00:23.049","msg":"","id":"mac.local","name":"UserCenter","version":"","trace":"","span":"","msg":"[HTTP] server stopping"}
+{"level":"info","time":"2024-01-29 20:00:23.050","msg":"","id":"mac.local","name":"UserCenter","version":"","trace":"","span":"","msg":"[gRPC] server stopping"}
