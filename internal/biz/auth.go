@@ -259,7 +259,7 @@ func (u *AuthUseCase) RegisterImageCaptcha(ctx kratosx.Context) (*types.CaptchaR
 // RegisterByPassword 密码注册
 func (u *AuthUseCase) RegisterByPassword(ctx kratosx.Context, req *types.RegisterByPasswordRequest) (*types.RegisterReply, error) {
 	// 判断验证码是否正确
-	if err := ctx.Captcha().VerifyImage(loginImage, ctx.ClientIP(), req.CaptchaID, req.Captcha); err != nil {
+	if err := ctx.Captcha().VerifyImage(registerImage, ctx.ClientIP(), req.CaptchaID, req.Captcha); err != nil {
 		return nil, v1.VerifyCaptchaError()
 	}
 
