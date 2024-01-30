@@ -11,7 +11,7 @@ require (
 	github.com/jinzhu/copier v0.4.0
 	github.com/json-iterator/go v1.1.12
 	github.com/limes-cloud/configure v1.0.14
-	github.com/limes-cloud/kratosx v1.0.13
+	github.com/limes-cloud/kratosx v1.0.15
 	github.com/limes-cloud/resource v1.0.2
 	github.com/mbndr/figlet4go v0.0.0-20190224160619-d6cef5b186ea
 	go.uber.org/automaxprocs v1.5.1
