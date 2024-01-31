@@ -14,10 +14,11 @@ type App struct {
 	Logo          string        `json:"logo" gorm:"not null;size:128;comment:应用logo"`
 	Name          string        `json:"name" gorm:"not null;size:32;comment:应用名称"`
 	Status        *bool         `json:"status" gorm:"not null;comment:应用状态"`
+	UserFields    string        `json:"user_fields" gorm:"size:1024;comment:用户字段"`
 	Version       string        `json:"version" gorm:"size:32;comment:应用版本"`
 	Copyright     string        `json:"copyright" gorm:"size:128;comment:应用版权"`
 	AllowRegistry *bool         `json:"allow_registry" gorm:"not null;comment:是否允许注册"`
-	Description   string        `json:"description" gorm:"not null;size:128;comment:应用描述"`
+	Description   string        `json:"description" gorm:"size:128;comment:应用描述"`
 	Channels      []*Channel    `json:"channels" gorm:"many2many:app_channel;constraint:onDelete:cascade"`
 	AppChannels   []*AppChannel `json:"app_channels"`
 }
@@ -28,6 +29,7 @@ type AppChannel struct {
 }
 
 type AppRepo interface {
+	GetByID(ctx kratosx.Context, id uint32) (*App, error)
 	GetByKeyword(ctx kratosx.Context, keyword string) (*App, error)
 	Page(ctx kratosx.Context, req *types.PageAppRequest) ([]*App, uint32, error)
 	Create(ctx kratosx.Context, c *App) (uint32, error)
@@ -44,7 +46,16 @@ func NewAppUseCase(config *config.Config, repo AppRepo) *AppUseCase {
 	return &AppUseCase{config: config, repo: repo}
 }
 
-// GetByKeyword 获取全部应用
+// GetByID 获取指定应用
+func (u *AppUseCase) GetByID(ctx kratosx.Context, id uint32) (*App, error) {
+	app, err := u.repo.GetByID(ctx, id)
+	if err != nil {
+		return nil, v1.NotRecordError()
+	}
+	return app, nil
+}
+
+// GetByKeyword 获取指定应用
 func (u *AppUseCase) GetByKeyword(ctx kratosx.Context, keyword string) (*App, error) {
 	app, err := u.repo.GetByKeyword(ctx, keyword)
 	if err != nil {

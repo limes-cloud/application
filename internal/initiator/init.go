@@ -3,12 +3,11 @@ package initiator
 import (
 	"context"
 
-	"github.com/limes-cloud/user-center/pkg/pt"
-
 	"github.com/limes-cloud/kratosx"
 
 	"github.com/limes-cloud/user-center/config"
 	"github.com/limes-cloud/user-center/internal/initiator/migrate"
+	"github.com/limes-cloud/user-center/pkg/pt"
 )
 
 type Initiator struct {

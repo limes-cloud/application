@@ -14,6 +14,11 @@ func NewAppRepo() biz.AppRepo {
 	return &appRepo{}
 }
 
+func (u *appRepo) GetByID(ctx kratosx.Context, id uint32) (*biz.App, error) {
+	var app biz.App
+	return &app, ctx.DB().Model(biz.App{}).Preload("Channels").Find(&app, "id=?", id).Error
+}
+
 func (u *appRepo) GetByKeyword(ctx kratosx.Context, keyword string) (*biz.App, error) {
 	var app biz.App
 	return &app, ctx.DB().Model(biz.App{}).Preload("Channels").Find(&app, "keyword=?", keyword).Error

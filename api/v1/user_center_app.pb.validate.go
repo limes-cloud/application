@@ -66,6 +66,12 @@ func (m *App) validate(all bool) error {
 
 	// no validation rules for Status
 
+	// no validation rules for UserFields
+
+	// no validation rules for Version
+
+	// no validation rules for Copyright
+
 	// no validation rules for AllowRegistry
 
 	// no validation rules for Description
@@ -647,15 +653,8 @@ func (m *AddAppRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if utf8.RuneCountInString(m.GetDescription()) < 1 {
-		err := AddAppRequestValidationError{
-			field:  "Description",
-			reason: "value length must be at least 1 runes",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
+	if m.Description != nil {
+		// no validation rules for Description
 	}
 
 	if m.Status != nil {
@@ -664,6 +663,18 @@ func (m *AddAppRequest) validate(all bool) error {
 
 	if m.AllowRegistry != nil {
 		// no validation rules for AllowRegistry
+	}
+
+	if m.UserFields != nil {
+		// no validation rules for UserFields
+	}
+
+	if m.Version != nil {
+		// no validation rules for Version
+	}
+
+	if m.Copyright != nil {
+		// no validation rules for Copyright
 	}
 
 	if len(errors) > 0 {
@@ -911,15 +922,8 @@ func (m *UpdateAppRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if utf8.RuneCountInString(m.GetDescription()) < 1 {
-		err := UpdateAppRequestValidationError{
-			field:  "Description",
-			reason: "value length must be at least 1 runes",
-		}
-		if !all {
-			return err
-		}
-		errors = append(errors, err)
+	if m.Description != nil {
+		// no validation rules for Description
 	}
 
 	if m.Status != nil {
@@ -928,6 +932,18 @@ func (m *UpdateAppRequest) validate(all bool) error {
 
 	if m.AllowRegistry != nil {
 		// no validation rules for AllowRegistry
+	}
+
+	if m.UserFields != nil {
+		// no validation rules for UserFields
+	}
+
+	if m.Version != nil {
+		// no validation rules for Version
+	}
+
+	if m.Copyright != nil {
+		// no validation rules for Copyright
 	}
 
 	if len(errors) > 0 {

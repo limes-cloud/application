@@ -2,26 +2,21 @@ package service
 
 import (
 	"context"
-
-	"github.com/limes-cloud/user-center/pkg/md"
-
-	"github.com/limes-cloud/user-center/pkg/field"
-
-	"google.golang.org/protobuf/types/known/structpb"
-
-	resourceV1 "github.com/limes-cloud/resource/api/v1"
-	"github.com/limes-cloud/user-center/pkg/service"
-
-	"github.com/limes-cloud/user-center/internal/biz/types"
-
-	"github.com/jinzhu/copier"
-
-	"github.com/limes-cloud/user-center/internal/biz"
+	"strings"
 
 	"github.com/golang/protobuf/ptypes/empty"
+	"github.com/jinzhu/copier"
 	"github.com/limes-cloud/kratosx"
+	resourceV1 "github.com/limes-cloud/resource/api/v1"
+	"google.golang.org/protobuf/types/known/structpb"
 
 	v1 "github.com/limes-cloud/user-center/api/v1"
+	"github.com/limes-cloud/user-center/internal/biz"
+	"github.com/limes-cloud/user-center/internal/biz/types"
+	"github.com/limes-cloud/user-center/pkg/field"
+	"github.com/limes-cloud/user-center/pkg/md"
+	"github.com/limes-cloud/user-center/pkg/service"
+	"github.com/limes-cloud/user-center/pkg/util"
 )
 
 func (s *Service) GetUser(ctx context.Context, in *v1.GetUserRequest) (*v1.User, error) {
@@ -50,11 +45,10 @@ func (s *Service) GetUser(ctx context.Context, in *v1.GetUserRequest) (*v1.User,
 		return nil, err
 	}
 
-	return s.transformUserReply(ctx, user)
+	return s.transformUserReply(ctx, user, nil)
 }
 
-func (s *Service) transformUserReply(ctx context.Context, user *biz.User) (*v1.User, error) {
-
+func (s *Service) transformUserReply(ctx context.Context, user *biz.User, app *biz.App) (*v1.User, error) {
 	reply := v1.User{}
 	if err := copier.Copy(&reply, user); err != nil {
 		return nil, v1.TransformError()
@@ -109,7 +103,18 @@ func (s *Service) transformUserReply(ctx context.Context, user *biz.User) (*v1.U
 	// 转换extra
 	efs := s.extraField.FiledTypeSet(kratosx.MustContext(ctx))
 	fir := field.New()
+	// 通过app过滤字段
+	var userFields []string
+	hasFilter := false
+	if app != nil {
+		userFields = strings.Split(app.UserFields, ",")
+		hasFilter = true
+	}
+
 	for _, item := range user.UserExtras {
+		if !hasFilter || !util.InList(userFields, item.Keyword) {
+			continue
+		}
 		if efs[item.Keyword] != nil {
 			tp := fir.GetType(efs[item.Keyword].Type)
 			reply.Extra[item.Keyword] = tp.ToValue(item.Value)
@@ -127,11 +132,19 @@ func (s *Service) transformUserReply(ctx context.Context, user *biz.User) (*v1.U
 }
 
 func (s *Service) GetCurrentUser(ctx context.Context, _ *empty.Empty) (*v1.User, error) {
-	user, err := s.user.Get(kratosx.MustContext(ctx), md.UserID(kratosx.MustContext(ctx)))
+	kCtx := kratosx.MustContext(ctx)
+	user, err := s.user.Get(kCtx, md.UserID(kratosx.MustContext(ctx)))
 	if err != nil {
 		return nil, err
 	}
-	return s.transformUserReply(ctx, user)
+
+	// 获取当前的app
+	app, err := s.app.GetByID(kCtx, md.AppID(kCtx))
+	if err != nil {
+		return nil, err
+	}
+
+	return s.transformUserReply(ctx, user, app)
 }
 
 func (s *Service) PageUser(ctx context.Context, in *v1.PageUserRequest) (*v1.PageUserReply, error) {
@@ -165,15 +178,14 @@ func (s *Service) AddUser(ctx context.Context, in *v1.AddUserRequest) (*v1.AddUs
 	return &v1.AddUserReply{Id: id}, nil
 }
 
-//func (s *Service) ImportUser(ctx context.Context, in *v1.ImportUserRequest) (*empty.Empty, error) {
-//	var users []*biz.User
-//	if err := copier.Copy(&users, in.List); err != nil {
-//		return nil, v1.TransformError()
-//	}
-//	return nil, s.user.Import(kratosx.MustContext(ctx), users)
+//	func (s *Service) ImportUser(ctx context.Context, in *v1.ImportUserRequest) (*empty.Empty, error) {
+//		var users []*biz.User
+//		if err := copier.Copy(&users, in.List); err != nil {
+//			return nil, v1.TransformError()
+//		}
+//		return nil, s.user.Import(kratosx.MustContext(ctx), users)
 //
-//}
-
+// }
 func (s *Service) UpdateUser(ctx context.Context, in *v1.UpdateUserRequest) (*empty.Empty, error) {
 	var user biz.User
 	if err := copier.Copy(&user, in); err != nil {

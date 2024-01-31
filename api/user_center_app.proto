@@ -14,12 +14,15 @@ message App {
   string logo = 3;
   string name = 4;
   bool status = 5;
-  bool allow_registry = 6;
-  string description = 7;
-  repeated OuterChannel channels = 8;
-  uint32 created_at = 9;
-  uint32 updated_at = 10;
-  resource.File resource = 11;
+  string user_fields = 6;
+  string version = 7;
+  string copyright = 8;
+  bool allow_registry = 9;
+  string description = 10;
+  repeated OuterChannel channels = 11;
+  uint32 created_at = 12;
+  uint32 updated_at = 13;
+  resource.File resource = 14;
 }
 
 message GetAppByKeywordRequest{
@@ -42,10 +45,13 @@ message AddAppRequest {
   string keyword = 1[(validate.rules).string = {min_len:1}];
   string logo = 2[(validate.rules).string = {min_len:1}];
   string name = 3[(validate.rules).string = {min_len:1}];
-  string description = 4[(validate.rules).string = {min_len:1}];
+  optional string description = 4;
   optional bool status = 5;
   optional bool allow_registry = 6;
   repeated uint32 channel_ids = 7;
+  optional string user_fields = 8;
+  optional string version = 9;
+  optional string copyright = 10;
 }
 
 message AddAppReply {
@@ -53,14 +59,17 @@ message AddAppReply {
 }
 
 message UpdateAppRequest {
-  uint32  id = 8[(validate.rules).uint32 = {gt:0}];
+  uint32  id = 11[(validate.rules).uint32 = {gt:0}];
   string keyword = 1[(validate.rules).string = {min_len:1}];
   string logo = 2[(validate.rules).string = {min_len:1}];
   string name = 3[(validate.rules).string = {min_len:1}];
-  string description = 4[(validate.rules).string = {min_len:1}];
+  optional string description = 4;
   optional bool status = 5;
   optional bool allow_registry = 6;
   repeated uint32 channel_ids = 7;
+  optional string user_fields = 8;
+  optional string version = 9;
+  optional string copyright = 10;
 }
 
 message DeleteAppRequest{
