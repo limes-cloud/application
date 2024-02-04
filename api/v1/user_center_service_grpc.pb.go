@@ -20,6 +20,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
+	Service_RefreshToken_FullMethodName          = "/user_center.Service/RefreshToken"
 	Service_LoginImageCaptcha_FullMethodName     = "/user_center.Service/LoginImageCaptcha"
 	Service_BindImageCaptcha_FullMethodName      = "/user_center.Service/BindImageCaptcha"
 	Service_RegisterImageCaptcha_FullMethodName  = "/user_center.Service/RegisterImageCaptcha"
@@ -53,14 +54,22 @@ const (
 	Service_AddApp_FullMethodName                = "/user_center.Service/AddApp"
 	Service_UpdateApp_FullMethodName             = "/user_center.Service/UpdateApp"
 	Service_DeleteApp_FullMethodName             = "/user_center.Service/DeleteApp"
+	Service_GetAppInterfaceTree_FullMethodName   = "/user_center.Service/GetAppInterfaceTree"
+	Service_AddAppInterface_FullMethodName       = "/user_center.Service/AddAppInterface"
+	Service_UpdateAppInterface_FullMethodName    = "/user_center.Service/UpdateAppInterface"
+	Service_DeleteAppInterface_FullMethodName    = "/user_center.Service/DeleteAppInterface"
 	Service_AllExtraFieldType_FullMethodName     = "/user_center.Service/AllExtraFieldType"
 	Service_PageExtraField_FullMethodName        = "/user_center.Service/PageExtraField"
+	Service_CurrentExtraField_FullMethodName     = "/user_center.Service/CurrentExtraField"
 	Service_AddExtraField_FullMethodName         = "/user_center.Service/AddExtraField"
 	Service_UpdateExtraField_FullMethodName      = "/user_center.Service/UpdateExtraField"
 	Service_DeleteExtraField_FullMethodName      = "/user_center.Service/DeleteExtraField"
 	Service_AllLoginPlatform_FullMethodName      = "/user_center.Service/AllLoginPlatform"
+	Service_GetSimpleUser_FullMethodName         = "/user_center.Service/GetSimpleUser"
+	Service_GetBaseUser_FullMethodName           = "/user_center.Service/GetBaseUser"
 	Service_GetUser_FullMethodName               = "/user_center.Service/GetUser"
 	Service_GetCurrentUser_FullMethodName        = "/user_center.Service/GetCurrentUser"
+	Service_UpdateCurrentUser_FullMethodName     = "/user_center.Service/UpdateCurrentUser"
 	Service_PageUser_FullMethodName              = "/user_center.Service/PageUser"
 	Service_AddUser_FullMethodName               = "/user_center.Service/AddUser"
 	Service_UpdateUser_FullMethodName            = "/user_center.Service/UpdateUser"
@@ -76,6 +85,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ServiceClient interface {
+	RefreshToken(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*LoginReply, error)
 	LoginImageCaptcha(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ImageCaptchaReply, error)
 	BindImageCaptcha(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ImageCaptchaReply, error)
 	RegisterImageCaptcha(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ImageCaptchaReply, error)
@@ -109,14 +119,22 @@ type ServiceClient interface {
 	AddApp(ctx context.Context, in *AddAppRequest, opts ...grpc.CallOption) (*AddAppReply, error)
 	UpdateApp(ctx context.Context, in *UpdateAppRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteApp(ctx context.Context, in *DeleteAppRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	GetAppInterfaceTree(ctx context.Context, in *GetAppInterfaceTreeRequest, opts ...grpc.CallOption) (*GetAppInterfaceTreeReply, error)
+	AddAppInterface(ctx context.Context, in *AddAppInterfaceRequest, opts ...grpc.CallOption) (*AddAppInterfaceReply, error)
+	UpdateAppInterface(ctx context.Context, in *UpdateAppInterfaceRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	DeleteAppInterface(ctx context.Context, in *DeleteAppInterfaceRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	AllExtraFieldType(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AllExtraFieldTypeReply, error)
 	PageExtraField(ctx context.Context, in *PageExtraFieldRequest, opts ...grpc.CallOption) (*PageExtraFieldReply, error)
+	CurrentExtraField(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CurrentExtraFieldReply, error)
 	AddExtraField(ctx context.Context, in *AddExtraFieldRequest, opts ...grpc.CallOption) (*AddExtraFieldReply, error)
 	UpdateExtraField(ctx context.Context, in *UpdateExtraFieldRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteExtraField(ctx context.Context, in *DeleteExtraFieldRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	AllLoginPlatform(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AllLoginPlatformReply, error)
+	GetSimpleUser(ctx context.Context, in *GetSimpleUserRequest, opts ...grpc.CallOption) (*SimpleUser, error)
+	GetBaseUser(ctx context.Context, in *GetBaseUserRequest, opts ...grpc.CallOption) (*BaseUser, error)
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*User, error)
 	GetCurrentUser(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*User, error)
+	UpdateCurrentUser(ctx context.Context, in *UpdateCurrentUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	PageUser(ctx context.Context, in *PageUserRequest, opts ...grpc.CallOption) (*PageUserReply, error)
 	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserReply, error)
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
@@ -137,6 +155,15 @@ type serviceClient struct {
 
 func NewServiceClient(cc grpc.ClientConnInterface) ServiceClient {
 	return &serviceClient{cc}
+}
+
+func (c *serviceClient) RefreshToken(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*LoginReply, error) {
+	out := new(LoginReply)
+	err := c.cc.Invoke(ctx, Service_RefreshToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *serviceClient) LoginImageCaptcha(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ImageCaptchaReply, error) {
@@ -436,6 +463,42 @@ func (c *serviceClient) DeleteApp(ctx context.Context, in *DeleteAppRequest, opt
 	return out, nil
 }
 
+func (c *serviceClient) GetAppInterfaceTree(ctx context.Context, in *GetAppInterfaceTreeRequest, opts ...grpc.CallOption) (*GetAppInterfaceTreeReply, error) {
+	out := new(GetAppInterfaceTreeReply)
+	err := c.cc.Invoke(ctx, Service_GetAppInterfaceTree_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) AddAppInterface(ctx context.Context, in *AddAppInterfaceRequest, opts ...grpc.CallOption) (*AddAppInterfaceReply, error) {
+	out := new(AddAppInterfaceReply)
+	err := c.cc.Invoke(ctx, Service_AddAppInterface_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) UpdateAppInterface(ctx context.Context, in *UpdateAppInterfaceRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_UpdateAppInterface_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) DeleteAppInterface(ctx context.Context, in *DeleteAppInterfaceRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_DeleteAppInterface_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *serviceClient) AllExtraFieldType(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AllExtraFieldTypeReply, error) {
 	out := new(AllExtraFieldTypeReply)
 	err := c.cc.Invoke(ctx, Service_AllExtraFieldType_FullMethodName, in, out, opts...)
@@ -448,6 +511,15 @@ func (c *serviceClient) AllExtraFieldType(ctx context.Context, in *emptypb.Empty
 func (c *serviceClient) PageExtraField(ctx context.Context, in *PageExtraFieldRequest, opts ...grpc.CallOption) (*PageExtraFieldReply, error) {
 	out := new(PageExtraFieldReply)
 	err := c.cc.Invoke(ctx, Service_PageExtraField_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) CurrentExtraField(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CurrentExtraFieldReply, error) {
+	out := new(CurrentExtraFieldReply)
+	err := c.cc.Invoke(ctx, Service_CurrentExtraField_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -490,6 +562,24 @@ func (c *serviceClient) AllLoginPlatform(ctx context.Context, in *emptypb.Empty,
 	return out, nil
 }
 
+func (c *serviceClient) GetSimpleUser(ctx context.Context, in *GetSimpleUserRequest, opts ...grpc.CallOption) (*SimpleUser, error) {
+	out := new(SimpleUser)
+	err := c.cc.Invoke(ctx, Service_GetSimpleUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) GetBaseUser(ctx context.Context, in *GetBaseUserRequest, opts ...grpc.CallOption) (*BaseUser, error) {
+	out := new(BaseUser)
+	err := c.cc.Invoke(ctx, Service_GetBaseUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *serviceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
 	err := c.cc.Invoke(ctx, Service_GetUser_FullMethodName, in, out, opts...)
@@ -502,6 +592,15 @@ func (c *serviceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ..
 func (c *serviceClient) GetCurrentUser(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*User, error) {
 	out := new(User)
 	err := c.cc.Invoke(ctx, Service_GetCurrentUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) UpdateCurrentUser(ctx context.Context, in *UpdateCurrentUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_UpdateCurrentUser_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -593,6 +692,7 @@ func (c *serviceClient) DeleteUserApp(ctx context.Context, in *DeleteUserAppRequ
 // All implementations must embed UnimplementedServiceServer
 // for forward compatibility
 type ServiceServer interface {
+	RefreshToken(context.Context, *emptypb.Empty) (*LoginReply, error)
 	LoginImageCaptcha(context.Context, *emptypb.Empty) (*ImageCaptchaReply, error)
 	BindImageCaptcha(context.Context, *emptypb.Empty) (*ImageCaptchaReply, error)
 	RegisterImageCaptcha(context.Context, *emptypb.Empty) (*ImageCaptchaReply, error)
@@ -626,14 +726,22 @@ type ServiceServer interface {
 	AddApp(context.Context, *AddAppRequest) (*AddAppReply, error)
 	UpdateApp(context.Context, *UpdateAppRequest) (*emptypb.Empty, error)
 	DeleteApp(context.Context, *DeleteAppRequest) (*emptypb.Empty, error)
+	GetAppInterfaceTree(context.Context, *GetAppInterfaceTreeRequest) (*GetAppInterfaceTreeReply, error)
+	AddAppInterface(context.Context, *AddAppInterfaceRequest) (*AddAppInterfaceReply, error)
+	UpdateAppInterface(context.Context, *UpdateAppInterfaceRequest) (*emptypb.Empty, error)
+	DeleteAppInterface(context.Context, *DeleteAppInterfaceRequest) (*emptypb.Empty, error)
 	AllExtraFieldType(context.Context, *emptypb.Empty) (*AllExtraFieldTypeReply, error)
 	PageExtraField(context.Context, *PageExtraFieldRequest) (*PageExtraFieldReply, error)
+	CurrentExtraField(context.Context, *emptypb.Empty) (*CurrentExtraFieldReply, error)
 	AddExtraField(context.Context, *AddExtraFieldRequest) (*AddExtraFieldReply, error)
 	UpdateExtraField(context.Context, *UpdateExtraFieldRequest) (*emptypb.Empty, error)
 	DeleteExtraField(context.Context, *DeleteExtraFieldRequest) (*emptypb.Empty, error)
 	AllLoginPlatform(context.Context, *emptypb.Empty) (*AllLoginPlatformReply, error)
+	GetSimpleUser(context.Context, *GetSimpleUserRequest) (*SimpleUser, error)
+	GetBaseUser(context.Context, *GetBaseUserRequest) (*BaseUser, error)
 	GetUser(context.Context, *GetUserRequest) (*User, error)
 	GetCurrentUser(context.Context, *emptypb.Empty) (*User, error)
+	UpdateCurrentUser(context.Context, *UpdateCurrentUserRequest) (*emptypb.Empty, error)
 	PageUser(context.Context, *PageUserRequest) (*PageUserReply, error)
 	AddUser(context.Context, *AddUserRequest) (*AddUserReply, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error)
@@ -653,6 +761,9 @@ type ServiceServer interface {
 type UnimplementedServiceServer struct {
 }
 
+func (UnimplementedServiceServer) RefreshToken(context.Context, *emptypb.Empty) (*LoginReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
+}
 func (UnimplementedServiceServer) LoginImageCaptcha(context.Context, *emptypb.Empty) (*ImageCaptchaReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LoginImageCaptcha not implemented")
 }
@@ -752,11 +863,26 @@ func (UnimplementedServiceServer) UpdateApp(context.Context, *UpdateAppRequest) 
 func (UnimplementedServiceServer) DeleteApp(context.Context, *DeleteAppRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteApp not implemented")
 }
+func (UnimplementedServiceServer) GetAppInterfaceTree(context.Context, *GetAppInterfaceTreeRequest) (*GetAppInterfaceTreeReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAppInterfaceTree not implemented")
+}
+func (UnimplementedServiceServer) AddAppInterface(context.Context, *AddAppInterfaceRequest) (*AddAppInterfaceReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddAppInterface not implemented")
+}
+func (UnimplementedServiceServer) UpdateAppInterface(context.Context, *UpdateAppInterfaceRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAppInterface not implemented")
+}
+func (UnimplementedServiceServer) DeleteAppInterface(context.Context, *DeleteAppInterfaceRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAppInterface not implemented")
+}
 func (UnimplementedServiceServer) AllExtraFieldType(context.Context, *emptypb.Empty) (*AllExtraFieldTypeReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AllExtraFieldType not implemented")
 }
 func (UnimplementedServiceServer) PageExtraField(context.Context, *PageExtraFieldRequest) (*PageExtraFieldReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PageExtraField not implemented")
+}
+func (UnimplementedServiceServer) CurrentExtraField(context.Context, *emptypb.Empty) (*CurrentExtraFieldReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CurrentExtraField not implemented")
 }
 func (UnimplementedServiceServer) AddExtraField(context.Context, *AddExtraFieldRequest) (*AddExtraFieldReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddExtraField not implemented")
@@ -770,11 +896,20 @@ func (UnimplementedServiceServer) DeleteExtraField(context.Context, *DeleteExtra
 func (UnimplementedServiceServer) AllLoginPlatform(context.Context, *emptypb.Empty) (*AllLoginPlatformReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AllLoginPlatform not implemented")
 }
+func (UnimplementedServiceServer) GetSimpleUser(context.Context, *GetSimpleUserRequest) (*SimpleUser, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetSimpleUser not implemented")
+}
+func (UnimplementedServiceServer) GetBaseUser(context.Context, *GetBaseUserRequest) (*BaseUser, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBaseUser not implemented")
+}
 func (UnimplementedServiceServer) GetUser(context.Context, *GetUserRequest) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
 func (UnimplementedServiceServer) GetCurrentUser(context.Context, *emptypb.Empty) (*User, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCurrentUser not implemented")
+}
+func (UnimplementedServiceServer) UpdateCurrentUser(context.Context, *UpdateCurrentUserRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCurrentUser not implemented")
 }
 func (UnimplementedServiceServer) PageUser(context.Context, *PageUserRequest) (*PageUserReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PageUser not implemented")
@@ -814,6 +949,24 @@ type UnsafeServiceServer interface {
 
 func RegisterServiceServer(s grpc.ServiceRegistrar, srv ServiceServer) {
 	s.RegisterService(&Service_ServiceDesc, srv)
+}
+
+func _Service_RefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).RefreshToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_RefreshToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).RefreshToken(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Service_LoginImageCaptcha_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -1410,6 +1563,78 @@ func _Service_DeleteApp_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Service_GetAppInterfaceTree_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAppInterfaceTreeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).GetAppInterfaceTree(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_GetAppInterfaceTree_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).GetAppInterfaceTree(ctx, req.(*GetAppInterfaceTreeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_AddAppInterface_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddAppInterfaceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).AddAppInterface(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_AddAppInterface_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).AddAppInterface(ctx, req.(*AddAppInterfaceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_UpdateAppInterface_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAppInterfaceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).UpdateAppInterface(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_UpdateAppInterface_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).UpdateAppInterface(ctx, req.(*UpdateAppInterfaceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_DeleteAppInterface_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAppInterfaceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).DeleteAppInterface(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_DeleteAppInterface_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).DeleteAppInterface(ctx, req.(*DeleteAppInterfaceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Service_AllExtraFieldType_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(emptypb.Empty)
 	if err := dec(in); err != nil {
@@ -1442,6 +1667,24 @@ func _Service_PageExtraField_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ServiceServer).PageExtraField(ctx, req.(*PageExtraFieldRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_CurrentExtraField_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).CurrentExtraField(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_CurrentExtraField_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).CurrentExtraField(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1518,6 +1761,42 @@ func _Service_AllLoginPlatform_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Service_GetSimpleUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetSimpleUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).GetSimpleUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_GetSimpleUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).GetSimpleUser(ctx, req.(*GetSimpleUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_GetBaseUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBaseUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).GetBaseUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_GetBaseUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).GetBaseUser(ctx, req.(*GetBaseUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Service_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetUserRequest)
 	if err := dec(in); err != nil {
@@ -1550,6 +1829,24 @@ func _Service_GetCurrentUser_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ServiceServer).GetCurrentUser(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_UpdateCurrentUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCurrentUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).UpdateCurrentUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_UpdateCurrentUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).UpdateCurrentUser(ctx, req.(*UpdateCurrentUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1724,6 +2021,10 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*ServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "RefreshToken",
+			Handler:    _Service_RefreshToken_Handler,
+		},
+		{
 			MethodName: "LoginImageCaptcha",
 			Handler:    _Service_LoginImageCaptcha_Handler,
 		},
@@ -1856,12 +2157,32 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Service_DeleteApp_Handler,
 		},
 		{
+			MethodName: "GetAppInterfaceTree",
+			Handler:    _Service_GetAppInterfaceTree_Handler,
+		},
+		{
+			MethodName: "AddAppInterface",
+			Handler:    _Service_AddAppInterface_Handler,
+		},
+		{
+			MethodName: "UpdateAppInterface",
+			Handler:    _Service_UpdateAppInterface_Handler,
+		},
+		{
+			MethodName: "DeleteAppInterface",
+			Handler:    _Service_DeleteAppInterface_Handler,
+		},
+		{
 			MethodName: "AllExtraFieldType",
 			Handler:    _Service_AllExtraFieldType_Handler,
 		},
 		{
 			MethodName: "PageExtraField",
 			Handler:    _Service_PageExtraField_Handler,
+		},
+		{
+			MethodName: "CurrentExtraField",
+			Handler:    _Service_CurrentExtraField_Handler,
 		},
 		{
 			MethodName: "AddExtraField",
@@ -1880,12 +2201,24 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Service_AllLoginPlatform_Handler,
 		},
 		{
+			MethodName: "GetSimpleUser",
+			Handler:    _Service_GetSimpleUser_Handler,
+		},
+		{
+			MethodName: "GetBaseUser",
+			Handler:    _Service_GetBaseUser_Handler,
+		},
+		{
 			MethodName: "GetUser",
 			Handler:    _Service_GetUser_Handler,
 		},
 		{
 			MethodName: "GetCurrentUser",
 			Handler:    _Service_GetCurrentUser_Handler,
+		},
+		{
+			MethodName: "UpdateCurrentUser",
+			Handler:    _Service_UpdateCurrentUser_Handler,
 		},
 		{
 			MethodName: "PageUser",

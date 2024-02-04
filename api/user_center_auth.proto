@@ -92,5 +92,6 @@ message EmailCaptchaReply {
 }
 
 message AuthRequest{
-  uint32 app_id = 1[(validate.rules).uint32 = {gt:0}];
+  string path = 1[(validate.rules).string = {min_len:0}];
+  string method = 2[(validate.rules).string = {min_len:0}];
 }

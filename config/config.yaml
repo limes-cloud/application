@@ -1,27 +1,28 @@
+
+env: TEST
 server:
   http:
-    addr: 0.0.0.0:7004
-    timeout: 1s
+    addr: 127.0.0.1:7004
+    timeout: 10s
     marshal:
       emitUnpopulated: true
       useProtoNames: true
   grpc:
-    addr: 0.0.0.0:8004
-    timeout: 1s
-
+    addr: 127.0.0.1:8004
+    timeout: 10s
 log:
-  level: 0 #日志输出等级
+  level: 0
   output:
-    - stdout # stdout:控制台输出，k8s日志收集
-    - file # file:输出到文件
-  file: #output存在file时此配置才可生效
-    name: ./tmp/runtime/output.log #日志存放地址
-    maxSize: 1 #日志文件最大容量,单位m
-    maxBackup: 5 #日志文件最多保存个数
-    maxAge: 1 #保留就文件的最大天数,单位天
-    compress: false #是否进行压缩归档
+    - stdout
+    - file
+  file:
+    name: ./tmp/runtime/output.log
+    maxSize: 1
+    maxBackup: 5
+    maxAge: 1
+    compress: false
 database:
-  system: #数据库实例名称,如有多个数据库可新增
+  system:
     enable: true #是否启用数据库
     drive: mysql #数据库类型
     autoCreate: true #是否自动创建数据库
@@ -36,16 +37,16 @@ database:
       transformError:
         enable: true
       maxLifetime: 2h #最大生存时间
-      maxOpenConn: 10 #最大连接数量
+      maxOpenConn: 20 #最大连接数量
       maxIdleConn: 10 #最大空闲数量
       logLevel: 4 #日志等级
       slowThreshold: 2s #慢sql阈值
 redis:
-  cache: #redis实例名称,如有多个redis可新增
-    enable: true #是否启用redis
-    host: 127.0.0.1:6379 #redis地址
-    username:  #连接账号
-    password:  #连接密码
+  cache:
+    enable: true
+    host: 127.0.0.1:6379
+    username:
+    password:
 captcha:
   loginImage:
     type: image
@@ -83,7 +84,6 @@ captcha:
     expire: 180s
     redis: cache
     template: login
-    refresh: true
   bindEmail:
     type: email
     length: 6
@@ -96,13 +96,6 @@ captcha:
     expire: 180s
     redis: cache
     template: register
-    refresh: true
-  changePassword:
-    type: email
-    length: 6
-    expire: 180s
-    redis: cache
-    template: bin
 loader:
   password: static/cert/password.pem
 email:
@@ -123,30 +116,21 @@ email:
   name: 青岑云
   host: smtp.qq.com
   port: 25
-  password: fyudafdzqmhwbfbd
+  password: xxx
 jwt:
   redis: cache
-  secret: limeschool
-  expire: 2h
-  renewal: 20s
   prefix: /user-center/admin/
+  secret: limes-cloud-client-test
+  expire: 2h
+  renewal: 360s
+  whitelist: {"GET:/user-center/client/v1/agreement":true,"GET:/user-center/client/v1/app":true,"GET:/user-center/client/v1/bind/image-captcha":true,"GET:/user-center/client/v1/login/image-captcha":true,"GET:/user-center/client/v1/register/image-captcha":true,"GET:/user-center/client/v1/register/username/check":true,"GET:/user-center/client/v1/scene":true,"POST:/user-center/client/v1/bind/email":true,"POST:/user-center/client/v1/bind/email-captcha":true,"POST:/user-center/client/v1/bind/password":true,"POST:/user-center/client/v1/login/email":true,"POST:/user-center/client/v1/login/email-captcha":true,"POST:/user-center/client/v1/login/password":true,"POST:/user-center/client/v1/register/email":true,"POST:/user-center/client/v1/register/email-captcha":true,"POST:/user-center/client/v1/register/password":true}
+authentication:
+  db: system
+  redis: cache
+  roleKey: app_keyword
   whitelist:
-    GET:/user-center/client/v1/scene: true
-    GET:/user-center/client/v1/agreement: true
-    GET:/user-center/client/v1/app: true
-    GET:/user-center/client/v1/login/image-captcha: true
-    GET:/user-center/client/v1/bind/image-captcha: true
-    GET:/user-center/client/v1/register/image-captcha: true
-    GET:/user-center/client/v1/register/username/check: true
-    POST:/user-center/client/v1/login/email-captcha: true
-    POST:/user-center/client/v1/bind/email-captcha: true
-    POST:/user-center/client/v1/register/email-captcha: true
-    POST:/user-center/client/v1/login/email: true
-    POST:/user-center/client/v1/bind/email: true
-    POST:/user-center/client/v1/register/email: true
-    POST:/user-center/client/v1/login/password: true
-    POST:/user-center/client/v1/bind/password: true
-    POST:/user-center/client/v1/register/password: true
+    GET:/user-center/client/v1/user: true
+    PUT:/user-center/client/v1/user: true
 business:
   service:
     resource: 127.0.0.1:8003

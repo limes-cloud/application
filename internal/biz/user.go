@@ -3,10 +3,11 @@ package biz
 import (
 	"github.com/limes-cloud/kratosx"
 	ktypes "github.com/limes-cloud/kratosx/types"
+	"google.golang.org/protobuf/proto"
+
 	v1 "github.com/limes-cloud/user-center/api/v1"
 	"github.com/limes-cloud/user-center/config"
 	"github.com/limes-cloud/user-center/internal/biz/types"
-	"google.golang.org/protobuf/proto"
 )
 
 type User struct {
@@ -41,6 +42,7 @@ type UserRepo interface {
 	Create(ctx kratosx.Context, user *User) (uint32, error)
 	Import(ctx kratosx.Context, list []*User) error
 	Get(ctx kratosx.Context, id uint32) (*User, error)
+	GetBase(ctx kratosx.Context, id uint32) (*User, error)
 	GetByPhone(ctx kratosx.Context, phone string) (*User, error)
 	GetByEmail(ctx kratosx.Context, email string) (*User, error)
 	GetByUsername(ctx kratosx.Context, un string) (*User, error)
@@ -59,6 +61,15 @@ type UserUseCase struct {
 
 func NewUserUseCase(config *config.Config, repo UserRepo) *UserUseCase {
 	return &UserUseCase{config: config, repo: repo}
+}
+
+// GetBase 获取用户基础信息
+func (u *UserUseCase) GetBase(ctx kratosx.Context, id uint32) (*User, error) {
+	user, err := u.repo.GetBase(ctx, id)
+	if err != nil {
+		return nil, v1.DatabaseErrorFormat(err.Error())
+	}
+	return user, nil
 }
 
 // Get 获取用户信息
@@ -183,10 +194,9 @@ func (u *UserUseCase) Disable(ctx kratosx.Context, id uint32, desc string) error
 func (u *UserUseCase) Offline(ctx kratosx.Context, id uint32) error {
 	tokens := u.repo.GetAllToken(ctx, id)
 
-	//将用户下线
+	// 将用户下线
 	for _, token := range tokens {
 		ctx.JWT().AddBlacklist(token)
-
 	}
 	return nil
 }

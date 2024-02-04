@@ -3,9 +3,9 @@ package migrate
 import (
 	"github.com/limes-cloud/kratosx"
 	gte "github.com/limes-cloud/kratosx/library/db/gormtranserror"
-	"github.com/limes-cloud/user-center/internal/biz"
 
 	"github.com/limes-cloud/user-center/config"
+	"github.com/limes-cloud/user-center/internal/biz"
 )
 
 func IsInit(ctx kratosx.Context) bool {
@@ -26,6 +26,7 @@ func Init(ctx kratosx.Context, _ *config.Config) {
 	_ = db.Set("gorm:table_options", "COMMENT='授权信息' ENGINE=InnoDB CHARSET=utf8mb4").AutoMigrate(biz.Auth{})
 	_ = db.Set("gorm:table_options", "COMMENT='授权渠道' ENGINE=InnoDB CHARSET=utf8mb4").AutoMigrate(biz.Channel{})
 	_ = db.Set("gorm:table_options", "COMMENT='应用信息' ENGINE=InnoDB CHARSET=utf8mb4").AutoMigrate(biz.App{})
+	_ = db.Set("gorm:table_options", "COMMENT='应用接口' ENGINE=InnoDB CHARSET=utf8mb4").AutoMigrate(biz.AppInterface{})
 	_ = db.Set("gorm:table_options", "COMMENT='应用渠道' ENGINE=InnoDB CHARSET=utf8mb4").AutoMigrate(biz.AppChannel{})
 	_ = db.Set("gorm:table_options", "COMMENT='字段信息' ENGINE=InnoDB CHARSET=utf8mb4").AutoMigrate(biz.ExtraField{})
 	_ = db.Set("gorm:table_options", "COMMENT='用户信息' ENGINE=InnoDB CHARSET=utf8mb4").AutoMigrate(biz.User{})

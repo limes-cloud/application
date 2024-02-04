@@ -5,16 +5,18 @@ import (
 )
 
 const (
-	_uid = "user_id"
-	_aid = "app_id"
-	_cid = "channel_id"
+	_uid  = "user_id"
+	_aid  = "app_id"
+	_akey = "app_keyword"
+	_cid  = "channel_id"
 )
 
-func New(uid, aid, cid uint32) map[string]any {
+func New(uid, aid, cid uint32, appKey string) map[string]any {
 	return map[string]any{
-		_uid: uid,
-		_aid: aid,
-		_cid: cid,
+		_uid:  uid,
+		_aid:  aid,
+		_cid:  cid,
+		_akey: appKey,
 	}
 }
 
@@ -32,4 +34,12 @@ func AppID(ctx kratosx.Context) uint32 {
 		return 0
 	}
 	return uint32(m[_aid].(float64))
+}
+
+func AppKeyword(ctx kratosx.Context) string {
+	m, err := ctx.JWT().ParseMapClaims(ctx)
+	if err != nil {
+		return ""
+	}
+	return m[_akey].(string)
 }

@@ -52,5 +52,6 @@ type CaptchaResponse struct {
 }
 
 type AuthRequest struct {
-	AppID uint32
+	Path   string
+	Method string
 }

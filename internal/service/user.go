@@ -35,9 +35,6 @@ func (s *Service) GetUser(ctx context.Context, in *v1.GetUserRequest) (*v1.User,
 	case *v1.GetUserRequest_Username:
 		cond := in.Condition.(*v1.GetUserRequest_Username)
 		user, err = s.user.GetByPhone(kratosx.MustContext(ctx), cond.Username)
-	case *v1.GetUserRequest_IdCard:
-		cond := in.Condition.(*v1.GetUserRequest_IdCard)
-		user, err = s.user.GetByPhone(kratosx.MustContext(ctx), cond.IdCard)
 	default:
 		user, err = nil, v1.NotFoundError()
 	}
@@ -61,6 +58,12 @@ func (s *Service) transformUserReply(ctx context.Context, user *biz.User, app *b
 
 	// 请求资源中心,错了直接忽略，不影响主流程
 	resource, rer := service.NewResource(ctx, s.conf.Service.Resource)
+
+	if reply.Avatar != "" {
+		reply.Resource, _ = resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{
+			Sha: reply.Avatar,
+		})
+	}
 
 	// 组装数据apps
 	uaSet := map[uint32]*biz.UserApp{}
@@ -131,6 +134,30 @@ func (s *Service) transformUserReply(ctx context.Context, user *biz.User, app *b
 	return &reply, nil
 }
 
+func (s *Service) GetSimpleUser(ctx context.Context, in *v1.GetSimpleUserRequest) (*v1.SimpleUser, error) {
+	user, err := s.user.GetBase(kratosx.MustContext(ctx), in.Id)
+	if err != nil {
+		return nil, err
+	}
+	reply := v1.SimpleUser{}
+	if err := copier.Copy(&reply, user); err != nil {
+		return nil, v1.TransformError()
+	}
+	return &reply, nil
+}
+
+func (s *Service) GetBaseUser(ctx context.Context, in *v1.GetBaseUserRequest) (*v1.BaseUser, error) {
+	user, err := s.user.GetBase(kratosx.MustContext(ctx), in.Id)
+	if err != nil {
+		return nil, err
+	}
+	reply := v1.BaseUser{}
+	if err := copier.Copy(&reply, user); err != nil {
+		return nil, v1.TransformError()
+	}
+	return &reply, nil
+}
+
 func (s *Service) GetCurrentUser(ctx context.Context, _ *empty.Empty) (*v1.User, error) {
 	kCtx := kratosx.MustContext(ctx)
 	user, err := s.user.Get(kCtx, md.UserID(kratosx.MustContext(ctx)))
@@ -145,6 +172,33 @@ func (s *Service) GetCurrentUser(ctx context.Context, _ *empty.Empty) (*v1.User,
 	}
 
 	return s.transformUserReply(ctx, user, app)
+}
+
+func (s *Service) UpdateCurrentUser(ctx context.Context, in *v1.UpdateCurrentUserRequest) (*empty.Empty, error) {
+	user := biz.User{}
+	if err := copier.Copy(&user, in); err != nil {
+		return nil, v1.TransformError()
+	}
+
+	kCtx := kratosx.MustContext(ctx)
+	user.ID = md.UserID(kCtx)
+
+	// 转换extra
+	efs := s.extraField.FiledTypeSet(kCtx)
+	fd := field.New()
+
+	for key, value := range in.Extra {
+		if efs[key] == nil {
+			continue
+		}
+		tp := fd.GetType(efs[key].Type)
+		user.UserExtras = append(user.UserExtras, &biz.UserExtra{
+			Keyword: key,
+			Value:   tp.ToString(value),
+		})
+	}
+
+	return nil, s.user.Update(kratosx.MustContext(ctx), &user)
 }
 
 func (s *Service) PageUser(ctx context.Context, in *v1.PageUserRequest) (*v1.PageUserReply, error) {

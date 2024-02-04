@@ -22,6 +22,7 @@ const _ = http.SupportPackageIsVersion1
 
 const OperationServiceAddAgreement = "/user_center.Service/AddAgreement"
 const OperationServiceAddApp = "/user_center.Service/AddApp"
+const OperationServiceAddAppInterface = "/user_center.Service/AddAppInterface"
 const OperationServiceAddChannel = "/user_center.Service/AddChannel"
 const OperationServiceAddExtraField = "/user_center.Service/AddExtraField"
 const OperationServiceAddScene = "/user_center.Service/AddScene"
@@ -35,8 +36,10 @@ const OperationServiceBindByEmail = "/user_center.Service/BindByEmail"
 const OperationServiceBindByPassword = "/user_center.Service/BindByPassword"
 const OperationServiceBindEmailCaptcha = "/user_center.Service/BindEmailCaptcha"
 const OperationServiceBindImageCaptcha = "/user_center.Service/BindImageCaptcha"
+const OperationServiceCurrentExtraField = "/user_center.Service/CurrentExtraField"
 const OperationServiceDeleteAgreement = "/user_center.Service/DeleteAgreement"
 const OperationServiceDeleteApp = "/user_center.Service/DeleteApp"
+const OperationServiceDeleteAppInterface = "/user_center.Service/DeleteAppInterface"
 const OperationServiceDeleteChannel = "/user_center.Service/DeleteChannel"
 const OperationServiceDeleteExtraField = "/user_center.Service/DeleteExtraField"
 const OperationServiceDeleteScene = "/user_center.Service/DeleteScene"
@@ -46,6 +49,7 @@ const OperationServiceDisableUser = "/user_center.Service/DisableUser"
 const OperationServiceEnableUser = "/user_center.Service/EnableUser"
 const OperationServiceGetAgreement = "/user_center.Service/GetAgreement"
 const OperationServiceGetAppByKeyword = "/user_center.Service/GetAppByKeyword"
+const OperationServiceGetAppInterfaceTree = "/user_center.Service/GetAppInterfaceTree"
 const OperationServiceGetCurrentUser = "/user_center.Service/GetCurrentUser"
 const OperationServiceGetSceneByKeyword = "/user_center.Service/GetSceneByKeyword"
 const OperationServiceGetUser = "/user_center.Service/GetUser"
@@ -59,6 +63,7 @@ const OperationServicePageApp = "/user_center.Service/PageApp"
 const OperationServicePageExtraField = "/user_center.Service/PageExtraField"
 const OperationServicePageScene = "/user_center.Service/PageScene"
 const OperationServicePageUser = "/user_center.Service/PageUser"
+const OperationServiceRefreshToken = "/user_center.Service/RefreshToken"
 const OperationServiceRegisterByEmail = "/user_center.Service/RegisterByEmail"
 const OperationServiceRegisterByPassword = "/user_center.Service/RegisterByPassword"
 const OperationServiceRegisterEmailCaptcha = "/user_center.Service/RegisterEmailCaptcha"
@@ -66,7 +71,9 @@ const OperationServiceRegisterImageCaptcha = "/user_center.Service/RegisterImage
 const OperationServiceRegisterUsernameCheck = "/user_center.Service/RegisterUsernameCheck"
 const OperationServiceUpdateAgreement = "/user_center.Service/UpdateAgreement"
 const OperationServiceUpdateApp = "/user_center.Service/UpdateApp"
+const OperationServiceUpdateAppInterface = "/user_center.Service/UpdateAppInterface"
 const OperationServiceUpdateChannel = "/user_center.Service/UpdateChannel"
+const OperationServiceUpdateCurrentUser = "/user_center.Service/UpdateCurrentUser"
 const OperationServiceUpdateExtraField = "/user_center.Service/UpdateExtraField"
 const OperationServiceUpdateScene = "/user_center.Service/UpdateScene"
 const OperationServiceUpdateUser = "/user_center.Service/UpdateUser"
@@ -74,6 +81,7 @@ const OperationServiceUpdateUser = "/user_center.Service/UpdateUser"
 type ServiceHTTPServer interface {
 	AddAgreement(context.Context, *AddAgreementRequest) (*AddAgreementReply, error)
 	AddApp(context.Context, *AddAppRequest) (*AddAppReply, error)
+	AddAppInterface(context.Context, *AddAppInterfaceRequest) (*AddAppInterfaceReply, error)
 	AddChannel(context.Context, *AddChannelRequest) (*AddChannelReply, error)
 	AddExtraField(context.Context, *AddExtraFieldRequest) (*AddExtraFieldReply, error)
 	AddScene(context.Context, *AddSceneRequest) (*AddSceneReply, error)
@@ -87,8 +95,10 @@ type ServiceHTTPServer interface {
 	BindByPassword(context.Context, *LoginByPasswordRequest) (*LoginReply, error)
 	BindEmailCaptcha(context.Context, *BindEmailCaptchaRequest) (*EmailCaptchaReply, error)
 	BindImageCaptcha(context.Context, *emptypb.Empty) (*ImageCaptchaReply, error)
+	CurrentExtraField(context.Context, *emptypb.Empty) (*CurrentExtraFieldReply, error)
 	DeleteAgreement(context.Context, *DeleteAgreementRequest) (*emptypb.Empty, error)
 	DeleteApp(context.Context, *DeleteAppRequest) (*emptypb.Empty, error)
+	DeleteAppInterface(context.Context, *DeleteAppInterfaceRequest) (*emptypb.Empty, error)
 	DeleteChannel(context.Context, *DeleteChannelRequest) (*emptypb.Empty, error)
 	DeleteExtraField(context.Context, *DeleteExtraFieldRequest) (*emptypb.Empty, error)
 	DeleteScene(context.Context, *DeleteSceneRequest) (*emptypb.Empty, error)
@@ -100,6 +110,7 @@ type ServiceHTTPServer interface {
 	EnableUser(context.Context, *EnableUserRequest) (*emptypb.Empty, error)
 	GetAgreement(context.Context, *GetAgreementRequest) (*Agreement, error)
 	GetAppByKeyword(context.Context, *GetAppByKeywordRequest) (*App, error)
+	GetAppInterfaceTree(context.Context, *GetAppInterfaceTreeRequest) (*GetAppInterfaceTreeReply, error)
 	GetCurrentUser(context.Context, *emptypb.Empty) (*User, error)
 	GetSceneByKeyword(context.Context, *GetSceneByKeywordRequest) (*Scene, error)
 	GetUser(context.Context, *GetUserRequest) (*User, error)
@@ -114,6 +125,7 @@ type ServiceHTTPServer interface {
 	PageExtraField(context.Context, *PageExtraFieldRequest) (*PageExtraFieldReply, error)
 	PageScene(context.Context, *PageSceneRequest) (*PageSceneReply, error)
 	PageUser(context.Context, *PageUserRequest) (*PageUserReply, error)
+	RefreshToken(context.Context, *emptypb.Empty) (*LoginReply, error)
 	RegisterByEmail(context.Context, *RegisterByEmailRequest) (*RegisterReply, error)
 	RegisterByPassword(context.Context, *RegisterByPasswordRequest) (*RegisterReply, error)
 	RegisterEmailCaptcha(context.Context, *RegisterEmailCaptchaRequest) (*EmailCaptchaReply, error)
@@ -121,7 +133,9 @@ type ServiceHTTPServer interface {
 	RegisterUsernameCheck(context.Context, *RegisterUsernameCheckRequest) (*RegisterUsernameCheckReply, error)
 	UpdateAgreement(context.Context, *UpdateAgreementRequest) (*emptypb.Empty, error)
 	UpdateApp(context.Context, *UpdateAppRequest) (*emptypb.Empty, error)
+	UpdateAppInterface(context.Context, *UpdateAppInterfaceRequest) (*emptypb.Empty, error)
 	UpdateChannel(context.Context, *UpdateChannelRequest) (*emptypb.Empty, error)
+	UpdateCurrentUser(context.Context, *UpdateCurrentUserRequest) (*emptypb.Empty, error)
 	UpdateExtraField(context.Context, *UpdateExtraFieldRequest) (*emptypb.Empty, error)
 	UpdateScene(context.Context, *UpdateSceneRequest) (*emptypb.Empty, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error)
@@ -129,6 +143,7 @@ type ServiceHTTPServer interface {
 
 func RegisterServiceHTTPServer(s *http.Server, srv ServiceHTTPServer) {
 	r := s.Route("/")
+	r.GET("/user-center/client/v1/refresh-token", _Service_RefreshToken0_HTTP_Handler(srv))
 	r.GET("/user-center/client/v1/login/image-captcha", _Service_LoginImageCaptcha0_HTTP_Handler(srv))
 	r.GET("/user-center/client/v1/bind/image-captcha", _Service_BindImageCaptcha0_HTTP_Handler(srv))
 	r.GET("/user-center/client/v1/register/image-captcha", _Service_RegisterImageCaptcha0_HTTP_Handler(srv))
@@ -165,14 +180,20 @@ func RegisterServiceHTTPServer(s *http.Server, srv ServiceHTTPServer) {
 	r.POST("/user-center/admin/v1/app", _Service_AddApp0_HTTP_Handler(srv))
 	r.PUT("/user-center/admin/v1/app", _Service_UpdateApp0_HTTP_Handler(srv))
 	r.DELETE("/user-center/admin/v1/app", _Service_DeleteApp0_HTTP_Handler(srv))
+	r.GET("/user-center/admin/v1/interfaces", _Service_GetAppInterfaceTree0_HTTP_Handler(srv))
+	r.POST("/user-center/admin/v1/interface", _Service_AddAppInterface0_HTTP_Handler(srv))
+	r.PUT("/user-center/admin/v1/interface", _Service_UpdateAppInterface0_HTTP_Handler(srv))
+	r.DELETE("/user-center/admin/v1/interface", _Service_DeleteAppInterface0_HTTP_Handler(srv))
 	r.GET("/user-center/admin/v1/extra-field/types", _Service_AllExtraFieldType0_HTTP_Handler(srv))
 	r.GET("/user-center/admin/v1/extra-fields", _Service_PageExtraField0_HTTP_Handler(srv))
+	r.GET("/user-center/client/v1/extra-fields", _Service_CurrentExtraField0_HTTP_Handler(srv))
 	r.POST("/user-center/admin/v1/extra-field", _Service_AddExtraField0_HTTP_Handler(srv))
 	r.PUT("/user-center/admin/v1/extra-field", _Service_UpdateExtraField0_HTTP_Handler(srv))
 	r.DELETE("/user-center/admin/v1/extra-field", _Service_DeleteExtraField0_HTTP_Handler(srv))
 	r.GET("/user-center/admin/v1/login/platforms", _Service_AllLoginPlatform0_HTTP_Handler(srv))
 	r.GET("/user-center/admin/v1/user", _Service_GetUser0_HTTP_Handler(srv))
 	r.GET("/user-center/client/v1/user", _Service_GetCurrentUser0_HTTP_Handler(srv))
+	r.PUT("/user-center/client/v1/user", _Service_UpdateCurrentUser0_HTTP_Handler(srv))
 	r.GET("/user-center/admin/v1/users", _Service_PageUser0_HTTP_Handler(srv))
 	r.POST("/user-center/admin/v1/user", _Service_AddUser0_HTTP_Handler(srv))
 	r.PUT("/user-center/admin/v1/user", _Service_UpdateUser0_HTTP_Handler(srv))
@@ -182,6 +203,25 @@ func RegisterServiceHTTPServer(s *http.Server, srv ServiceHTTPServer) {
 	r.POST("/user-center/admin/v1/user/offline", _Service_OfflineUser0_HTTP_Handler(srv))
 	r.POST("/user-center/admin/v1/user/app", _Service_AddUserApp0_HTTP_Handler(srv))
 	r.DELETE("/user-center/admin/v1/user/app", _Service_DeleteUserApp0_HTTP_Handler(srv))
+}
+
+func _Service_RefreshToken0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in emptypb.Empty
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationServiceRefreshToken)
+		h := ctx.Middleware(func(ctx context.Context, req any) (any, error) {
+			return srv.RefreshToken(ctx, req.(*emptypb.Empty))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*LoginReply)
+		return ctx.Result(200, reply)
+	}
 }
 
 func _Service_LoginImageCaptcha0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context) error {
@@ -919,6 +959,88 @@ func _Service_DeleteApp0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Conte
 	}
 }
 
+func _Service_GetAppInterfaceTree0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetAppInterfaceTreeRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationServiceGetAppInterfaceTree)
+		h := ctx.Middleware(func(ctx context.Context, req any) (any, error) {
+			return srv.GetAppInterfaceTree(ctx, req.(*GetAppInterfaceTreeRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetAppInterfaceTreeReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Service_AddAppInterface0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in AddAppInterfaceRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationServiceAddAppInterface)
+		h := ctx.Middleware(func(ctx context.Context, req any) (any, error) {
+			return srv.AddAppInterface(ctx, req.(*AddAppInterfaceRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*AddAppInterfaceReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Service_UpdateAppInterface0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UpdateAppInterfaceRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationServiceUpdateAppInterface)
+		h := ctx.Middleware(func(ctx context.Context, req any) (any, error) {
+			return srv.UpdateAppInterface(ctx, req.(*UpdateAppInterfaceRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Service_DeleteAppInterface0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in DeleteAppInterfaceRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationServiceDeleteAppInterface)
+		h := ctx.Middleware(func(ctx context.Context, req any) (any, error) {
+			return srv.DeleteAppInterface(ctx, req.(*DeleteAppInterfaceRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
+		return ctx.Result(200, reply)
+	}
+}
+
 func _Service_AllExtraFieldType0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in emptypb.Empty
@@ -953,6 +1075,25 @@ func _Service_PageExtraField0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.
 			return err
 		}
 		reply := out.(*PageExtraFieldReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Service_CurrentExtraField0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in emptypb.Empty
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationServiceCurrentExtraField)
+		h := ctx.Middleware(func(ctx context.Context, req any) (any, error) {
+			return srv.CurrentExtraField(ctx, req.(*emptypb.Empty))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*CurrentExtraFieldReply)
 		return ctx.Result(200, reply)
 	}
 }
@@ -1073,6 +1214,28 @@ func _Service_GetCurrentUser0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.
 			return err
 		}
 		reply := out.(*User)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Service_UpdateCurrentUser0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UpdateCurrentUserRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationServiceUpdateCurrentUser)
+		h := ctx.Middleware(func(ctx context.Context, req any) (any, error) {
+			return srv.UpdateCurrentUser(ctx, req.(*UpdateCurrentUserRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
@@ -1269,6 +1432,7 @@ func _Service_DeleteUserApp0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.C
 type ServiceHTTPClient interface {
 	AddAgreement(ctx context.Context, req *AddAgreementRequest, opts ...http.CallOption) (rsp *AddAgreementReply, err error)
 	AddApp(ctx context.Context, req *AddAppRequest, opts ...http.CallOption) (rsp *AddAppReply, err error)
+	AddAppInterface(ctx context.Context, req *AddAppInterfaceRequest, opts ...http.CallOption) (rsp *AddAppInterfaceReply, err error)
 	AddChannel(ctx context.Context, req *AddChannelRequest, opts ...http.CallOption) (rsp *AddChannelReply, err error)
 	AddExtraField(ctx context.Context, req *AddExtraFieldRequest, opts ...http.CallOption) (rsp *AddExtraFieldReply, err error)
 	AddScene(ctx context.Context, req *AddSceneRequest, opts ...http.CallOption) (rsp *AddSceneReply, err error)
@@ -1282,8 +1446,10 @@ type ServiceHTTPClient interface {
 	BindByPassword(ctx context.Context, req *LoginByPasswordRequest, opts ...http.CallOption) (rsp *LoginReply, err error)
 	BindEmailCaptcha(ctx context.Context, req *BindEmailCaptchaRequest, opts ...http.CallOption) (rsp *EmailCaptchaReply, err error)
 	BindImageCaptcha(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *ImageCaptchaReply, err error)
+	CurrentExtraField(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *CurrentExtraFieldReply, err error)
 	DeleteAgreement(ctx context.Context, req *DeleteAgreementRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	DeleteApp(ctx context.Context, req *DeleteAppRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	DeleteAppInterface(ctx context.Context, req *DeleteAppInterfaceRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	DeleteChannel(ctx context.Context, req *DeleteChannelRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	DeleteExtraField(ctx context.Context, req *DeleteExtraFieldRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	DeleteScene(ctx context.Context, req *DeleteSceneRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
@@ -1293,6 +1459,7 @@ type ServiceHTTPClient interface {
 	EnableUser(ctx context.Context, req *EnableUserRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	GetAgreement(ctx context.Context, req *GetAgreementRequest, opts ...http.CallOption) (rsp *Agreement, err error)
 	GetAppByKeyword(ctx context.Context, req *GetAppByKeywordRequest, opts ...http.CallOption) (rsp *App, err error)
+	GetAppInterfaceTree(ctx context.Context, req *GetAppInterfaceTreeRequest, opts ...http.CallOption) (rsp *GetAppInterfaceTreeReply, err error)
 	GetCurrentUser(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *User, err error)
 	GetSceneByKeyword(ctx context.Context, req *GetSceneByKeywordRequest, opts ...http.CallOption) (rsp *Scene, err error)
 	GetUser(ctx context.Context, req *GetUserRequest, opts ...http.CallOption) (rsp *User, err error)
@@ -1306,6 +1473,7 @@ type ServiceHTTPClient interface {
 	PageExtraField(ctx context.Context, req *PageExtraFieldRequest, opts ...http.CallOption) (rsp *PageExtraFieldReply, err error)
 	PageScene(ctx context.Context, req *PageSceneRequest, opts ...http.CallOption) (rsp *PageSceneReply, err error)
 	PageUser(ctx context.Context, req *PageUserRequest, opts ...http.CallOption) (rsp *PageUserReply, err error)
+	RefreshToken(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *LoginReply, err error)
 	RegisterByEmail(ctx context.Context, req *RegisterByEmailRequest, opts ...http.CallOption) (rsp *RegisterReply, err error)
 	RegisterByPassword(ctx context.Context, req *RegisterByPasswordRequest, opts ...http.CallOption) (rsp *RegisterReply, err error)
 	RegisterEmailCaptcha(ctx context.Context, req *RegisterEmailCaptchaRequest, opts ...http.CallOption) (rsp *EmailCaptchaReply, err error)
@@ -1313,7 +1481,9 @@ type ServiceHTTPClient interface {
 	RegisterUsernameCheck(ctx context.Context, req *RegisterUsernameCheckRequest, opts ...http.CallOption) (rsp *RegisterUsernameCheckReply, err error)
 	UpdateAgreement(ctx context.Context, req *UpdateAgreementRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	UpdateApp(ctx context.Context, req *UpdateAppRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	UpdateAppInterface(ctx context.Context, req *UpdateAppInterfaceRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	UpdateChannel(ctx context.Context, req *UpdateChannelRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	UpdateCurrentUser(ctx context.Context, req *UpdateCurrentUserRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	UpdateExtraField(ctx context.Context, req *UpdateExtraFieldRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	UpdateScene(ctx context.Context, req *UpdateSceneRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	UpdateUser(ctx context.Context, req *UpdateUserRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
@@ -1345,6 +1515,19 @@ func (c *ServiceHTTPClientImpl) AddApp(ctx context.Context, in *AddAppRequest, o
 	pattern := "/user-center/admin/v1/app"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceAddApp))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ServiceHTTPClientImpl) AddAppInterface(ctx context.Context, in *AddAppInterfaceRequest, opts ...http.CallOption) (*AddAppInterfaceReply, error) {
+	var out AddAppInterfaceReply
+	pattern := "/user-center/admin/v1/interface"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationServiceAddAppInterface))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
@@ -1522,6 +1705,19 @@ func (c *ServiceHTTPClientImpl) BindImageCaptcha(ctx context.Context, in *emptyp
 	return &out, err
 }
 
+func (c *ServiceHTTPClientImpl) CurrentExtraField(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*CurrentExtraFieldReply, error) {
+	var out CurrentExtraFieldReply
+	pattern := "/user-center/client/v1/extra-fields"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationServiceCurrentExtraField))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
 func (c *ServiceHTTPClientImpl) DeleteAgreement(ctx context.Context, in *DeleteAgreementRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
 	pattern := "/user-center/admin/v1/agreement"
@@ -1540,6 +1736,19 @@ func (c *ServiceHTTPClientImpl) DeleteApp(ctx context.Context, in *DeleteAppRequ
 	pattern := "/user-center/admin/v1/app"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceDeleteApp))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ServiceHTTPClientImpl) DeleteAppInterface(ctx context.Context, in *DeleteAppInterfaceRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/user-center/admin/v1/interface"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationServiceDeleteAppInterface))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "DELETE", path, nil, &out, opts...)
 	if err != nil {
@@ -1657,6 +1866,19 @@ func (c *ServiceHTTPClientImpl) GetAppByKeyword(ctx context.Context, in *GetAppB
 	pattern := "/user-center/admin/v1/app"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceGetAppByKeyword))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ServiceHTTPClientImpl) GetAppInterfaceTree(ctx context.Context, in *GetAppInterfaceTreeRequest, opts ...http.CallOption) (*GetAppInterfaceTreeReply, error) {
+	var out GetAppInterfaceTreeReply
+	pattern := "/user-center/admin/v1/interfaces"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationServiceGetAppInterfaceTree))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
@@ -1834,6 +2056,19 @@ func (c *ServiceHTTPClientImpl) PageUser(ctx context.Context, in *PageUserReques
 	return &out, err
 }
 
+func (c *ServiceHTTPClientImpl) RefreshToken(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*LoginReply, error) {
+	var out LoginReply
+	pattern := "/user-center/client/v1/refresh-token"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationServiceRefreshToken))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
 func (c *ServiceHTTPClientImpl) RegisterByEmail(ctx context.Context, in *RegisterByEmailRequest, opts ...http.CallOption) (*RegisterReply, error) {
 	var out RegisterReply
 	pattern := "/user-center/client/v1/register/email"
@@ -1925,11 +2160,37 @@ func (c *ServiceHTTPClientImpl) UpdateApp(ctx context.Context, in *UpdateAppRequ
 	return &out, err
 }
 
+func (c *ServiceHTTPClientImpl) UpdateAppInterface(ctx context.Context, in *UpdateAppInterfaceRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/user-center/admin/v1/interface"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationServiceUpdateAppInterface))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
 func (c *ServiceHTTPClientImpl) UpdateChannel(ctx context.Context, in *UpdateChannelRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
 	pattern := "/user-center/admin/v1/channel"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceUpdateChannel))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ServiceHTTPClientImpl) UpdateCurrentUser(ctx context.Context, in *UpdateCurrentUserRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/user-center/client/v1/user"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationServiceUpdateCurrentUser))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
 	if err != nil {

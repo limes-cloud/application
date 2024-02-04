@@ -5,10 +5,11 @@ import (
 
 	"github.com/limes-cloud/kratosx"
 	ktypes "github.com/limes-cloud/kratosx/types"
+	"gorm.io/gorm"
+
 	"github.com/limes-cloud/user-center/internal/biz"
 	"github.com/limes-cloud/user-center/internal/biz/types"
 	"github.com/limes-cloud/user-center/pkg/util"
-	"gorm.io/gorm"
 )
 
 type userRepo struct {
@@ -31,6 +32,11 @@ func (u *userRepo) Create(ctx kratosx.Context, user *biz.User) (uint32, error) {
 
 func (u *userRepo) Import(ctx kratosx.Context, list []*biz.User) error {
 	return ctx.DB().Model(biz.User{}).Create(&list).Error
+}
+
+func (u *userRepo) GetBase(ctx kratosx.Context, id uint32) (*biz.User, error) {
+	var user biz.User
+	return &user, ctx.DB().First(&user, "id=?", id).Error
 }
 
 func (u *userRepo) Get(ctx kratosx.Context, id uint32) (*biz.User, error) {

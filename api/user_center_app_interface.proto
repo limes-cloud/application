@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package user_center;
+
+option go_package = "./v1;v1";
+
+import "validate/validate.proto";
+import "resource/resource.proto";
+import "user_center_channel.proto";
+import "google/protobuf/struct.proto";
+
+message AppInterface {
+  uint32 id = 1;
+  uint32 app_id = 2;
+  uint32 parent_id = 3;
+  string type = 4;
+  string title = 5;
+  string path = 6;
+  string method = 7;
+  string description = 8;
+  uint32 created_at = 9;
+  uint32 updated_at = 10;
+  repeated AppInterface children = 11;
+}
+
+message GetAppInterfaceTreeRequest{
+  uint32 app_id = 1[(validate.rules).uint32 = {gt:0}];
+}
+
+message GetAppInterfaceTreeReply{
+  repeated AppInterface list = 1;
+}
+
+message AddAppInterfaceRequest {
+  uint32 app_id = 1[(validate.rules).uint32 = {gt:0}];
+  uint32 parent_id = 2[(validate.rules).uint32 = {gte:0}];
+  string type = 3[(validate.rules).string = {min_len:1}];
+  string title = 4[(validate.rules).string = {min_len:1}];
+  optional string path = 5;
+  optional string method = 6;
+  optional string description = 7;
+}
+
+message AddAppInterfaceReply {
+  uint32 id = 1;
+}
+
+message UpdateAppInterfaceRequest {
+  uint32 id = 1[(validate.rules).uint32 = {gt:0}];
+  uint32 parent_id = 2[(validate.rules).uint32 = {gte:0}];
+  string type = 3[(validate.rules).string = {min_len:1}];
+  string title = 4[(validate.rules).string = {min_len:1}];
+  optional string path = 5;
+  optional string method = 6;
+  optional string description = 7;
+}
+
+message DeleteAppInterfaceRequest{
+  uint32 id = 1[(validate.rules).uint32 = {gt:0}];
+}

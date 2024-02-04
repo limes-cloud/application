@@ -2075,10 +2075,21 @@ func (m *AuthRequest) validate(all bool) error {
 
 	var errors []error
 
-	if m.GetAppId() <= 0 {
+	if utf8.RuneCountInString(m.GetPath()) < 0 {
 		err := AuthRequestValidationError{
-			field:  "AppId",
-			reason: "value must be greater than 0",
+			field:  "Path",
+			reason: "value length must be at least 0 runes",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if utf8.RuneCountInString(m.GetMethod()) < 0 {
+		err := AuthRequestValidationError{
+			field:  "Method",
+			reason: "value length must be at least 0 runes",
 		}
 		if !all {
 			return err

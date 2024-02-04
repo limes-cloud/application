@@ -6,10 +6,26 @@ import (
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/jinzhu/copier"
 	"github.com/limes-cloud/kratosx"
+
 	v1 "github.com/limes-cloud/user-center/api/v1"
 	"github.com/limes-cloud/user-center/internal/biz"
 	"github.com/limes-cloud/user-center/internal/biz/types"
+	"github.com/limes-cloud/user-center/pkg/md"
 )
+
+func (s *Service) CurrentExtraField(ctx context.Context, _ *empty.Empty) (*v1.CurrentExtraFieldReply, error) {
+	kCtx := kratosx.MustContext(ctx)
+	list, err := s.extraField.AppFields(kCtx, md.AppID(kCtx))
+	if err != nil {
+		return nil, err
+	}
+	reply := v1.CurrentExtraFieldReply{}
+	if err := copier.Copy(&reply.List, list); err != nil {
+		return nil, v1.TransformError()
+	}
+
+	return &reply, nil
+}
 
 func (s *Service) AllExtraFieldType(_ context.Context, _ *empty.Empty) (*v1.AllExtraFieldTypeReply, error) {
 	list := s.extraField.Types()

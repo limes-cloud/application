@@ -3,12 +3,12 @@ package service
 import (
 	"context"
 
-	"github.com/limes-cloud/user-center/internal/biz/types"
-
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/jinzhu/copier"
 	"github.com/limes-cloud/kratosx"
+
 	v1 "github.com/limes-cloud/user-center/api/v1"
+	"github.com/limes-cloud/user-center/internal/biz/types"
 )
 
 func (s *Service) AllLoginPlatform(_ context.Context, _ *empty.Empty) (*v1.AllLoginPlatformReply, error) {
@@ -179,5 +179,17 @@ func (s *Service) RegisterByEmail(ctx context.Context, in *v1.RegisterByEmailReq
 }
 
 func (s *Service) Auth(ctx context.Context, in *v1.AuthRequest) (*empty.Empty, error) {
-	return nil, s.auth.Auth(kratosx.MustContext(ctx), in.AppId)
+	var req types.AuthRequest
+	if err := copier.Copy(&req, in); err != nil {
+		return nil, v1.TransformError()
+	}
+	return nil, s.auth.Auth(kratosx.MustContext(ctx), &req)
+}
+
+func (s *Service) RefreshToken(ctx context.Context, _ *empty.Empty) (*v1.LoginReply, error) {
+	token, err := s.auth.RefreshToken(kratosx.MustContext(ctx))
+	if err != nil {
+		return nil, err
+	}
+	return &v1.LoginReply{Token: token}, nil
 }

@@ -3,6 +3,7 @@ package biz
 import (
 	"github.com/limes-cloud/kratosx"
 	ktypes "github.com/limes-cloud/kratosx/types"
+
 	v1 "github.com/limes-cloud/user-center/api/v1"
 	"github.com/limes-cloud/user-center/config"
 	"github.com/limes-cloud/user-center/internal/biz/types"
@@ -18,6 +19,7 @@ type ExtraField struct {
 }
 
 type ExtraFieldRepo interface {
+	AllAppField(ctx kratosx.Context, appId uint32) ([]*ExtraField, error)
 	Page(ctx kratosx.Context, req *types.PageExtraFieldRequest) ([]*ExtraField, uint32, error)
 	All(ctx kratosx.Context) ([]*ExtraField, error)
 	Create(ctx kratosx.Context, c *ExtraField) (uint32, error)
@@ -57,7 +59,16 @@ func (u *ExtraFieldUseCase) FiledTypeSet(ctx kratosx.Context) map[string]*ExtraF
 	return m
 }
 
-// Page 获取全部登录字段
+// AppFields 获取app全部扩展字段
+func (u *ExtraFieldUseCase) AppFields(ctx kratosx.Context, appid uint32) ([]*ExtraField, error) {
+	ef, err := u.repo.AllAppField(ctx, appid)
+	if err != nil {
+		return nil, v1.NotRecordError()
+	}
+	return ef, nil
+}
+
+// Page 获取全部扩展字段
 func (u *ExtraFieldUseCase) Page(ctx kratosx.Context, req *types.PageExtraFieldRequest) ([]*ExtraField, uint32, error) {
 	ef, total, err := u.repo.Page(ctx, req)
 	if err != nil {
@@ -66,7 +77,7 @@ func (u *ExtraFieldUseCase) Page(ctx kratosx.Context, req *types.PageExtraFieldR
 	return ef, total, nil
 }
 
-// Add 添加登录字段信息
+// Add 添加扩展字段信息
 func (u *ExtraFieldUseCase) Add(ctx kratosx.Context, ef *ExtraField) (uint32, error) {
 	id, err := u.repo.Create(ctx, ef)
 	if err != nil {
@@ -75,7 +86,7 @@ func (u *ExtraFieldUseCase) Add(ctx kratosx.Context, ef *ExtraField) (uint32, er
 	return id, nil
 }
 
-// Update 更新登录字段信息
+// Update 更新扩展字段信息
 func (u *ExtraFieldUseCase) Update(ctx kratosx.Context, ef *ExtraField) error {
 	if err := u.repo.Update(ctx, ef); err != nil {
 		return v1.DatabaseErrorFormat(err.Error())
@@ -83,7 +94,7 @@ func (u *ExtraFieldUseCase) Update(ctx kratosx.Context, ef *ExtraField) error {
 	return nil
 }
 
-// Delete 删除登录字段信息
+// Delete 删除扩展字段信息
 func (u *ExtraFieldUseCase) Delete(ctx kratosx.Context, id uint32) error {
 	if err := u.repo.Delete(ctx, id); err != nil {
 		return v1.DatabaseErrorFormat(err.Error())

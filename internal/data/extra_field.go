@@ -1,10 +1,14 @@
 package data
 
 import (
+	"strings"
+
 	"github.com/limes-cloud/kratosx"
+	"gorm.io/gorm"
+
 	"github.com/limes-cloud/user-center/internal/biz"
 	"github.com/limes-cloud/user-center/internal/biz/types"
-	"gorm.io/gorm"
+	"github.com/limes-cloud/user-center/pkg/util"
 )
 
 type fieldRepo struct {
@@ -17,6 +21,29 @@ func NewExtraFieldRepo() biz.ExtraFieldRepo {
 func (u *fieldRepo) All(ctx kratosx.Context) ([]*biz.ExtraField, error) {
 	var list []*biz.ExtraField
 	return list, ctx.DB().Find(&list).Error
+}
+
+func (u *fieldRepo) AllAppField(ctx kratosx.Context, appid uint32) ([]*biz.ExtraField, error) {
+	var list []*biz.ExtraField
+	if err := ctx.DB().Model(biz.ExtraField{}).Find(&list).Error; err != nil {
+		return nil, err
+	}
+
+	app := biz.App{}
+	if err := ctx.DB().First(&app, "id=?", appid).Error; err != nil {
+		return nil, err
+	}
+	fields := strings.Split(app.UserFields, ",")
+
+	var arr []*biz.ExtraField
+	for _, item := range list {
+		if !util.InList(fields, item.Keyword) {
+			continue
+		}
+		arr = append(arr, item)
+	}
+
+	return arr, nil
 }
 
 func (u *fieldRepo) Page(ctx kratosx.Context, req *types.PageExtraFieldRequest) ([]*biz.ExtraField, uint32, error) {

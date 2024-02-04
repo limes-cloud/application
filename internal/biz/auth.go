@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"time"
 
-	"google.golang.org/protobuf/proto"
-
 	"github.com/forgoer/openssl"
 	"github.com/limes-cloud/kratosx"
 	ktypes "github.com/limes-cloud/kratosx/types"
+	"google.golang.org/protobuf/proto"
+
 	v1 "github.com/limes-cloud/user-center/api/v1"
 	"github.com/limes-cloud/user-center/config"
 	"github.com/limes-cloud/user-center/internal/biz/types"
@@ -79,11 +79,22 @@ func (u *AuthUseCase) LoginPlatform() []*types.LoginPlatform {
 	}
 }
 
-func (u *AuthUseCase) Auth(ctx kratosx.Context, appId uint32) error {
-	if md.AppID(ctx) != appId {
-		return v1.ForbiddenError()
+func (u *AuthUseCase) Auth(ctx kratosx.Context, req *types.AuthRequest) error {
+	appKey := md.AppKeyword(ctx)
+
+	if ctx.Authentication().IsSkipRole(appKey) {
+		return nil
 	}
-	return nil
+
+	if ctx.Authentication().IsWhitelist(req.Path, req.Method) {
+		return nil
+	}
+
+	if ctx.Authentication().Auth(appKey, req.Method, req.Path) {
+		return nil
+	}
+
+	return v1.ForbiddenError()
 }
 
 func (u *AuthUseCase) GenToken(ctx kratosx.Context, user *User, app *App, channel *Channel) (string, error) {
@@ -112,7 +123,7 @@ func (u *AuthUseCase) GenToken(ctx kratosx.Context, user *User, app *App, channe
 	}
 
 	// 生成登陆token
-	token, err := ctx.JWT().NewToken(md.New(user.ID, app.ID, channel.ID))
+	token, err := ctx.JWT().NewToken(md.New(user.ID, app.ID, channel.ID, app.Keyword))
 	if err != nil {
 		return "", v1.GenTokenErrorFormat(err.Error())
 	}
@@ -305,6 +316,8 @@ func (u *AuthUseCase) RegisterByPassword(ctx kratosx.Context, req *types.Registe
 		UserApps: []*UserApp{{
 			AppID: app.ID,
 		}},
+		From:     app.Keyword,
+		FromDesc: app.Name,
 	})
 	if err != nil {
 		return nil, v1.RegisterError()
@@ -440,8 +453,10 @@ func (u *AuthUseCase) RegisterByEmail(ctx kratosx.Context, req *types.RegisterBy
 
 	// 注册
 	id, err := u.repo.Register(ctx, &User{
-		Email:  &req.Email,
-		Status: proto.Bool(true),
+		Email:    &req.Email,
+		Status:   proto.Bool(true),
+		From:     app.Keyword,
+		FromDesc: app.Name,
 		UserApps: []*UserApp{{
 			AppID: app.ID,
 		}},
@@ -459,4 +474,13 @@ func (u *AuthUseCase) RegisterByEmail(ctx kratosx.Context, req *types.RegisterBy
 	// 生成token
 	token, err := u.GenToken(ctx, user, app, channel)
 	return &types.RegisterReply{ID: id, Token: token}, err
+}
+
+// RefreshToken 刷新用户token
+func (a *AuthUseCase) RefreshToken(ctx kratosx.Context) (string, error) {
+	token, err := ctx.JWT().Renewal(ctx)
+	if err != nil {
+		return "", v1.RefreshTokenErrorFormat(err.Error())
+	}
+	return token, nil
 }

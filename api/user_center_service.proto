@@ -10,12 +10,19 @@ import "user_center_agreement.proto";
 import "user_center_scene.proto";
 import "user_center_user.proto";
 import "user_center_app.proto";
+import "user_center_app_interface.proto";
 import "user_center_user_app.proto";
 import "user_center_channel.proto";
 import "user_center_extra_field.proto";
 import "user_center_auth.proto";
 
 service Service {
+  rpc RefreshToken (google.protobuf.Empty)  returns (LoginReply) {
+    option (google.api.http) = {
+      get: "/user-center/client/v1/refresh-token",
+    };
+  }
+
   rpc LoginImageCaptcha (google.protobuf.Empty)  returns (ImageCaptchaReply) {
     option (google.api.http) = {
       get: "/user-center/client/v1/login/image-captcha",
@@ -241,6 +248,32 @@ service Service {
     };
   }
 
+  rpc GetAppInterfaceTree (GetAppInterfaceTreeRequest)  returns (GetAppInterfaceTreeReply) {
+    option (google.api.http) = {
+      get: "/user-center/admin/v1/interfaces",
+    };
+  }
+
+  rpc AddAppInterface (AddAppInterfaceRequest)  returns (AddAppInterfaceReply) {
+    option (google.api.http) = {
+      post: "/user-center/admin/v1/interface",
+      body:"*"
+    };
+  }
+
+  rpc UpdateAppInterface (UpdateAppInterfaceRequest)  returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/user-center/admin/v1/interface",
+      body:"*"
+    };
+  }
+
+  rpc DeleteAppInterface (DeleteAppInterfaceRequest)  returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/user-center/admin/v1/interface",
+    };
+  }
+
   rpc AllExtraFieldType (google.protobuf.Empty)  returns (AllExtraFieldTypeReply) {
     option (google.api.http) = {
       get: "/user-center/admin/v1/extra-field/types",
@@ -250,6 +283,12 @@ service Service {
   rpc PageExtraField (PageExtraFieldRequest)  returns (PageExtraFieldReply) {
     option (google.api.http) = {
       get: "/user-center/admin/v1/extra-fields",
+    };
+  }
+
+  rpc CurrentExtraField (google.protobuf.Empty)  returns (CurrentExtraFieldReply) {
+    option (google.api.http) = {
+      get: "/user-center/client/v1/extra-fields",
     };
   }
 
@@ -279,6 +318,10 @@ service Service {
     };
   }
 
+  rpc GetSimpleUser (GetSimpleUserRequest)  returns (SimpleUser){}
+
+  rpc GetBaseUser (GetBaseUserRequest)  returns (BaseUser){}
+
   rpc GetUser (GetUserRequest)  returns (User) {
     option (google.api.http) = {
       get: "/user-center/admin/v1/user",
@@ -288,6 +331,13 @@ service Service {
   rpc GetCurrentUser (google.protobuf.Empty)  returns (User) {
     option (google.api.http) = {
       get: "/user-center/client/v1/user",
+    };
+  }
+
+  rpc UpdateCurrentUser (UpdateCurrentUserRequest)  returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/user-center/client/v1/user",
+      body: "*"
     };
   }
 
