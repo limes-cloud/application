@@ -35,7 +35,7 @@ enum ErrorReason {
   AlreadyExistPhoneError = 27[(errors.message)="手机已存在"];
   AlreadyExistUsernameError = 28[(errors.message)="账号已存在"];
   RegisterError = 29[(errors.message)="用户注册失败"];
-  ForbiddenError = 30[(errors.message)="无应用权限"];
+  ForbiddenError = 30[(errors.code)=403,(errors.message)="无应用权限"];
 }
  
 

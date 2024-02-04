@@ -99,7 +99,7 @@ type ServiceClient interface {
 	BindByEmail(ctx context.Context, in *BindByEmailRequest, opts ...grpc.CallOption) (*LoginReply, error)
 	RegisterEmailCaptcha(ctx context.Context, in *RegisterEmailCaptchaRequest, opts ...grpc.CallOption) (*EmailCaptchaReply, error)
 	RegisterByEmail(ctx context.Context, in *RegisterByEmailRequest, opts ...grpc.CallOption) (*RegisterReply, error)
-	Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthReply, error)
 	PageAgreement(ctx context.Context, in *PageAgreementRequest, opts ...grpc.CallOption) (*PageAgreementReply, error)
 	GetAgreement(ctx context.Context, in *GetAgreementRequest, opts ...grpc.CallOption) (*Agreement, error)
 	AddAgreement(ctx context.Context, in *AddAgreementRequest, opts ...grpc.CallOption) (*AddAgreementReply, error)
@@ -283,8 +283,8 @@ func (c *serviceClient) RegisterByEmail(ctx context.Context, in *RegisterByEmail
 	return out, nil
 }
 
-func (c *serviceClient) Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
-	out := new(emptypb.Empty)
+func (c *serviceClient) Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthReply, error) {
+	out := new(AuthReply)
 	err := c.cc.Invoke(ctx, Service_Auth_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -706,7 +706,7 @@ type ServiceServer interface {
 	BindByEmail(context.Context, *BindByEmailRequest) (*LoginReply, error)
 	RegisterEmailCaptcha(context.Context, *RegisterEmailCaptchaRequest) (*EmailCaptchaReply, error)
 	RegisterByEmail(context.Context, *RegisterByEmailRequest) (*RegisterReply, error)
-	Auth(context.Context, *AuthRequest) (*emptypb.Empty, error)
+	Auth(context.Context, *AuthRequest) (*AuthReply, error)
 	PageAgreement(context.Context, *PageAgreementRequest) (*PageAgreementReply, error)
 	GetAgreement(context.Context, *GetAgreementRequest) (*Agreement, error)
 	AddAgreement(context.Context, *AddAgreementRequest) (*AddAgreementReply, error)
@@ -803,7 +803,7 @@ func (UnimplementedServiceServer) RegisterEmailCaptcha(context.Context, *Registe
 func (UnimplementedServiceServer) RegisterByEmail(context.Context, *RegisterByEmailRequest) (*RegisterReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterByEmail not implemented")
 }
-func (UnimplementedServiceServer) Auth(context.Context, *AuthRequest) (*emptypb.Empty, error) {
+func (UnimplementedServiceServer) Auth(context.Context, *AuthRequest) (*AuthReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Auth not implemented")
 }
 func (UnimplementedServiceServer) PageAgreement(context.Context, *PageAgreementRequest) (*PageAgreementReply, error) {

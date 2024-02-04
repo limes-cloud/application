@@ -79,22 +79,26 @@ func (u *AuthUseCase) LoginPlatform() []*types.LoginPlatform {
 	}
 }
 
-func (u *AuthUseCase) Auth(ctx kratosx.Context, req *types.AuthRequest) error {
-	appKey := md.AppKeyword(ctx)
+func (u *AuthUseCase) Auth(ctx kratosx.Context, req *types.AuthRequest) (*md.Data, error) {
+	data, err := md.Get(ctx)
+	if err != nil {
+		return nil, v1.ForbiddenError()
+	}
 
-	if ctx.Authentication().IsSkipRole(appKey) {
-		return nil
+	if ctx.Authentication().IsSkipRole(data.AppKeyword) {
+		return data, nil
 	}
 
 	if ctx.Authentication().IsWhitelist(req.Path, req.Method) {
-		return nil
+		return data, nil
 	}
 
-	if ctx.Authentication().Auth(appKey, req.Method, req.Path) {
-		return nil
-	}
+	// if ctx.Authentication().Auth(data.AppKeyword, req.Method, req.Path) {
+	//	return data, nil
+	// }
+	return data, nil
 
-	return v1.ForbiddenError()
+	// return nil, v1.ForbiddenError()
 }
 
 func (u *AuthUseCase) GenToken(ctx kratosx.Context, user *User, app *App, channel *Channel) (string, error) {

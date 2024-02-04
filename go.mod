@@ -11,7 +11,7 @@ require (
 	github.com/jinzhu/copier v0.4.0
 	github.com/json-iterator/go v1.1.12
 	github.com/limes-cloud/configure v1.0.14
-	github.com/limes-cloud/kratosx v1.0.15
+	github.com/limes-cloud/kratosx v1.0.16
 	github.com/limes-cloud/resource v1.0.2
 	github.com/mbndr/figlet4go v0.0.0-20190224160619-d6cef5b186ea
 	go.uber.org/automaxprocs v1.5.1
@@ -25,7 +25,6 @@ require (
 require (
 	github.com/ClickHouse/ch-go v0.61.2 // indirect
 	github.com/ClickHouse/clickhouse-go/v2 v2.18.0 // indirect
-	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/billcobbler/casbin-redis-watcher/v2 v2.0.0-20211014141847-d29c8619193d // indirect
 	github.com/casbin/casbin/v2 v2.81.0 // indirect
@@ -85,9 +84,6 @@ require (
 	github.com/shirou/gopsutil/v3 v3.24.1 // indirect
 	github.com/shoenig/go-m1cpu v0.1.6 // indirect
 	github.com/shopspring/decimal v1.3.1 // indirect
-	github.com/tidwall/gjson v1.17.0 // indirect
-	github.com/tidwall/match v1.1.1 // indirect
-	github.com/tidwall/pretty v1.2.1 // indirect
 	github.com/tklauser/go-sysconf v0.3.13 // indirect
 	github.com/tklauser/numcpus v0.7.0 // indirect
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
@@ -112,7 +108,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/clickhouse v0.6.0 // indirect
 	gorm.io/driver/mysql v1.5.2 // indirect
-	gorm.io/driver/postgres v1.5.5 // indirect
+	gorm.io/driver/postgres v1.5.3 // indirect
 	gorm.io/driver/sqlserver v1.5.2 // indirect
 	gorm.io/plugin/dbresolver v1.5.0 // indirect
 	modernc.org/libc v1.40.18 // indirect

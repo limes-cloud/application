@@ -143,6 +143,12 @@ func (s *Service) GetSimpleUser(ctx context.Context, in *v1.GetSimpleUserRequest
 	if err := copier.Copy(&reply, user); err != nil {
 		return nil, v1.TransformError()
 	}
+
+	resource, err := service.NewResource(ctx, s.conf.Service.Resource)
+	if err == nil {
+		reply.Resource, _ = resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{Sha: reply.Avatar})
+	}
+
 	return &reply, nil
 }
 
@@ -154,6 +160,11 @@ func (s *Service) GetBaseUser(ctx context.Context, in *v1.GetBaseUserRequest) (*
 	reply := v1.BaseUser{}
 	if err := copier.Copy(&reply, user); err != nil {
 		return nil, v1.TransformError()
+	}
+
+	resource, err := service.NewResource(ctx, s.conf.Service.Resource)
+	if err == nil {
+		reply.Resource, _ = resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{Sha: reply.Avatar})
 	}
 	return &reply, nil
 }

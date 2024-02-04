@@ -178,12 +178,22 @@ func (s *Service) RegisterByEmail(ctx context.Context, in *v1.RegisterByEmailReq
 	}, nil
 }
 
-func (s *Service) Auth(ctx context.Context, in *v1.AuthRequest) (*empty.Empty, error) {
+func (s *Service) Auth(ctx context.Context, in *v1.AuthRequest) (*v1.AuthReply, error) {
 	var req types.AuthRequest
 	if err := copier.Copy(&req, in); err != nil {
 		return nil, v1.TransformError()
 	}
-	return nil, s.auth.Auth(kratosx.MustContext(ctx), &req)
+
+	res, err := s.auth.Auth(kratosx.MustContext(ctx), &req)
+	if err != nil {
+		return nil, err
+	}
+
+	reply := v1.AuthReply{}
+	if err := copier.Copy(&reply, res); err != nil {
+		return nil, v1.TransformError()
+	}
+	return &reply, nil
 }
 
 func (s *Service) RefreshToken(ctx context.Context, _ *empty.Empty) (*v1.LoginReply, error) {

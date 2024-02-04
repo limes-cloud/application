@@ -65,6 +65,35 @@ func (m *SimpleUser) validate(all bool) error {
 
 	// no validation rules for Gender
 
+	if all {
+		switch v := interface{}(m.GetResource()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, SimpleUserValidationError{
+					field:  "Resource",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, SimpleUserValidationError{
+					field:  "Resource",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetResource()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return SimpleUserValidationError{
+				field:  "Resource",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
 	if len(errors) > 0 {
 		return SimpleUserMultiError(errors)
 	}
@@ -173,6 +202,35 @@ func (m *BaseUser) validate(all bool) error {
 	// no validation rules for Avatar
 
 	// no validation rules for Gender
+
+	if all {
+		switch v := interface{}(m.GetResource()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, BaseUserValidationError{
+					field:  "Resource",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, BaseUserValidationError{
+					field:  "Resource",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetResource()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return BaseUserValidationError{
+				field:  "Resource",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
 
 	if m.Phone != nil {
 		// no validation rules for Phone

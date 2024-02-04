@@ -7,13 +7,13 @@ import (
 	"github.com/limes-cloud/configure/client"
 	"github.com/limes-cloud/kratosx"
 	"github.com/limes-cloud/kratosx/config"
-	"github.com/limes-cloud/user-center/internal/initiator"
-	_ "github.com/limes-cloud/user-center/pkg/field"
 	_ "go.uber.org/automaxprocs"
 
 	v1 "github.com/limes-cloud/user-center/api/v1"
 	systemConfig "github.com/limes-cloud/user-center/config"
+	"github.com/limes-cloud/user-center/internal/initiator"
 	"github.com/limes-cloud/user-center/internal/service"
+	_ "github.com/limes-cloud/user-center/pkg/field"
 )
 
 func main() {

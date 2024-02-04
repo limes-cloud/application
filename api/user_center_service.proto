@@ -19,7 +19,7 @@ import "user_center_auth.proto";
 service Service {
   rpc RefreshToken (google.protobuf.Empty)  returns (LoginReply) {
     option (google.api.http) = {
-      get: "/user-center/client/v1/refresh-token",
+      post: "/user-center/client/v1/refresh-token",
     };
   }
 
@@ -110,7 +110,7 @@ service Service {
     };
   }
 
-  rpc Auth (AuthRequest)  returns (google.protobuf.Empty) {
+  rpc Auth (AuthRequest)  returns (AuthReply) {
     option (google.api.http) = {
       post: "/user-center/client/v1/auth",
       body: "*"

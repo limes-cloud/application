@@ -403,13 +403,13 @@ func IsForbiddenError(err error) bool {
 		return false
 	}
 	e := errors.FromError(err)
-	return e.Reason == ErrorReason_ForbiddenError.String() && e.Code == 200
+	return e.Reason == ErrorReason_ForbiddenError.String() && e.Code == 403
 }
 
 func ForbiddenErrorFormat(format string, args ...any) *errors.Error {
-	return errors.New(200, ErrorReason_ForbiddenError.String(), "无应用权限:"+fmt.Sprintf(format, args...))
+	return errors.New(403, ErrorReason_ForbiddenError.String(), "无应用权限:"+fmt.Sprintf(format, args...))
 }
 
 func ForbiddenError() *errors.Error {
-	return errors.New(200, ErrorReason_ForbiddenError.String(), "无应用权限")
+	return errors.New(403, ErrorReason_ForbiddenError.String(), "无应用权限")
 }

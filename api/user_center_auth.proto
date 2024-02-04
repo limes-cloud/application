@@ -6,6 +6,13 @@ option go_package = "./v1;v1";
 
 import "validate/validate.proto";
 
+message AuthReply{
+  uint32 user_id = 1;
+  uint32 app_id = 2;
+  string app_keyword = 3;
+  uint32 channel_id = 4;
+}
+
 message AllLoginPlatformReply{
   message Platform{
     string platform = 1;

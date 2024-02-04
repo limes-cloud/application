@@ -50,7 +50,7 @@ var file_user_center_service_proto_rawDesc = []byte{
 	0x6b, 0x65, 0x6e, 0x12, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x1a, 0x17, 0x2e, 0x75, 0x73,
 	0x65, 0x72, 0x5f, 0x63, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x2e, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x52,
-	0x65, 0x70, 0x6c, 0x79, 0x22, 0x2c, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x26, 0x12, 0x24, 0x2f, 0x75,
+	0x65, 0x70, 0x6c, 0x79, 0x22, 0x2c, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x26, 0x22, 0x24, 0x2f, 0x75,
 	0x73, 0x65, 0x72, 0x2d, 0x63, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x2f, 0x63, 0x6c, 0x69, 0x65, 0x6e,
 	0x74, 0x2f, 0x76, 0x31, 0x2f, 0x72, 0x65, 0x66, 0x72, 0x65, 0x73, 0x68, 0x2d, 0x74, 0x6f, 0x6b,
 	0x65, 0x6e, 0x12, 0x7f, 0x0a, 0x11, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x49, 0x6d, 0x61, 0x67, 0x65,
@@ -167,8 +167,8 @@ var file_user_center_service_proto_rawDesc = []byte{
 	0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x2f, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x60, 0x0a, 0x04,
 	0x41, 0x75, 0x74, 0x68, 0x12, 0x18, 0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x63, 0x65, 0x6e, 0x74,
 	0x65, 0x72, 0x2e, 0x41, 0x75, 0x74, 0x68, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16,
-	0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66,
-	0x2e, 0x45, 0x6d, 0x70, 0x74, 0x79, 0x22, 0x26, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x20, 0x3a, 0x01,
+	0x2e, 0x75, 0x73, 0x65, 0x72, 0x5f, 0x63, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x2e, 0x41, 0x75, 0x74,
+	0x68, 0x52, 0x65, 0x70, 0x6c, 0x79, 0x22, 0x26, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x20, 0x3a, 0x01,
 	0x2a, 0x22, 0x1b, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x2d, 0x63, 0x65, 0x6e, 0x74, 0x65, 0x72, 0x2f,
 	0x63, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x2f, 0x76, 0x31, 0x2f, 0x61, 0x75, 0x74, 0x68, 0x12, 0x7d,
 	0x0a, 0x0d, 0x50, 0x61, 0x67, 0x65, 0x41, 0x67, 0x72, 0x65, 0x65, 0x6d, 0x65, 0x6e, 0x74, 0x12,
@@ -554,29 +554,30 @@ var file_user_center_service_proto_goTypes = []interface{}{
 	(*RegisterUsernameCheckReply)(nil),   // 52: user_center.RegisterUsernameCheckReply
 	(*RegisterReply)(nil),                // 53: user_center.RegisterReply
 	(*EmailCaptchaReply)(nil),            // 54: user_center.EmailCaptchaReply
-	(*PageAgreementReply)(nil),           // 55: user_center.PageAgreementReply
-	(*Agreement)(nil),                    // 56: user_center.Agreement
-	(*AddAgreementReply)(nil),            // 57: user_center.AddAgreementReply
-	(*PageSceneReply)(nil),               // 58: user_center.PageSceneReply
-	(*Scene)(nil),                        // 59: user_center.Scene
-	(*AddSceneReply)(nil),                // 60: user_center.AddSceneReply
-	(*AllChannelReply)(nil),              // 61: user_center.AllChannelReply
-	(*AddChannelReply)(nil),              // 62: user_center.AddChannelReply
-	(*PageAppReply)(nil),                 // 63: user_center.PageAppReply
-	(*App)(nil),                          // 64: user_center.App
-	(*AddAppReply)(nil),                  // 65: user_center.AddAppReply
-	(*GetAppInterfaceTreeReply)(nil),     // 66: user_center.GetAppInterfaceTreeReply
-	(*AddAppInterfaceReply)(nil),         // 67: user_center.AddAppInterfaceReply
-	(*AllExtraFieldTypeReply)(nil),       // 68: user_center.AllExtraFieldTypeReply
-	(*PageExtraFieldReply)(nil),          // 69: user_center.PageExtraFieldReply
-	(*CurrentExtraFieldReply)(nil),       // 70: user_center.CurrentExtraFieldReply
-	(*AddExtraFieldReply)(nil),           // 71: user_center.AddExtraFieldReply
-	(*AllLoginPlatformReply)(nil),        // 72: user_center.AllLoginPlatformReply
-	(*SimpleUser)(nil),                   // 73: user_center.SimpleUser
-	(*BaseUser)(nil),                     // 74: user_center.BaseUser
-	(*User)(nil),                         // 75: user_center.User
-	(*PageUserReply)(nil),                // 76: user_center.PageUserReply
-	(*AddUserReply)(nil),                 // 77: user_center.AddUserReply
+	(*AuthReply)(nil),                    // 55: user_center.AuthReply
+	(*PageAgreementReply)(nil),           // 56: user_center.PageAgreementReply
+	(*Agreement)(nil),                    // 57: user_center.Agreement
+	(*AddAgreementReply)(nil),            // 58: user_center.AddAgreementReply
+	(*PageSceneReply)(nil),               // 59: user_center.PageSceneReply
+	(*Scene)(nil),                        // 60: user_center.Scene
+	(*AddSceneReply)(nil),                // 61: user_center.AddSceneReply
+	(*AllChannelReply)(nil),              // 62: user_center.AllChannelReply
+	(*AddChannelReply)(nil),              // 63: user_center.AddChannelReply
+	(*PageAppReply)(nil),                 // 64: user_center.PageAppReply
+	(*App)(nil),                          // 65: user_center.App
+	(*AddAppReply)(nil),                  // 66: user_center.AddAppReply
+	(*GetAppInterfaceTreeReply)(nil),     // 67: user_center.GetAppInterfaceTreeReply
+	(*AddAppInterfaceReply)(nil),         // 68: user_center.AddAppInterfaceReply
+	(*AllExtraFieldTypeReply)(nil),       // 69: user_center.AllExtraFieldTypeReply
+	(*PageExtraFieldReply)(nil),          // 70: user_center.PageExtraFieldReply
+	(*CurrentExtraFieldReply)(nil),       // 71: user_center.CurrentExtraFieldReply
+	(*AddExtraFieldReply)(nil),           // 72: user_center.AddExtraFieldReply
+	(*AllLoginPlatformReply)(nil),        // 73: user_center.AllLoginPlatformReply
+	(*SimpleUser)(nil),                   // 74: user_center.SimpleUser
+	(*BaseUser)(nil),                     // 75: user_center.BaseUser
+	(*User)(nil),                         // 76: user_center.User
+	(*PageUserReply)(nil),                // 77: user_center.PageUserReply
+	(*AddUserReply)(nil),                 // 78: user_center.AddUserReply
 }
 var file_user_center_service_proto_depIdxs = []int32{
 	0,  // 0: user_center.Service.RefreshToken:input_type -> google.protobuf.Empty
@@ -652,44 +653,44 @@ var file_user_center_service_proto_depIdxs = []int32{
 	50, // 70: user_center.Service.BindByEmail:output_type -> user_center.LoginReply
 	54, // 71: user_center.Service.RegisterEmailCaptcha:output_type -> user_center.EmailCaptchaReply
 	53, // 72: user_center.Service.RegisterByEmail:output_type -> user_center.RegisterReply
-	0,  // 73: user_center.Service.Auth:output_type -> google.protobuf.Empty
-	55, // 74: user_center.Service.PageAgreement:output_type -> user_center.PageAgreementReply
-	56, // 75: user_center.Service.GetAgreement:output_type -> user_center.Agreement
-	57, // 76: user_center.Service.AddAgreement:output_type -> user_center.AddAgreementReply
+	55, // 73: user_center.Service.Auth:output_type -> user_center.AuthReply
+	56, // 74: user_center.Service.PageAgreement:output_type -> user_center.PageAgreementReply
+	57, // 75: user_center.Service.GetAgreement:output_type -> user_center.Agreement
+	58, // 76: user_center.Service.AddAgreement:output_type -> user_center.AddAgreementReply
 	0,  // 77: user_center.Service.UpdateAgreement:output_type -> google.protobuf.Empty
 	0,  // 78: user_center.Service.DeleteAgreement:output_type -> google.protobuf.Empty
-	58, // 79: user_center.Service.PageScene:output_type -> user_center.PageSceneReply
-	59, // 80: user_center.Service.GetSceneByKeyword:output_type -> user_center.Scene
-	60, // 81: user_center.Service.AddScene:output_type -> user_center.AddSceneReply
+	59, // 79: user_center.Service.PageScene:output_type -> user_center.PageSceneReply
+	60, // 80: user_center.Service.GetSceneByKeyword:output_type -> user_center.Scene
+	61, // 81: user_center.Service.AddScene:output_type -> user_center.AddSceneReply
 	0,  // 82: user_center.Service.UpdateScene:output_type -> google.protobuf.Empty
 	0,  // 83: user_center.Service.DeleteScene:output_type -> google.protobuf.Empty
-	61, // 84: user_center.Service.AllChannel:output_type -> user_center.AllChannelReply
-	62, // 85: user_center.Service.AddChannel:output_type -> user_center.AddChannelReply
+	62, // 84: user_center.Service.AllChannel:output_type -> user_center.AllChannelReply
+	63, // 85: user_center.Service.AddChannel:output_type -> user_center.AddChannelReply
 	0,  // 86: user_center.Service.UpdateChannel:output_type -> google.protobuf.Empty
 	0,  // 87: user_center.Service.DeleteChannel:output_type -> google.protobuf.Empty
-	63, // 88: user_center.Service.PageApp:output_type -> user_center.PageAppReply
-	64, // 89: user_center.Service.GetAppByKeyword:output_type -> user_center.App
-	65, // 90: user_center.Service.AddApp:output_type -> user_center.AddAppReply
+	64, // 88: user_center.Service.PageApp:output_type -> user_center.PageAppReply
+	65, // 89: user_center.Service.GetAppByKeyword:output_type -> user_center.App
+	66, // 90: user_center.Service.AddApp:output_type -> user_center.AddAppReply
 	0,  // 91: user_center.Service.UpdateApp:output_type -> google.protobuf.Empty
 	0,  // 92: user_center.Service.DeleteApp:output_type -> google.protobuf.Empty
-	66, // 93: user_center.Service.GetAppInterfaceTree:output_type -> user_center.GetAppInterfaceTreeReply
-	67, // 94: user_center.Service.AddAppInterface:output_type -> user_center.AddAppInterfaceReply
+	67, // 93: user_center.Service.GetAppInterfaceTree:output_type -> user_center.GetAppInterfaceTreeReply
+	68, // 94: user_center.Service.AddAppInterface:output_type -> user_center.AddAppInterfaceReply
 	0,  // 95: user_center.Service.UpdateAppInterface:output_type -> google.protobuf.Empty
 	0,  // 96: user_center.Service.DeleteAppInterface:output_type -> google.protobuf.Empty
-	68, // 97: user_center.Service.AllExtraFieldType:output_type -> user_center.AllExtraFieldTypeReply
-	69, // 98: user_center.Service.PageExtraField:output_type -> user_center.PageExtraFieldReply
-	70, // 99: user_center.Service.CurrentExtraField:output_type -> user_center.CurrentExtraFieldReply
-	71, // 100: user_center.Service.AddExtraField:output_type -> user_center.AddExtraFieldReply
+	69, // 97: user_center.Service.AllExtraFieldType:output_type -> user_center.AllExtraFieldTypeReply
+	70, // 98: user_center.Service.PageExtraField:output_type -> user_center.PageExtraFieldReply
+	71, // 99: user_center.Service.CurrentExtraField:output_type -> user_center.CurrentExtraFieldReply
+	72, // 100: user_center.Service.AddExtraField:output_type -> user_center.AddExtraFieldReply
 	0,  // 101: user_center.Service.UpdateExtraField:output_type -> google.protobuf.Empty
 	0,  // 102: user_center.Service.DeleteExtraField:output_type -> google.protobuf.Empty
-	72, // 103: user_center.Service.AllLoginPlatform:output_type -> user_center.AllLoginPlatformReply
-	73, // 104: user_center.Service.GetSimpleUser:output_type -> user_center.SimpleUser
-	74, // 105: user_center.Service.GetBaseUser:output_type -> user_center.BaseUser
-	75, // 106: user_center.Service.GetUser:output_type -> user_center.User
-	75, // 107: user_center.Service.GetCurrentUser:output_type -> user_center.User
+	73, // 103: user_center.Service.AllLoginPlatform:output_type -> user_center.AllLoginPlatformReply
+	74, // 104: user_center.Service.GetSimpleUser:output_type -> user_center.SimpleUser
+	75, // 105: user_center.Service.GetBaseUser:output_type -> user_center.BaseUser
+	76, // 106: user_center.Service.GetUser:output_type -> user_center.User
+	76, // 107: user_center.Service.GetCurrentUser:output_type -> user_center.User
 	0,  // 108: user_center.Service.UpdateCurrentUser:output_type -> google.protobuf.Empty
-	76, // 109: user_center.Service.PageUser:output_type -> user_center.PageUserReply
-	77, // 110: user_center.Service.AddUser:output_type -> user_center.AddUserReply
+	77, // 109: user_center.Service.PageUser:output_type -> user_center.PageUserReply
+	78, // 110: user_center.Service.AddUser:output_type -> user_center.AddUserReply
 	0,  // 111: user_center.Service.UpdateUser:output_type -> google.protobuf.Empty
 	0,  // 112: user_center.Service.DeleteUser:output_type -> google.protobuf.Empty
 	0,  // 113: user_center.Service.DisableUser:output_type -> google.protobuf.Empty

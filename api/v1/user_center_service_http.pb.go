@@ -90,7 +90,7 @@ type ServiceHTTPServer interface {
 	AllChannel(context.Context, *emptypb.Empty) (*AllChannelReply, error)
 	AllExtraFieldType(context.Context, *emptypb.Empty) (*AllExtraFieldTypeReply, error)
 	AllLoginPlatform(context.Context, *emptypb.Empty) (*AllLoginPlatformReply, error)
-	Auth(context.Context, *AuthRequest) (*emptypb.Empty, error)
+	Auth(context.Context, *AuthRequest) (*AuthReply, error)
 	BindByEmail(context.Context, *BindByEmailRequest) (*LoginReply, error)
 	BindByPassword(context.Context, *LoginByPasswordRequest) (*LoginReply, error)
 	BindEmailCaptcha(context.Context, *BindEmailCaptchaRequest) (*EmailCaptchaReply, error)
@@ -143,7 +143,7 @@ type ServiceHTTPServer interface {
 
 func RegisterServiceHTTPServer(s *http.Server, srv ServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/user-center/client/v1/refresh-token", _Service_RefreshToken0_HTTP_Handler(srv))
+	r.POST("/user-center/client/v1/refresh-token", _Service_RefreshToken0_HTTP_Handler(srv))
 	r.GET("/user-center/client/v1/login/image-captcha", _Service_LoginImageCaptcha0_HTTP_Handler(srv))
 	r.GET("/user-center/client/v1/bind/image-captcha", _Service_BindImageCaptcha0_HTTP_Handler(srv))
 	r.GET("/user-center/client/v1/register/image-captcha", _Service_RegisterImageCaptcha0_HTTP_Handler(srv))
@@ -512,7 +512,7 @@ func _Service_Auth0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context) e
 		if err != nil {
 			return err
 		}
-		reply := out.(*emptypb.Empty)
+		reply := out.(*AuthReply)
 		return ctx.Result(200, reply)
 	}
 }
@@ -1441,7 +1441,7 @@ type ServiceHTTPClient interface {
 	AllChannel(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *AllChannelReply, err error)
 	AllExtraFieldType(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *AllExtraFieldTypeReply, err error)
 	AllLoginPlatform(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *AllLoginPlatformReply, err error)
-	Auth(ctx context.Context, req *AuthRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
+	Auth(ctx context.Context, req *AuthRequest, opts ...http.CallOption) (rsp *AuthReply, err error)
 	BindByEmail(ctx context.Context, req *BindByEmailRequest, opts ...http.CallOption) (rsp *LoginReply, err error)
 	BindByPassword(ctx context.Context, req *LoginByPasswordRequest, opts ...http.CallOption) (rsp *LoginReply, err error)
 	BindEmailCaptcha(ctx context.Context, req *BindEmailCaptchaRequest, opts ...http.CallOption) (rsp *EmailCaptchaReply, err error)
@@ -1640,8 +1640,8 @@ func (c *ServiceHTTPClientImpl) AllLoginPlatform(ctx context.Context, in *emptyp
 	return &out, err
 }
 
-func (c *ServiceHTTPClientImpl) Auth(ctx context.Context, in *AuthRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
-	var out emptypb.Empty
+func (c *ServiceHTTPClientImpl) Auth(ctx context.Context, in *AuthRequest, opts ...http.CallOption) (*AuthReply, error) {
+	var out AuthReply
 	pattern := "/user-center/client/v1/auth"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceAuth))
@@ -2062,7 +2062,7 @@ func (c *ServiceHTTPClientImpl) RefreshToken(ctx context.Context, in *emptypb.Em
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceRefreshToken))
 	opts = append(opts, http.PathTemplate(pattern))
-	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	err := c.cc.Invoke(ctx, "POST", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

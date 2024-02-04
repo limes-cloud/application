@@ -3,11 +3,11 @@ package service
 import (
 	"context"
 
-	resourceV1 "github.com/limes-cloud/resource/api/v1"
-
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/jinzhu/copier"
 	"github.com/limes-cloud/kratosx"
+	resourceV1 "github.com/limes-cloud/resource/api/v1"
+
 	v1 "github.com/limes-cloud/user-center/api/v1"
 	"github.com/limes-cloud/user-center/internal/biz"
 	"github.com/limes-cloud/user-center/internal/biz/types"
