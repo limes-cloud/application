@@ -93,12 +93,11 @@ func (u *AuthUseCase) Auth(ctx kratosx.Context, req *types.AuthRequest) (*md.Dat
 		return data, nil
 	}
 
-	// if ctx.Authentication().Auth(data.AppKeyword, req.Method, req.Path) {
-	//	return data, nil
-	// }
-	return data, nil
+	if ctx.Authentication().Auth(data.AppKeyword, req.Method, req.Path) {
+		return data, nil
+	}
 
-	// return nil, v1.ForbiddenError()
+	return nil, v1.ForbiddenError()
 }
 
 func (u *AuthUseCase) GenToken(ctx kratosx.Context, user *User, app *App, channel *Channel) (string, error) {
