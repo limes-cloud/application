@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package errors;
+
+import "errors/errors.proto";
+option go_package = "./;errors";
+
+
+enum ErrorReason {
+  // 设置缺省错误码
+  option (errors.default_code) = 200;
+
+  // 为某个枚举单独设置错误码
+  NotFound= 0[(errors.message)="数据不存在"];
+  Database= 1[(errors.message)="数据库错误"];
+  Metadata= 2[(errors.message)="元数据异常"];
+  Transform= 3[(errors.message)="数据转换失败"];
+  GenCaptcha= 4[(errors.message)="验证码生成失败"];
+  VerifyCaptcha= 5[(errors.message)="验证码验证失败"];
+  NotRecord= 6[(errors.message)="暂无数据记录"];
+  RsaDecode= 7[(errors.message)="rsa解密失败"];
+  PasswordFormat= 8[(errors.message)="密码格式错误"];
+  PasswordExpire= 9[(errors.message)="密码已过期"];
+  UsernameOrPassword= 10[(errors.message)="账户或密码错误"];
+  UserDisable= 15[(errors.message)="用户已被禁用"];
+  GenToken= 18[(errors.message)="token生成失败"];
+  ParseToken= 19[(errors.message)="token解析失败"];
+  RefreshToken= 20 [(errors.code)=401,(errors.message)="刷新token失败"];
+  EmptyToken= 21[(errors.message)="token不能为空"];
+  NotUserApp= 22[(errors.message)="用户暂无应用使用权限"];
+  NotUserChannel= 23[(errors.message)="用户暂无渠道使用权限"];
+  NotApp= 24[(errors.message)="错误的应用标识"];
+  NotAppChannel= 31[(errors.message)="应用为开通此渠道"];
+  NotExistEmail= 25[(errors.message)="不存在此邮箱"];
+  AlreadyExistEmail= 26[(errors.message)="邮箱已存在"];
+  AlreadyExistPhone= 27[(errors.message)="手机已存在"];
+  AlreadyExistUsername= 28[(errors.message)="账号已存在"];
+  Register= 29[(errors.message)="用户注册失败"];
+  Forbidden= 30[(errors.code)=403,(errors.message)="无应用权限"];
+  GetAuthInfo= 32[(errors.message)="获取授权信息失败"];
+  UnBind= 33[(errors.code)=401,(errors.message)="用户未绑定"];
+  NotUser= 34[(errors.message)="用户不存在"];
+}
+ 
+

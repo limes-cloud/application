@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package agreement;
+
+option go_package = "./v1;v1";
+
+import "validate/validate.proto";
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+import "user_center_agreement_content.proto";
+import "user_center_agreement_scene.proto";
+
+// 协议服务接口定义，协议主要用于登录/注册时底部展示的
+service Service{
+  // 获取分页协议
+  rpc PageContent (PageContentRequest)  returns (PageContentReply) {
+    option (google.api.http) = {
+      get: "/user-center/admin/v1/agreement/contents",
+    };
+  }
+
+  // 获取协议的详细内容
+  rpc GetContent (GetContentRequest)  returns (Content) {
+    option (google.api.http) = {
+      get: "/user-center/admin/v1/agreement/content",
+      additional_bindings:{
+        get: "/user-center/client/v1/agreement/content",
+      }
+    };
+  }
+
+  // 新增协议内容
+  rpc AddContent (AddContentRequest)  returns (AddContentReply) {
+    option (google.api.http) = {
+      post: "/user-center/admin/v1/agreement/content",
+      body:"*"
+    };
+  }
+
+  // 更新协议内容
+  rpc UpdateContent (UpdateContentRequest)  returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/user-center/admin/v1/agreement/content",
+      body:"*"
+    };
+  }
+
+  // 删除指定的协议内容
+  rpc DeleteContent (DeleteContentRequest)  returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/user-center/admin/v1/agreement/content",
+    };
+  }
+
+  // 获取分页协议场景
+  rpc PageScene (PageSceneRequest)  returns (PageSceneReply) {
+    option (google.api.http) = {
+      get: "/user-center/admin/v1/agreement/scenes",
+    };
+  }
+
+  // 获取指定的协议场景以及协议场景包含的协议列表
+  rpc GetSceneByKeyword (GetSceneByKeywordRequest)  returns (Scene) {
+    option (google.api.http) = {
+      get: "/user-center/client/v1/agreement/scene",
+    };
+  }
+
+  // 新增协议场景
+  rpc AddScene (AddSceneRequest)  returns (AddSceneReply) {
+    option (google.api.http) = {
+      post: "/user-center/admin/v1/agreement/scene",
+      body:"*"
+    };
+  }
+
+  // 更新协议场景
+  rpc UpdateScene (UpdateSceneRequest)  returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/user-center/admin/v1/agreement/scene",
+      body:"*"
+    };
+  }
+
+  // 删除协议场景
+  rpc DeleteScene (DeleteSceneRequest)  returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/user-center/admin/v1/agreement/scene",
+    };
+  }
+}

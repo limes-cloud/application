@@ -8,26 +8,41 @@ import (
 	"github.com/limes-cloud/kratosx"
 	resourceV1 "github.com/limes-cloud/resource/api/v1"
 
-	v1 "github.com/limes-cloud/user-center/api/v1"
-	"github.com/limes-cloud/user-center/internal/biz"
-	"github.com/limes-cloud/user-center/internal/biz/types"
-	"github.com/limes-cloud/user-center/pkg/service"
+	pb "github.com/limes-cloud/user-center/api/app/v1"
+	"github.com/limes-cloud/user-center/api/errors"
+	biz "github.com/limes-cloud/user-center/internal/biz/app"
+	"github.com/limes-cloud/user-center/internal/config"
+	data "github.com/limes-cloud/user-center/internal/data/app"
+	"github.com/limes-cloud/user-center/internal/pkg/service"
 )
 
-func (s *Service) PageApp(ctx context.Context, in *v1.PageAppRequest) (*v1.PageAppReply, error) {
-	var req types.PageAppRequest
+type AppService struct {
+	pb.UnimplementedServiceServer
+	uc   *biz.UseCase
+	conf *config.Config
+}
+
+func NewApp(conf *config.Config) *AppService {
+	return &AppService{
+		conf: conf,
+		uc:   biz.NewUseCase(conf, data.NewRepo()),
+	}
+}
+
+func (s *AppService) PageApp(ctx context.Context, in *pb.PageAppRequest) (*pb.PageAppReply, error) {
+	var req biz.PageAppRequest
 	if err := copier.Copy(&req, in); err != nil {
-		return nil, v1.TransformError()
+		return nil, errors.Transform()
 	}
 
-	list, total, err := s.app.Page(kratosx.MustContext(ctx), &req)
+	list, total, err := s.uc.Page(kratosx.MustContext(ctx), &req)
 	if err != nil {
 		return nil, err
 	}
 
-	reply := v1.PageAppReply{Total: total}
+	reply := pb.PageAppReply{Total: total}
 	if err := copier.Copy(&reply.List, list); err != nil {
-		return nil, v1.TransformError()
+		return nil, errors.Transform()
 	}
 
 	// 请求资源中心,错了直接忽略，不影响主流程
@@ -41,15 +56,15 @@ func (s *Service) PageApp(ctx context.Context, in *v1.PageAppRequest) (*v1.PageA
 	return &reply, nil
 }
 
-func (s *Service) GetAppByKeyword(ctx context.Context, in *v1.GetAppByKeywordRequest) (*v1.App, error) {
-	app, err := s.app.GetByKeyword(kratosx.MustContext(ctx), in.Keyword)
+func (s *AppService) GetAppByKeyword(ctx context.Context, in *pb.GetAppByKeywordRequest) (*pb.App, error) {
+	app, err := s.uc.GetByKeyword(kratosx.MustContext(ctx), in.Keyword)
 	if err != nil {
 		return nil, err
 	}
 
-	reply := v1.App{}
+	reply := pb.App{}
 	if err := copier.Copy(&reply, app); err != nil {
-		return nil, v1.TransformError()
+		return nil, errors.Transform()
 	}
 
 	// 请求资源中心,错了直接忽略，不影响主流程
@@ -66,10 +81,10 @@ func (s *Service) GetAppByKeyword(ctx context.Context, in *v1.GetAppByKeywordReq
 	return &reply, nil
 }
 
-func (s *Service) AddApp(ctx context.Context, in *v1.AddAppRequest) (*v1.AddAppReply, error) {
+func (s *AppService) AddApp(ctx context.Context, in *pb.AddAppRequest) (*pb.AddAppReply, error) {
 	var app biz.App
 	if err := copier.Copy(&app, in); err != nil {
-		return nil, v1.TransformError()
+		return nil, errors.Transform()
 	}
 
 	for _, id := range in.ChannelIds {
@@ -77,18 +92,23 @@ func (s *Service) AddApp(ctx context.Context, in *v1.AddAppRequest) (*v1.AddAppR
 			ChannelID: id,
 		})
 	}
+	for _, id := range in.FieldIds {
+		app.AppFields = append(app.AppFields, &biz.AppField{
+			FieldID: id,
+		})
+	}
 
-	id, err := s.app.Add(kratosx.MustContext(ctx), &app)
+	id, err := s.uc.Add(kratosx.MustContext(ctx), &app)
 	if err != nil {
 		return nil, err
 	}
-	return &v1.AddAppReply{Id: id}, nil
+	return &pb.AddAppReply{Id: id}, nil
 }
 
-func (s *Service) UpdateApp(ctx context.Context, in *v1.UpdateAppRequest) (*empty.Empty, error) {
+func (s *AppService) UpdateApp(ctx context.Context, in *pb.UpdateAppRequest) (*empty.Empty, error) {
 	var app biz.App
 	if err := copier.Copy(&app, in); err != nil {
-		return nil, v1.TransformError()
+		return nil, errors.Transform()
 	}
 
 	for _, id := range in.ChannelIds {
@@ -96,10 +116,15 @@ func (s *Service) UpdateApp(ctx context.Context, in *v1.UpdateAppRequest) (*empt
 			ChannelID: id,
 		})
 	}
+	for _, id := range in.FieldIds {
+		app.AppFields = append(app.AppFields, &biz.AppField{
+			FieldID: id,
+		})
+	}
 
-	return nil, s.app.Update(kratosx.MustContext(ctx), &app)
+	return nil, s.uc.Update(kratosx.MustContext(ctx), &app)
 }
 
-func (s *Service) DeleteApp(ctx context.Context, in *v1.DeleteAppRequest) (*empty.Empty, error) {
-	return nil, s.app.Delete(kratosx.MustContext(ctx), in.Id)
+func (s *AppService) DeleteApp(ctx context.Context, in *pb.DeleteAppRequest) (*empty.Empty, error) {
+	return nil, s.uc.Delete(kratosx.MustContext(ctx), in.Id)
 }

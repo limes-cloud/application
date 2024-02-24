@@ -1,0 +1,225 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "./v1;v1";
+
+import "validate/validate.proto";
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+import "user_center_user.proto";
+import "user_center_auth.proto";
+import "user_center_user_app.proto";
+
+// 应用服务服务接口定义，渠道主要是配置用户登录时的可选登录方法
+service Service{
+  rpc GetSimpleUser (GetSimpleUserRequest)  returns (SimpleUser){}
+
+  rpc GetBaseUser (GetBaseUserRequest)  returns (BaseUser){}
+
+  rpc GetUser (GetUserRequest)  returns (User) {
+    option (google.api.http) = {
+      get: "/user-center/admin/v1/user",
+    };
+  }
+
+  rpc GetCurrentUser (google.protobuf.Empty)  returns (User) {
+    option (google.api.http) = {
+      get: "/user-center/client/v1/user",
+    };
+  }
+
+  rpc UpdateCurrentUser (UpdateCurrentUserRequest)  returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/user-center/client/v1/user",
+      body: "*"
+    };
+  }
+
+  rpc PageUser (PageUserRequest)  returns (PageUserReply) {
+    option (google.api.http) = {
+      get: "/user-center/admin/v1/users",
+    };
+  }
+
+  rpc AddUser (AddUserRequest)  returns (AddUserReply) {
+    option (google.api.http) = {
+      post: "/user-center/admin/v1/user",
+      body:"*"
+    };
+  }
+
+  rpc UpdateUser (UpdateUserRequest)  returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/user-center/admin/v1/user",
+      body:"*"
+    };
+  }
+
+  rpc DeleteUser (DeleteUserRequest)  returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/user-center/admin/v1/user",
+    };
+  }
+
+  // 禁用用户
+  rpc DisableUser (DisableUserRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/user-center/admin/v1/user/disable",
+      body: "*",
+    };
+  }
+
+  // 启用用户
+  rpc EnableUser (EnableUserRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/user-center/admin/v1/user/enable",
+      body: "*",
+    };
+  }
+
+  // 下线用户
+  rpc OfflineUser (OfflineUserRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/user-center/admin/v1/user/offline",
+      body: "*",
+    };
+  }
+
+  // 添加用户应用
+  rpc AddUserApp (AddUserAppRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/user-center/admin/v1/user/app",
+      body: "*",
+    };
+  }
+
+  // 删除用户应用
+  rpc DeleteUserApp (DeleteUserAppRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/user-center/admin/v1/user/app",
+    };
+  }
+
+  // 三方授权登录
+  rpc OAuthLogin (OAuthLoginRequest)  returns (LoginReply) {
+    option (google.api.http) = {
+      post: "/user-center/client/v1/login/oauth",
+      body: "*"
+    };
+  }
+
+  // 三方授权绑定-密码
+  rpc OAuthBindByPassword (OAuthBindByPasswordRequest)  returns (BindReply) {
+    option (google.api.http) = {
+      post: "/user-center/client/v1/bind/oauth/password",
+      body: "*"
+    };
+  }
+
+  //  三方授权绑定-验证码
+  rpc OAuthBindByCaptcha (OAuthBindByCaptchaRequest)  returns (BindReply) {
+    option (google.api.http) = {
+      post: "/user-center/client/v1/bind/oauth/captcha",
+      body: "*"
+    };
+  }
+
+  // 绑定的验证码
+  rpc OAuthBindImageCaptcha (google.protobuf.Empty)  returns (CaptchaReply) {
+    option (google.api.http) = {
+      get: "/user-center/client/v1/bind/oauth/image-captcha",
+    };
+  }
+
+  rpc OAuthBindEmailCaptcha (OAuthBindEmailCaptchaRequest)  returns (CaptchaReply) {
+    option (google.api.http) = {
+      post: "/user-center/client/v1/bind/oauth/email-captcha",
+      body: "*"
+    };
+  }
+
+  // 密码登录
+  rpc PasswordLogin (PasswordLoginRequest)  returns (LoginReply) {
+    option (google.api.http) = {
+      post: "/user-center/client/v1/login/password",
+      body: "*"
+    };
+  }
+
+  // 密码登录验证码
+  rpc PasswordLoginCaptcha (google.protobuf.Empty)  returns (CaptchaReply) {
+    option (google.api.http) = {
+      get: "/user-center/client/v1/login/password/image-captcha",
+    };
+  }
+
+  // 密码注册
+  rpc PasswordRegister(PasswordRegisterRequest)  returns (RegisterReply) {
+    option (google.api.http) = {
+      post: "/user-center/client/v1/register/password",
+      body: "*"
+    };
+  }
+
+  // 密码注册检测
+  rpc PasswordRegisterCheck (PasswordRegisterCheckRequest)  returns (PasswordRegisterCheckReply) {
+    option (google.api.http) = {
+      get: "/user-center/client/v1/register/password/check",
+    };
+  }
+
+  // 注册验证啊
+  rpc PasswordRegisterCaptcha (google.protobuf.Empty)  returns (CaptchaReply) {
+    option (google.api.http) = {
+      get: "/user-center/client/v1/register/password/image-captcha",
+    };
+  }
+
+  // 验证码登录
+  rpc CaptchaLogin (CaptchaLoginRequest)  returns (LoginReply) {
+    option (google.api.http) = {
+      post: "/user-center/client/v1/login/captcha",
+      body: "*"
+    };
+  }
+
+  // 验证码登录邮件验证码
+  rpc CaptchaLoginEmail (CaptchaLoginEmailRequest)  returns (CaptchaReply) {
+    option (google.api.http) = {
+      post: "/user-center/client/v1/login/captcha/email",
+      body: "*"
+    };
+  }
+
+  // 验证码注册邮件验证码
+  rpc CaptchaRegisterEmail (CaptchaRegisterEmailRequest)  returns (CaptchaReply) {
+    option (google.api.http) = {
+      get: "/user-center/client/v1/register/captcha/email-captcha"
+    };
+  }
+
+  // 验证码注册接口
+  rpc CaptchaRegister (CaptchaRegisterRequest)  returns (RegisterReply) {
+    option (google.api.http) = {
+      post: "/user-center/client/v1/register/captcha",
+      body: "*"
+    };
+  }
+
+  // 解析token信息
+  rpc ParseToken (google.protobuf.Empty)  returns (ParseTokenReply) {
+    option (google.api.http) = {
+      post: "/user-center/client/v1/auth",
+      body: "*"
+    };
+  }
+
+  // 刷新token时长
+  rpc RefreshToken (google.protobuf.Empty)  returns (LoginReply) {
+    option (google.api.http) = {
+      post: "/user-center/client/v1/token/refresh",
+    };
+  }
+
+}

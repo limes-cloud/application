@@ -1,39 +1,35 @@
 package service
 
 import (
-	v1 "github.com/limes-cloud/user-center/api/v1"
-	"github.com/limes-cloud/user-center/config"
-	"github.com/limes-cloud/user-center/internal/biz"
-	"github.com/limes-cloud/user-center/internal/data"
+	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/go-kratos/kratos/v2/transport/http"
+
+	agreementpb "github.com/limes-cloud/user-center/api/agreement/v1"
+	apppb "github.com/limes-cloud/user-center/api/app/v1"
+	channelpb "github.com/limes-cloud/user-center/api/channel/v1"
+	fieldpb "github.com/limes-cloud/user-center/api/field/v1"
+	userpb "github.com/limes-cloud/user-center/api/user/v1"
+	"github.com/limes-cloud/user-center/internal/config"
 )
 
-type Service struct {
-	v1.UnimplementedServiceServer
-	conf         *config.Config
-	agreement    *biz.AgreementUseCase
-	scene        *biz.SceneUseCase
-	channel      *biz.ChannelUseCase
-	app          *biz.AppUseCase
-	appInterface *biz.AppInterfaceUseCase
-	extraField   *biz.ExtraFieldUseCase
-	user         *biz.UserUseCase
-	userApp      *biz.UserAppUseCase
-	userChannel  *biz.UserChannelUseCase
-	auth         *biz.AuthUseCase
-}
+func New(c *config.Config, hs *http.Server, gs *grpc.Server) {
+	agreementSrv := NewAgreement(c)
+	agreementpb.RegisterServiceHTTPServer(hs, agreementSrv)
+	agreementpb.RegisterServiceServer(gs, agreementSrv)
 
-func New(conf *config.Config) *Service {
-	return &Service{
-		conf:         conf,
-		channel:      biz.NewChannelUseCase(conf, data.NewChannelRepo()),
-		app:          biz.NewAppUseCase(conf, data.NewAppRepo()),
-		appInterface: biz.NewAppInterfaceUseCase(conf, data.NewAppInterfaceRepo()),
-		extraField:   biz.NewExtraFieldUseCase(conf, data.NewExtraFieldRepo()),
-		user:         biz.NewUserUseCase(conf, data.NewUserRepo()),
-		userApp:      biz.NewUserAppUseCase(conf, data.NewUserAppRepo()),
-		userChannel:  biz.NewUserChannelUseCase(conf, data.NewUserChannelRepo()),
-		agreement:    biz.NewAgreementUseCase(conf, data.NewAgreementRepo()),
-		scene:        biz.NewSceneUseCase(conf, data.NewSceneRepo()),
-		auth:         biz.NewAuthUseCase(conf, data.NewAuthRepo()),
-	}
+	channelSrv := NewChannel(c)
+	channelpb.RegisterServiceHTTPServer(hs, channelSrv)
+	channelpb.RegisterServiceServer(gs, channelSrv)
+
+	appSrv := NewApp(c)
+	apppb.RegisterServiceHTTPServer(hs, appSrv)
+	apppb.RegisterServiceServer(gs, appSrv)
+
+	fieldSrv := NewField(c)
+	fieldpb.RegisterServiceHTTPServer(hs, fieldSrv)
+	fieldpb.RegisterServiceServer(gs, fieldSrv)
+
+	userSrv := NewUser(c)
+	userpb.RegisterServiceHTTPServer(hs, userSrv)
+	userpb.RegisterServiceServer(gs, userSrv)
 }

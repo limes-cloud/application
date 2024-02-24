@@ -9,11 +9,9 @@ import (
 	"github.com/limes-cloud/kratosx/config"
 	_ "go.uber.org/automaxprocs"
 
-	v1 "github.com/limes-cloud/user-center/api/v1"
-	systemConfig "github.com/limes-cloud/user-center/config"
+	internalconfig "github.com/limes-cloud/user-center/internal/config"
 	"github.com/limes-cloud/user-center/internal/initiator"
 	"github.com/limes-cloud/user-center/internal/service"
-	_ "github.com/limes-cloud/user-center/pkg/field"
 )
 
 func main() {
@@ -28,19 +26,16 @@ func main() {
 }
 
 func RegisterServer(c config.Config, hs *http.Server, gs *grpc.Server) {
-	conf := &systemConfig.Config{}
-	if err := c.Value("business").Scan(conf); err != nil {
-		panic("business config format error:" + err.Error())
-	}
-	c.Watch("business", func(value config.Value) {
+	// 初始化并监听配置变更
+	conf := &internalconfig.Config{}
+	c.ScanWatch("business", func(value config.Value) {
 		if err := value.Scan(conf); err != nil {
-			log.Error("business 配置变更失败")
+			panic("business config format error:" + err.Error())
 		}
 	})
 
-	srv := service.New(conf)
-	v1.RegisterServiceHTTPServer(hs, srv)
-	v1.RegisterServiceServer(gs, srv)
+	// 注册服务
+	service.New(conf, hs, gs)
 
 	// 初始化逻辑
 	ior := initiator.New(conf)

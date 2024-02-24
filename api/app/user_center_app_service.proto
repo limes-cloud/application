@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package app;
+
+option go_package = "./v1;v1";
+
+import "validate/validate.proto";
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+import "user_center_app.proto";
+
+// 应用服务服务接口定义，渠道主要是配置用户登录时的可选登录方法
+service Service{
+  // 获取分页应用
+  rpc PageApp (PageAppRequest) returns (PageAppReply) {
+    option (google.api.http) = {
+      get: "/user-center/admin/v1/apps",
+    };
+  }
+
+  // 获取指定的应用
+  rpc GetAppByKeyword (GetAppByKeywordRequest) returns (App) {
+    option (google.api.http) = {
+      get: "/user-center/admin/v1/app",
+      additional_bindings:{
+        get: "/user-center/client/v1/app",
+      }
+    };
+  }
+
+  // 添加应用
+  rpc AddApp (AddAppRequest) returns (AddAppReply) {
+    option (google.api.http) = {
+      post: "/user-center/admin/v1/app",
+      body:"*"
+    };
+  }
+
+  // 更新应用
+  rpc UpdateApp (UpdateAppRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      put: "/user-center/admin/v1/app",
+      body:"*"
+    };
+  }
+
+  // 删除应用
+  rpc DeleteApp (DeleteAppRequest) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      delete: "/user-center/admin/v1/app",
+    };
+  }
+}

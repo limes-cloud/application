@@ -1,0 +1,1113 @@
+# Generated with protoc-gen-openapi
+# https://github.com/google/gnostic/tree/master/cmd/protoc-gen-openapi
+
+openapi: 3.0.3
+info:
+    title: Service API
+    description: 应用服务服务接口定义，渠道主要是配置用户登录时的可选登录方法
+    version: 0.0.1
+paths:
+    /user-center/admin/v1/user:
+        get:
+            tags:
+                - Service
+            operationId: Service_GetUser
+            parameters:
+                - name: phone
+                  in: query
+                  schema:
+                    type: string
+                - name: email
+                  in: query
+                  schema:
+                    type: string
+                - name: username
+                  in: query
+                  schema:
+                    type: string
+                - name: id
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        put:
+            tags:
+                - Service
+            operationId: Service_UpdateUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - Service
+            operationId: Service_AddUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AddUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AddUserReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - Service
+            operationId: Service_DeleteUser
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/admin/v1/user/app:
+        post:
+            tags:
+                - Service
+            description: 添加用户应用
+            operationId: Service_AddUserApp
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/AddUserAppRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - Service
+            description: 删除用户应用
+            operationId: Service_DeleteUserApp
+            parameters:
+                - name: userId
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: appId
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/admin/v1/user/disable:
+        post:
+            tags:
+                - Service
+            description: 禁用用户
+            operationId: Service_DisableUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/DisableUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/admin/v1/user/enable:
+        post:
+            tags:
+                - Service
+            description: 启用用户
+            operationId: Service_EnableUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/EnableUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/admin/v1/user/offline:
+        post:
+            tags:
+                - Service
+            description: 下线用户
+            operationId: Service_OfflineUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OfflineUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/admin/v1/users:
+        get:
+            tags:
+                - Service
+            operationId: Service_PageUser
+            parameters:
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: app
+                  in: query
+                  schema:
+                    type: string
+                - name: username
+                  in: query
+                  schema:
+                    type: string
+                - name: phone
+                  in: query
+                  schema:
+                    type: string
+                - name: email
+                  in: query
+                  schema:
+                    type: string
+                - name: inIds
+                  in: query
+                  schema:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+                - name: notInIds
+                  in: query
+                  schema:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PageUserReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/auth:
+        post:
+            tags:
+                - Service
+            description: 解析token信息
+            operationId: Service_ParseToken
+            requestBody:
+                content:
+                    application/json: {}
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ParseTokenReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/bind/oauth/captcha:
+        post:
+            tags:
+                - Service
+            description: 三方授权绑定-验证码
+            operationId: Service_OAuthBindByCaptcha
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OAuthBindByCaptchaRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BindReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/bind/oauth/email-captcha:
+        post:
+            tags:
+                - Service
+            operationId: Service_OAuthBindEmailCaptcha
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OAuthBindEmailCaptchaRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CaptchaReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/bind/oauth/image-captcha:
+        get:
+            tags:
+                - Service
+            description: 绑定的验证码
+            operationId: Service_OAuthBindImageCaptcha
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CaptchaReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/bind/oauth/password:
+        post:
+            tags:
+                - Service
+            description: 三方授权绑定-密码
+            operationId: Service_OAuthBindByPassword
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OAuthBindByPasswordRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/BindReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/login/captcha:
+        post:
+            tags:
+                - Service
+            description: 验证码登录
+            operationId: Service_CaptchaLogin
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CaptchaLoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/LoginReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/login/captcha/email:
+        post:
+            tags:
+                - Service
+            description: 验证码登录邮件验证码
+            operationId: Service_CaptchaLoginEmail
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CaptchaLoginEmailRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CaptchaReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/login/oauth:
+        post:
+            tags:
+                - Service
+            description: 三方授权登录
+            operationId: Service_OAuthLogin
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/OAuthLoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/LoginReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/login/password:
+        post:
+            tags:
+                - Service
+            description: 密码登录
+            operationId: Service_PasswordLogin
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PasswordLoginRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/LoginReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/login/password/image-captcha:
+        get:
+            tags:
+                - Service
+            description: 密码登录验证码
+            operationId: Service_PasswordLoginCaptcha
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CaptchaReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/register/captcha:
+        post:
+            tags:
+                - Service
+            description: 验证码注册接口
+            operationId: Service_CaptchaRegister
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CaptchaRegisterRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RegisterReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/register/captcha/email-captcha:
+        get:
+            tags:
+                - Service
+            description: 验证码注册邮件验证码
+            operationId: Service_CaptchaRegisterEmail
+            parameters:
+                - name: email
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CaptchaReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/register/password:
+        post:
+            tags:
+                - Service
+            description: 密码注册
+            operationId: Service_PasswordRegister
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/PasswordRegisterRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RegisterReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/register/password/check:
+        get:
+            tags:
+                - Service
+            description: 密码注册检测
+            operationId: Service_PasswordRegisterCheck
+            parameters:
+                - name: username
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/PasswordRegisterCheckReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/register/password/image-captcha:
+        get:
+            tags:
+                - Service
+            description: 注册验证啊
+            operationId: Service_PasswordRegisterCaptcha
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CaptchaReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/token/refresh:
+        post:
+            tags:
+                - Service
+            description: 刷新token时长
+            operationId: Service_RefreshToken
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/LoginReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/v1/user:
+        get:
+            tags:
+                - Service
+            operationId: Service_GetCurrentUser
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        put:
+            tags:
+                - Service
+            operationId: Service_UpdateCurrentUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateCurrentUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+components:
+    schemas:
+        AddUserAppRequest:
+            type: object
+            properties:
+                userId:
+                    type: integer
+                    format: uint32
+                appId:
+                    type: integer
+                    format: uint32
+        AddUserReply:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+        AddUserRequest:
+            type: object
+            properties:
+                phone:
+                    type: string
+                email:
+                    type: string
+                username:
+                    type: string
+                password:
+                    type: string
+                nickName:
+                    type: string
+                realName:
+                    type: string
+                idCard:
+                    type: string
+                avatar:
+                    type: string
+                gender:
+                    type: string
+                from:
+                    type: string
+                fromDesc:
+                    type: string
+                userExtras:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/AddUserRequest_UserExtra'
+        AddUserRequest_UserExtra:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                userId:
+                    type: integer
+                    format: uint32
+                keyword:
+                    type: string
+                type:
+                    type: string
+                value:
+                    $ref: '#/components/schemas/GoogleProtobufAny'
+                createdAt:
+                    type: integer
+                    format: uint32
+        BindReply:
+            type: object
+            properties:
+                token:
+                    type: string
+        CaptchaLoginEmailRequest:
+            type: object
+            properties:
+                email:
+                    type: string
+        CaptchaLoginRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+                captcha:
+                    type: string
+                captchaId:
+                    type: string
+                app:
+                    type: string
+        CaptchaRegisterRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+                captcha:
+                    type: string
+                captchaId:
+                    type: string
+                app:
+                    type: string
+        CaptchaReply:
+            type: object
+            properties:
+                id:
+                    type: string
+                expire:
+                    type: integer
+                    format: uint32
+                base64:
+                    type: string
+        DisableUserRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                desc:
+                    type: string
+        EnableUserRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+        File:
+            type: object
+            properties: {}
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        GoogleProtobufValue:
+            description: Represents a dynamically typed value which can be either null, a number, a string, a boolean, a recursive struct value, or a list of values.
+        LoginReply:
+            type: object
+            properties:
+                token:
+                    type: string
+        OAuthBindByCaptchaRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+                captcha:
+                    type: string
+                captchaId:
+                    type: string
+                app:
+                    type: string
+                code:
+                    type: string
+                platform:
+                    type: string
+        OAuthBindByPasswordRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+                password:
+                    type: string
+                captcha:
+                    type: string
+                captchaId:
+                    type: string
+                app:
+                    type: string
+                code:
+                    type: string
+                platform:
+                    type: string
+        OAuthBindEmailCaptchaRequest:
+            type: object
+            properties:
+                email:
+                    type: string
+        OAuthLoginRequest:
+            type: object
+            properties:
+                app:
+                    type: string
+                code:
+                    type: string
+                platform:
+                    type: string
+        OfflineUserRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+        PageUserReply:
+            type: object
+            properties:
+                total:
+                    type: integer
+                    format: uint32
+                list:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/User'
+        ParseTokenReply:
+            type: object
+            properties:
+                userId:
+                    type: integer
+                    format: uint32
+                appId:
+                    type: integer
+                    format: uint32
+                channelId:
+                    type: integer
+                    format: uint32
+                appKeyword:
+                    type: string
+        PasswordLoginRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+                password:
+                    type: string
+                captcha:
+                    type: string
+                captchaId:
+                    type: string
+                app:
+                    type: string
+        PasswordRegisterCheckReply:
+            type: object
+            properties:
+                allow:
+                    type: boolean
+        PasswordRegisterRequest:
+            type: object
+            properties:
+                username:
+                    type: string
+                password:
+                    type: string
+                captcha:
+                    type: string
+                captchaId:
+                    type: string
+                app:
+                    type: string
+        RegisterReply:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                token:
+                    type: string
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        UpdateCurrentUserRequest:
+            type: object
+            properties:
+                phone:
+                    type: string
+                email:
+                    type: string
+                username:
+                    type: string
+                password:
+                    type: string
+                nickName:
+                    type: string
+                realName:
+                    type: string
+                idCard:
+                    type: string
+                avatar:
+                    type: string
+                gender:
+                    type: string
+                extra:
+                    type: object
+                    additionalProperties:
+                        $ref: '#/components/schemas/GoogleProtobufValue'
+        UpdateUserRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                phone:
+                    type: string
+                email:
+                    type: string
+                username:
+                    type: string
+                password:
+                    type: string
+                nickName:
+                    type: string
+                realName:
+                    type: string
+                idCard:
+                    type: string
+                avatar:
+                    type: string
+                gender:
+                    type: string
+        User:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                phone:
+                    type: string
+                email:
+                    type: string
+                username:
+                    type: string
+                nickName:
+                    type: string
+                realName:
+                    type: string
+                idCard:
+                    type: string
+                avatar:
+                    type: string
+                gender:
+                    type: string
+                status:
+                    type: boolean
+                disableDesc:
+                    type: string
+                from:
+                    type: string
+                fromDesc:
+                    type: string
+                createdAt:
+                    type: integer
+                    format: uint32
+                updatedAt:
+                    type: integer
+                    format: uint32
+                apps:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/User_App'
+                channels:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/User_Channel'
+                extra:
+                    type: object
+                    additionalProperties:
+                        $ref: '#/components/schemas/GoogleProtobufValue'
+                extraList:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/User_Extra'
+                resource:
+                    $ref: '#/components/schemas/File'
+        User_App:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                name:
+                    type: string
+                logo:
+                    type: string
+                createdAt:
+                    type: integer
+                    format: uint32
+                loginAt:
+                    type: integer
+                    format: uint32
+                resource:
+                    $ref: '#/components/schemas/File'
+        User_Channel:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                name:
+                    type: string
+                logo:
+                    type: string
+                createdAt:
+                    type: integer
+                    format: uint32
+                loginAt:
+                    type: integer
+                    format: uint32
+                resource:
+                    $ref: '#/components/schemas/File'
+        User_Extra:
+            type: object
+            properties:
+                name:
+                    type: string
+                keyword:
+                    type: string
+                type:
+                    type: string
+                typeName:
+                    type: string
+                value:
+                    $ref: '#/components/schemas/GoogleProtobufValue'
+tags:
+    - name: Service

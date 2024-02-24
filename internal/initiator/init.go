@@ -3,11 +3,11 @@ package initiator
 import (
 	"context"
 
+	"github.com/go-kratos/kratos/v2/log"
 	"github.com/limes-cloud/kratosx"
 
-	"github.com/limes-cloud/user-center/config"
+	"github.com/limes-cloud/user-center/internal/config"
 	"github.com/limes-cloud/user-center/internal/initiator/migrate"
-	"github.com/limes-cloud/user-center/pkg/pt"
 )
 
 type Initiator struct {
@@ -25,7 +25,7 @@ func (a *Initiator) Run() error {
 	ctx := kratosx.MustContext(context.Background())
 
 	if migrate.IsInit(ctx) {
-		pt.Cyan("already init server")
+		log.Error("already init server")
 		return nil
 	}
 
