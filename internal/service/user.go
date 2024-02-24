@@ -362,7 +362,7 @@ func (s *UserService) OAuthBindByCaptcha(ctx context.Context, in *pb.OAuthBindBy
 	}, nil
 }
 
-func (s *UserService) OAuthBindCaptcha(ctx context.Context, _ *empty.Empty) (*pb.CaptchaReply, error) {
+func (s *UserService) OAuthBindImageCaptcha(ctx context.Context, _ *empty.Empty) (*pb.CaptchaReply, error) {
 	res, err := s.uc.OAuthBindCaptcha(kratosx.MustContext(ctx))
 	if err != nil {
 		return nil, err

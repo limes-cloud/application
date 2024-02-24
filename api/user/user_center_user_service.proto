@@ -210,7 +210,7 @@ service Service{
   // 解析token信息
   rpc ParseToken (google.protobuf.Empty)  returns (ParseTokenReply) {
     option (google.api.http) = {
-      post: "/user-center/client/v1/auth",
+      post: "/user-center/client/v1/token/parse",
       body: "*"
     };
   }

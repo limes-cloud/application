@@ -25,7 +25,6 @@ const (
 	Service_AddField_FullMethodName     = "/field.Service/AddField"
 	Service_UpdateField_FullMethodName  = "/field.Service/UpdateField"
 	Service_DeleteField_FullMethodName  = "/field.Service/DeleteField"
-	Service_CurrentField_FullMethodName = "/field.Service/CurrentField"
 )
 
 // ServiceClient is the client API for Service service.
@@ -37,7 +36,6 @@ type ServiceClient interface {
 	AddField(ctx context.Context, in *AddFieldRequest, opts ...grpc.CallOption) (*AddFieldReply, error)
 	UpdateField(ctx context.Context, in *UpdateFieldRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteField(ctx context.Context, in *DeleteFieldRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	CurrentField(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CurrentFieldReply, error)
 }
 
 type serviceClient struct {
@@ -93,15 +91,6 @@ func (c *serviceClient) DeleteField(ctx context.Context, in *DeleteFieldRequest,
 	return out, nil
 }
 
-func (c *serviceClient) CurrentField(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CurrentFieldReply, error) {
-	out := new(CurrentFieldReply)
-	err := c.cc.Invoke(ctx, Service_CurrentField_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // ServiceServer is the server API for Service service.
 // All implementations must embed UnimplementedServiceServer
 // for forward compatibility
@@ -111,7 +100,6 @@ type ServiceServer interface {
 	AddField(context.Context, *AddFieldRequest) (*AddFieldReply, error)
 	UpdateField(context.Context, *UpdateFieldRequest) (*emptypb.Empty, error)
 	DeleteField(context.Context, *DeleteFieldRequest) (*emptypb.Empty, error)
-	CurrentField(context.Context, *emptypb.Empty) (*CurrentFieldReply, error)
 	mustEmbedUnimplementedServiceServer()
 }
 
@@ -133,9 +121,6 @@ func (UnimplementedServiceServer) UpdateField(context.Context, *UpdateFieldReque
 }
 func (UnimplementedServiceServer) DeleteField(context.Context, *DeleteFieldRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteField not implemented")
-}
-func (UnimplementedServiceServer) CurrentField(context.Context, *emptypb.Empty) (*CurrentFieldReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CurrentField not implemented")
 }
 func (UnimplementedServiceServer) mustEmbedUnimplementedServiceServer() {}
 
@@ -240,24 +225,6 @@ func _Service_DeleteField_Handler(srv interface{}, ctx context.Context, dec func
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Service_CurrentField_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ServiceServer).CurrentField(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Service_CurrentField_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).CurrentField(ctx, req.(*emptypb.Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Service_ServiceDesc is the grpc.ServiceDesc for Service service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -284,10 +251,6 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteField",
 			Handler:    _Service_DeleteField_Handler,
-		},
-		{
-			MethodName: "CurrentField",
-			Handler:    _Service_CurrentField_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

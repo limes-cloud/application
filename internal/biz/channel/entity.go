@@ -1,6 +1,8 @@
 package channel
 
-import ktypes "github.com/limes-cloud/kratosx/types"
+import (
+	ktypes "github.com/limes-cloud/kratosx/types"
+)
 
 type Channel struct {
 	ktypes.CreateModel
@@ -13,11 +15,11 @@ type Channel struct {
 	Status   *bool  `json:"status" gorm:"not null;comment:渠道状态"`
 }
 
+func (t Channel) TableName() string {
+	return "channel"
+}
+
 type Typer struct {
 	Platform string `json:"platform"`
 	Name     string
-}
-
-func (t Channel) TableName() string {
-	return "channel"
 }

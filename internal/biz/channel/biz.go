@@ -43,7 +43,7 @@ func (u *UseCase) GetTypes() ([]*Typer, error) {
 	}
 
 	var keys []string
-	ath := authorizer.New()
+	ath := authorizer.New(nil)
 	set := ath.GetAuthorizers()
 	for key := range set {
 		keys = append(keys, key)

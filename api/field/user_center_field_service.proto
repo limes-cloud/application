@@ -43,9 +43,9 @@ service Service{
     };
   }
 
-  rpc CurrentField (google.protobuf.Empty)  returns (CurrentFieldReply) {
-    option (google.api.http) = {
-      get: "/user-center/client/v1/fields",
-    };
-  }
+//  rpc CurrentField (google.protobuf.Empty)  returns (CurrentFieldReply) {
+//    option (google.api.http) = {
+//      get: "/user-center/client/v1/fields",
+//    };
+//  }
 }

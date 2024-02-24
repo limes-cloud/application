@@ -327,11 +327,11 @@ func IsNotAppChannel(err error) bool {
 }
 
 func NotAppChannelFormat(format string, args ...any) *errors.Error {
-	return errors.New(200, ErrorReason_NotAppChannel.String(), "应用为开通此渠道:"+fmt.Sprintf(format, args...))
+	return errors.New(200, ErrorReason_NotAppChannel.String(), "应用未开通此渠道:"+fmt.Sprintf(format, args...))
 }
 
 func NotAppChannel() *errors.Error {
-	return errors.New(200, ErrorReason_NotAppChannel.String(), "应用为开通此渠道")
+	return errors.New(200, ErrorReason_NotAppChannel.String(), "应用未开通此渠道")
 }
 
 func IsNotExistEmail(err error) bool {

@@ -31,44 +31,49 @@ const (
 	registerCaptcha = "registerEmail"
 )
 
-func (u *UseCase) bind(ctx kratosx.Context, user *User, app string, platform string) (string, error) {
+func (u *UseCase) bind(ctx kratosx.Context, user *User, app, platform, code string) (string, error) {
 	// 获取应用和渠道信息
 	curApp, err := u.repo.GetApp(ctx, app)
 	if err != nil {
 		return "", errors.NotApp()
 	}
-	var curChannel *channel.Channel
+	var ac *channel.Channel
 	for _, item := range curApp.Channels {
 		if item.Platform == platform {
-			curChannel = item
+			ac = item
 		}
 	}
-	if curChannel == nil {
+	if ac == nil {
 		return "", errors.NotAppChannel()
 	}
 
-	ath := authorizer.New()
-	author := ath.GetAuthorizer(platform)
-	if author == nil {
-		return "", errors.NotAppChannel()
-	}
+	af := authorizer.New(&authorizer.Config{
+		Platform: ac.Platform,
+		Ak:       ac.Ak,
+		Sk:       ac.Sk,
+		Code:     code,
+	})
 
-	info, err := author.GetAuthInfo()
+	ti, err := af.GetToken(ctx)
+	if err != nil {
+		return "", errors.GetAuthInfoFormat(err.Error())
+	}
+	ai, err := af.GetAuthInfo(ctx, ti.Token)
 	if err != nil {
 		return "", errors.GetAuthInfoFormat(err.Error())
 	}
 
 	if _, err := u.repo.AddAuth(ctx, &Auth{
 		UserID:    user.ID,
-		AuthID:    &info.AuthId,
-		UnionID:   info.UnionId,
-		ChannelID: curChannel.ID,
+		AuthID:    &ai.AuthId,
+		UnionID:   ai.UnionId,
+		ChannelID: ac.ID,
 		LoginAt:   time.Now().Unix(),
 	}); err != nil {
 		return "", errors.Database()
 	}
 	// 生成用户token
-	token, err := u.GenToken(ctx, user, curApp, curChannel)
+	token, err := u.GenToken(ctx, user, curApp, ac)
 	if err != nil {
 		return "", errors.GenToken()
 	}
@@ -103,7 +108,7 @@ func (u *UseCase) email(ctx kratosx.Context, tp, email string) (*CaptchaResponse
 func (u *UseCase) ParseToken(ctx kratosx.Context) (*types.Auth, error) {
 	data, err := md.Get(ctx)
 	if err != nil {
-		return nil, errors.Forbidden()
+		return nil, err
 	}
 	return data, nil
 }
@@ -180,19 +185,25 @@ func (u *UseCase) OAuthLogin(ctx kratosx.Context, in *OAuthLoginRequest) (string
 		return "", errors.NotAppChannel()
 	}
 
-	ath := authorizer.New()
-	author := ath.GetAuthorizer(in.Platform)
-	if author == nil {
-		return "", errors.NotAppChannel()
-	}
+	// 获取授权信息
+	af := authorizer.New(&authorizer.Config{
+		Platform: ac.Platform,
+		Ak:       ac.Ak,
+		Sk:       ac.Sk,
+		Code:     in.Code,
+	})
 
-	info, err := author.GetAuthInfo()
+	ti, err := af.GetToken(ctx)
+	if err != nil {
+		return "", errors.GetAuthInfoFormat(err.Error())
+	}
+	ai, err := af.GetAuthInfo(ctx, ti.Token)
 	if err != nil {
 		return "", errors.GetAuthInfoFormat(err.Error())
 	}
 
 	// 获取授权信息
-	uc, err := u.repo.GetAuthByCA(ctx, ac.ID, info.AuthId)
+	uc, err := u.repo.GetAuthByCA(ctx, ac.ID, ai.AuthId)
 	if err != nil {
 		return "", errors.UnBind()
 	}
@@ -262,7 +273,7 @@ func (u *UseCase) OAuthBindByPassword(ctx kratosx.Context, in *OAuthBindByPasswo
 	}
 
 	// 对比用户密码
-	return u.bind(ctx, user, in.App, in.Platform)
+	return u.bind(ctx, user, in.App, in.Platform, in.Code)
 }
 
 // OAuthBindCaptcha 绑定验证码
@@ -298,7 +309,7 @@ func (u *UseCase) OAuthBindByCaptcha(ctx kratosx.Context, in *OAuthBindByCaptcha
 	}
 
 	// 对比用户密码
-	return u.bind(ctx, user, in.App, in.Platform)
+	return u.bind(ctx, user, in.App, in.Platform, in.Code)
 }
 
 // PasswordLogin 通过账号密码登录

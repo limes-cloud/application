@@ -30,7 +30,7 @@ enum ErrorReason {
   NotUserApp= 22[(errors.message)="用户暂无应用使用权限"];
   NotUserChannel= 23[(errors.message)="用户暂无渠道使用权限"];
   NotApp= 24[(errors.message)="错误的应用标识"];
-  NotAppChannel= 31[(errors.message)="应用为开通此渠道"];
+  NotAppChannel= 31[(errors.message)="应用未开通此渠道"];
   NotExistEmail= 25[(errors.message)="不存在此邮箱"];
   AlreadyExistEmail= 26[(errors.message)="邮箱已存在"];
   AlreadyExistPhone= 27[(errors.message)="手机已存在"];

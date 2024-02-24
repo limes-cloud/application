@@ -1,11 +1,10 @@
 package md
 
 import (
-	"errors"
-
 	"github.com/limes-cloud/kratosx"
 	"github.com/limes-cloud/kratosx/pkg/util"
 
+	"github.com/limes-cloud/user-center/api/errors"
 	"github.com/limes-cloud/user-center/types"
 )
 
@@ -25,12 +24,11 @@ func New(uid, aid, cid uint32, appKey string) map[string]any {
 
 func Get(ctx kratosx.Context) (*types.Auth, error) {
 	data := types.Auth{}
-	m, err := ctx.JWT().ParseMapClaims(ctx.Ctx())
-	if err = util.Transform(m, &data); err != nil {
+	if err := ctx.JWT().Parse(ctx.Ctx(), &data); err != nil {
 		return nil, err
 	}
 	if data.UserID == 0 {
-		return nil, errors.New("data error")
+		return nil, errors.Forbidden()
 	}
 	return &data, nil
 }

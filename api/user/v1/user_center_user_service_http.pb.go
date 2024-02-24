@@ -128,7 +128,7 @@ func RegisterServiceHTTPServer(s *http.Server, srv ServiceHTTPServer) {
 	r.POST("/user-center/client/v1/login/captcha/email", _Service_CaptchaLoginEmail0_HTTP_Handler(srv))
 	r.GET("/user-center/client/v1/register/captcha/email-captcha", _Service_CaptchaRegisterEmail0_HTTP_Handler(srv))
 	r.POST("/user-center/client/v1/register/captcha", _Service_CaptchaRegister0_HTTP_Handler(srv))
-	r.POST("/user-center/client/v1/auth", _Service_ParseToken0_HTTP_Handler(srv))
+	r.POST("/user-center/client/v1/token/parse", _Service_ParseToken0_HTTP_Handler(srv))
 	r.POST("/user-center/client/v1/token/refresh", _Service_RefreshToken0_HTTP_Handler(srv))
 }
 
@@ -1003,7 +1003,7 @@ func (c *ServiceHTTPClientImpl) PageUser(ctx context.Context, in *PageUserReques
 
 func (c *ServiceHTTPClientImpl) ParseToken(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*ParseTokenReply, error) {
 	var out ParseTokenReply
-	pattern := "/user-center/client/v1/auth"
+	pattern := "/user-center/client/v1/token/parse"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceParseToken))
 	opts = append(opts, http.PathTemplate(pattern))
