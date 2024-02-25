@@ -279,6 +279,68 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - Service
+            operationId: Service_ImportUser
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/ImportUserRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content: {}
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/token/parse:
+        post:
+            tags:
+                - Service
+            description: 解析token信息
+            operationId: Service_ParseToken
+            requestBody:
+                content:
+                    application/json: {}
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ParseTokenReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /user-center/client/token/refresh:
+        post:
+            tags:
+                - Service
+            description: 刷新token时长
+            operationId: Service_RefreshToken
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/LoginReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /user-center/client/v1/bind/oauth/captcha:
         post:
             tags:
@@ -608,48 +670,6 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /user-center/client/v1/token/parse:
-        post:
-            tags:
-                - Service
-            description: 解析token信息
-            operationId: Service_ParseToken
-            requestBody:
-                content:
-                    application/json: {}
-                required: true
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/ParseTokenReply'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
-    /user-center/client/v1/token/refresh:
-        post:
-            tags:
-                - Service
-            description: 刷新token时长
-            operationId: Service_RefreshToken
-            responses:
-                "200":
-                    description: OK
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/LoginReply'
-                default:
-                    description: Default error response
-                    content:
-                        application/json:
-                            schema:
-                                $ref: '#/components/schemas/Status'
     /user-center/client/v1/user:
         get:
             tags:
@@ -719,8 +739,6 @@ components:
                 nickName:
                     type: string
                 realName:
-                    type: string
-                idCard:
                     type: string
                 avatar:
                     type: string
@@ -821,6 +839,24 @@ components:
             description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
         GoogleProtobufValue:
             description: Represents a dynamically typed value which can be either null, a number, a string, a boolean, a recursive struct value, or a list of values.
+        ImportUserRequest:
+            type: object
+            properties:
+                list:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ImportUserRequest_data'
+        ImportUserRequest_data:
+            type: object
+            properties:
+                phone:
+                    type: string
+                email:
+                    type: string
+                realName:
+                    type: string
+                gender:
+                    type: string
         LoginReply:
             type: object
             properties:

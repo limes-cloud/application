@@ -27,6 +27,7 @@ const (
 	Service_UpdateCurrentUser_FullMethodName       = "/user.Service/UpdateCurrentUser"
 	Service_PageUser_FullMethodName                = "/user.Service/PageUser"
 	Service_AddUser_FullMethodName                 = "/user.Service/AddUser"
+	Service_ImportUser_FullMethodName              = "/user.Service/ImportUser"
 	Service_UpdateUser_FullMethodName              = "/user.Service/UpdateUser"
 	Service_DeleteUser_FullMethodName              = "/user.Service/DeleteUser"
 	Service_DisableUser_FullMethodName             = "/user.Service/DisableUser"
@@ -63,6 +64,7 @@ type ServiceClient interface {
 	UpdateCurrentUser(ctx context.Context, in *UpdateCurrentUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	PageUser(ctx context.Context, in *PageUserRequest, opts ...grpc.CallOption) (*PageUserReply, error)
 	AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserReply, error)
+	ImportUser(ctx context.Context, in *ImportUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// 禁用用户
@@ -173,6 +175,15 @@ func (c *serviceClient) PageUser(ctx context.Context, in *PageUserRequest, opts 
 func (c *serviceClient) AddUser(ctx context.Context, in *AddUserRequest, opts ...grpc.CallOption) (*AddUserReply, error) {
 	out := new(AddUserReply)
 	err := c.cc.Invoke(ctx, Service_AddUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *serviceClient) ImportUser(ctx context.Context, in *ImportUserRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, Service_ImportUser_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -397,6 +408,7 @@ type ServiceServer interface {
 	UpdateCurrentUser(context.Context, *UpdateCurrentUserRequest) (*emptypb.Empty, error)
 	PageUser(context.Context, *PageUserRequest) (*PageUserReply, error)
 	AddUser(context.Context, *AddUserRequest) (*AddUserReply, error)
+	ImportUser(context.Context, *ImportUserRequest) (*emptypb.Empty, error)
 	UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error)
 	DeleteUser(context.Context, *DeleteUserRequest) (*emptypb.Empty, error)
 	// 禁用用户
@@ -467,6 +479,9 @@ func (UnimplementedServiceServer) PageUser(context.Context, *PageUserRequest) (*
 }
 func (UnimplementedServiceServer) AddUser(context.Context, *AddUserRequest) (*AddUserReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddUser not implemented")
+}
+func (UnimplementedServiceServer) ImportUser(context.Context, *ImportUserRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ImportUser not implemented")
 }
 func (UnimplementedServiceServer) UpdateUser(context.Context, *UpdateUserRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
@@ -672,6 +687,24 @@ func _Service_AddUser_Handler(srv interface{}, ctx context.Context, dec func(int
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ServiceServer).AddUser(ctx, req.(*AddUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Service_ImportUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ImportUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).ImportUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Service_ImportUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).ImportUser(ctx, req.(*ImportUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1124,6 +1157,10 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddUser",
 			Handler:    _Service_AddUser_Handler,
+		},
+		{
+			MethodName: "ImportUser",
+			Handler:    _Service_ImportUser_Handler,
 		},
 		{
 			MethodName: "UpdateUser",

@@ -32,6 +32,7 @@ const OperationServiceDisableUser = "/user.Service/DisableUser"
 const OperationServiceEnableUser = "/user.Service/EnableUser"
 const OperationServiceGetCurrentUser = "/user.Service/GetCurrentUser"
 const OperationServiceGetUser = "/user.Service/GetUser"
+const OperationServiceImportUser = "/user.Service/ImportUser"
 const OperationServiceOAuthBindByCaptcha = "/user.Service/OAuthBindByCaptcha"
 const OperationServiceOAuthBindByPassword = "/user.Service/OAuthBindByPassword"
 const OperationServiceOAuthBindEmailCaptcha = "/user.Service/OAuthBindEmailCaptcha"
@@ -70,6 +71,7 @@ type ServiceHTTPServer interface {
 	EnableUser(context.Context, *EnableUserRequest) (*emptypb.Empty, error)
 	GetCurrentUser(context.Context, *emptypb.Empty) (*User, error)
 	GetUser(context.Context, *GetUserRequest) (*User, error)
+	ImportUser(context.Context, *ImportUserRequest) (*emptypb.Empty, error)
 	// OAuthBindByCaptcha  三方授权绑定-验证码
 	OAuthBindByCaptcha(context.Context, *OAuthBindByCaptchaRequest) (*BindReply, error)
 	// OAuthBindByPassword 三方授权绑定-密码
@@ -107,6 +109,7 @@ func RegisterServiceHTTPServer(s *http.Server, srv ServiceHTTPServer) {
 	r.PUT("/user-center/client/v1/user", _Service_UpdateCurrentUser0_HTTP_Handler(srv))
 	r.GET("/user-center/admin/v1/users", _Service_PageUser0_HTTP_Handler(srv))
 	r.POST("/user-center/admin/v1/user", _Service_AddUser0_HTTP_Handler(srv))
+	r.POST("/user-center/admin/v1/users", _Service_ImportUser0_HTTP_Handler(srv))
 	r.PUT("/user-center/admin/v1/user", _Service_UpdateUser0_HTTP_Handler(srv))
 	r.DELETE("/user-center/admin/v1/user", _Service_DeleteUser0_HTTP_Handler(srv))
 	r.POST("/user-center/admin/v1/user/disable", _Service_DisableUser0_HTTP_Handler(srv))
@@ -128,8 +131,8 @@ func RegisterServiceHTTPServer(s *http.Server, srv ServiceHTTPServer) {
 	r.POST("/user-center/client/v1/login/captcha/email", _Service_CaptchaLoginEmail0_HTTP_Handler(srv))
 	r.GET("/user-center/client/v1/register/captcha/email-captcha", _Service_CaptchaRegisterEmail0_HTTP_Handler(srv))
 	r.POST("/user-center/client/v1/register/captcha", _Service_CaptchaRegister0_HTTP_Handler(srv))
-	r.POST("/user-center/client/v1/token/parse", _Service_ParseToken0_HTTP_Handler(srv))
-	r.POST("/user-center/client/v1/token/refresh", _Service_RefreshToken0_HTTP_Handler(srv))
+	r.POST("/user-center/client/token/parse", _Service_ParseToken0_HTTP_Handler(srv))
+	r.POST("/user-center/client/token/refresh", _Service_RefreshToken0_HTTP_Handler(srv))
 }
 
 func _Service_GetUser0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context) error {
@@ -229,6 +232,28 @@ func _Service_AddUser0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context
 			return err
 		}
 		reply := out.(*AddUserReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Service_ImportUser0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in ImportUserRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationServiceImportUser)
+		h := ctx.Middleware(func(ctx context.Context, req any) (any, error) {
+			return srv.ImportUser(ctx, req.(*ImportUserRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*emptypb.Empty)
 		return ctx.Result(200, reply)
 	}
 }
@@ -728,6 +753,7 @@ type ServiceHTTPClient interface {
 	EnableUser(ctx context.Context, req *EnableUserRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	GetCurrentUser(ctx context.Context, req *emptypb.Empty, opts ...http.CallOption) (rsp *User, err error)
 	GetUser(ctx context.Context, req *GetUserRequest, opts ...http.CallOption) (rsp *User, err error)
+	ImportUser(ctx context.Context, req *ImportUserRequest, opts ...http.CallOption) (rsp *emptypb.Empty, err error)
 	OAuthBindByCaptcha(ctx context.Context, req *OAuthBindByCaptchaRequest, opts ...http.CallOption) (rsp *BindReply, err error)
 	OAuthBindByPassword(ctx context.Context, req *OAuthBindByPasswordRequest, opts ...http.CallOption) (rsp *BindReply, err error)
 	OAuthBindEmailCaptcha(ctx context.Context, req *OAuthBindEmailCaptchaRequest, opts ...http.CallOption) (rsp *CaptchaReply, err error)
@@ -910,6 +936,19 @@ func (c *ServiceHTTPClientImpl) GetUser(ctx context.Context, in *GetUserRequest,
 	return &out, err
 }
 
+func (c *ServiceHTTPClientImpl) ImportUser(ctx context.Context, in *ImportUserRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
+	var out emptypb.Empty
+	pattern := "/user-center/admin/v1/users"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationServiceImportUser))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
 func (c *ServiceHTTPClientImpl) OAuthBindByCaptcha(ctx context.Context, in *OAuthBindByCaptchaRequest, opts ...http.CallOption) (*BindReply, error) {
 	var out BindReply
 	pattern := "/user-center/client/v1/bind/oauth/captcha"
@@ -1003,7 +1042,7 @@ func (c *ServiceHTTPClientImpl) PageUser(ctx context.Context, in *PageUserReques
 
 func (c *ServiceHTTPClientImpl) ParseToken(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*ParseTokenReply, error) {
 	var out ParseTokenReply
-	pattern := "/user-center/client/v1/token/parse"
+	pattern := "/user-center/client/token/parse"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceParseToken))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -1081,7 +1120,7 @@ func (c *ServiceHTTPClientImpl) PasswordRegisterCheck(ctx context.Context, in *P
 
 func (c *ServiceHTTPClientImpl) RefreshToken(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*LoginReply, error) {
 	var out LoginReply
-	pattern := "/user-center/client/v1/token/refresh"
+	pattern := "/user-center/client/token/refresh"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceRefreshToken))
 	opts = append(opts, http.PathTemplate(pattern))

@@ -66,8 +66,8 @@ func (u *UseCase) Page(ctx kratosx.Context, req *PageUserRequest) ([]*User, uint
 // Add 添加用户信息
 func (u *UseCase) Add(ctx kratosx.Context, user *User) (uint32, error) {
 	user.Status = proto.Bool(true)
-	if user.NickName == "" {
-		user.NickName = user.RealName
+	if user.NickName == "" && user.RealName != nil {
+		user.NickName = *user.RealName
 	}
 
 	id, err := u.repo.Add(ctx, user)

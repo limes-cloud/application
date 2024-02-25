@@ -1437,21 +1437,6 @@ func (m *AddUserRequest) validate(all bool) error {
 
 	}
 
-	if m.IdCard != nil {
-
-		if l := utf8.RuneCountInString(m.GetIdCard()); l < 15 || l > 18 {
-			err := AddUserRequestValidationError{
-				field:  "IdCard",
-				reason: "value length must be between 15 and 18 runes, inclusive",
-			}
-			if !all {
-				return err
-			}
-			errors = append(errors, err)
-		}
-
-	}
-
 	if m.Avatar != nil {
 
 		if utf8.RuneCountInString(m.GetAvatar()) > 128 {
@@ -1645,6 +1630,153 @@ var _AddUserRequest_Gender_InLookup = map[string]struct{}{
 	"F": {},
 	"U": {},
 }
+
+// Validate checks the field values on ImportUserRequest with the rules defined
+// in the proto definition for this message. If any rules are violated, the
+// first error encountered is returned, or nil if there are no violations.
+func (m *ImportUserRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ImportUserRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ImportUserRequestMultiError, or nil if none found.
+func (m *ImportUserRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ImportUserRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if l := len(m.GetList()); l < 1 || l > 1000 {
+		err := ImportUserRequestValidationError{
+			field:  "List",
+			reason: "value must contain between 1 and 1000 items, inclusive",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	for idx, item := range m.GetList() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, ImportUserRequestValidationError{
+						field:  fmt.Sprintf("List[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, ImportUserRequestValidationError{
+						field:  fmt.Sprintf("List[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return ImportUserRequestValidationError{
+					field:  fmt.Sprintf("List[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return ImportUserRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// ImportUserRequestMultiError is an error wrapping multiple validation errors
+// returned by ImportUserRequest.ValidateAll() if the designated constraints
+// aren't met.
+type ImportUserRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ImportUserRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ImportUserRequestMultiError) AllErrors() []error { return m }
+
+// ImportUserRequestValidationError is the validation error returned by
+// ImportUserRequest.Validate if the designated constraints aren't met.
+type ImportUserRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ImportUserRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ImportUserRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ImportUserRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ImportUserRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ImportUserRequestValidationError) ErrorName() string {
+	return "ImportUserRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ImportUserRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sImportUserRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ImportUserRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ImportUserRequestValidationError{}
 
 // Validate checks the field values on AddUserReply with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
@@ -3409,3 +3541,219 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = AddUserRequest_UserExtraValidationError{}
+
+// Validate checks the field values on ImportUserRequestData with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ImportUserRequestData) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ImportUserRequestData with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ImportUserRequestDataMultiError, or nil if none found.
+func (m *ImportUserRequestData) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ImportUserRequestData) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if _, ok := _ImportUserRequestData_Gender_InLookup[m.GetGender()]; !ok {
+		err := ImportUserRequestDataValidationError{
+			field:  "Gender",
+			reason: "value must be in list [M F U]",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
+	if m.Phone != nil {
+
+		if utf8.RuneCountInString(m.GetPhone()) != 11 {
+			err := ImportUserRequestDataValidationError{
+				field:  "Phone",
+				reason: "value length must be 11 runes",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+
+		}
+
+	}
+
+	if m.Email != nil {
+
+		if err := m._validateEmail(m.GetEmail()); err != nil {
+			err = ImportUserRequestDataValidationError{
+				field:  "Email",
+				reason: "value must be a valid email address",
+				cause:  err,
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+
+	}
+
+	if m.RealName != nil {
+
+		if utf8.RuneCountInString(m.GetRealName()) < 1 {
+			err := ImportUserRequestDataValidationError{
+				field:  "RealName",
+				reason: "value length must be at least 1 runes",
+			}
+			if !all {
+				return err
+			}
+			errors = append(errors, err)
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return ImportUserRequestDataMultiError(errors)
+	}
+
+	return nil
+}
+
+func (m *ImportUserRequestData) _validateHostname(host string) error {
+	s := strings.ToLower(strings.TrimSuffix(host, "."))
+
+	if len(host) > 253 {
+		return errors.New("hostname cannot exceed 253 characters")
+	}
+
+	for _, part := range strings.Split(s, ".") {
+		if l := len(part); l == 0 || l > 63 {
+			return errors.New("hostname part must be non-empty and cannot exceed 63 characters")
+		}
+
+		if part[0] == '-' {
+			return errors.New("hostname parts cannot begin with hyphens")
+		}
+
+		if part[len(part)-1] == '-' {
+			return errors.New("hostname parts cannot end with hyphens")
+		}
+
+		for _, r := range part {
+			if (r < 'a' || r > 'z') && (r < '0' || r > '9') && r != '-' {
+				return fmt.Errorf("hostname parts can only contain alphanumeric characters or hyphens, got %q", string(r))
+			}
+		}
+	}
+
+	return nil
+}
+
+func (m *ImportUserRequestData) _validateEmail(addr string) error {
+	a, err := mail.ParseAddress(addr)
+	if err != nil {
+		return err
+	}
+	addr = a.Address
+
+	if len(addr) > 254 {
+		return errors.New("email addresses cannot exceed 254 characters")
+	}
+
+	parts := strings.SplitN(addr, "@", 2)
+
+	if len(parts[0]) > 64 {
+		return errors.New("email address local phrase cannot exceed 64 characters")
+	}
+
+	return m._validateHostname(parts[1])
+}
+
+// ImportUserRequestDataMultiError is an error wrapping multiple validation
+// errors returned by ImportUserRequestData.ValidateAll() if the designated
+// constraints aren't met.
+type ImportUserRequestDataMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ImportUserRequestDataMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ImportUserRequestDataMultiError) AllErrors() []error { return m }
+
+// ImportUserRequestDataValidationError is the validation error returned by
+// ImportUserRequestData.Validate if the designated constraints aren't met.
+type ImportUserRequestDataValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ImportUserRequestDataValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ImportUserRequestDataValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ImportUserRequestDataValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ImportUserRequestDataValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ImportUserRequestDataValidationError) ErrorName() string {
+	return "ImportUserRequestDataValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ImportUserRequestDataValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sImportUserRequestData.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ImportUserRequestDataValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ImportUserRequestDataValidationError{}
+
+var _ImportUserRequestData_Gender_InLookup = map[string]struct{}{
+	"M": {},
+	"F": {},
+	"U": {},
+}

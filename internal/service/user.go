@@ -8,6 +8,7 @@ import (
 	"github.com/limes-cloud/kratosx"
 	"github.com/limes-cloud/kratosx/pkg/util"
 	resourceV1 "github.com/limes-cloud/resource/api/v1"
+	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/structpb"
 
 	"github.com/limes-cloud/user-center/api/errors"
@@ -272,14 +273,24 @@ func (s *UserService) AddUser(ctx context.Context, in *pb.AddUserRequest) (*pb.A
 	return &pb.AddUserReply{Id: id}, nil
 }
 
-//	func (s *UserService) ImportUser(ctx context.Context, in *pb.ImportUserRequest) (*empty.Empty, error) {
-//		var users []*biz.User
-//		if err := copier.Copy(&users, in.List); err != nil {
-//			return nil, errors.Transform()
-//		}
-//		return nil, s.uc.Import(kratosx.MustContext(ctx), users)
-//
-// }
+func (s *UserService) ImportUser(ctx context.Context, in *pb.ImportUserRequest) (*empty.Empty, error) {
+	var users []*biz.User
+	var enable = proto.Bool(true)
+	for _, item := range in.List {
+		user := &biz.User{
+			Status:   enable,
+			Phone:    item.Phone,
+			Email:    item.Email,
+			RealName: item.RealName,
+			Gender:   item.Gender,
+		}
+		if user.NickName == "" && user.RealName != nil {
+			user.NickName = *user.RealName
+		}
+		users = append(users, user)
+	}
+	return nil, s.uc.Import(kratosx.MustContext(ctx), users)
+}
 
 func (s *UserService) UpdateUser(ctx context.Context, in *pb.UpdateUserRequest) (*empty.Empty, error) {
 	var user biz.User

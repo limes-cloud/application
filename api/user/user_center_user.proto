@@ -52,8 +52,8 @@ message User {
     string name = 2;
     string logo = 3;
     uint32 created_at = 4;
-    uint32 login_at = 5;
-    resource.File resource = 65;
+    uint32 login_at = 6;
+    resource.File resource = 7;
   }
 
   message Extra{
@@ -126,12 +126,21 @@ message AddUserRequest {
   optional string password = 4[(validate.rules).string = {min_len:6}];
   optional string nick_name = 5[(validate.rules).string = {min_len:1}];
   optional string real_name = 6[(validate.rules).string = {min_len:1}];
-  optional string id_card = 7[(validate.rules).string = {min_len:15,max_len:18}];
   optional string avatar = 8[(validate.rules).string = {max_len:128}];
   optional string gender = 9[(validate.rules).string = {in: ["M","F","U"]}];
   optional string from  = 10[(validate.rules).string = {min_len:1}];
   optional string from_desc = 11[(validate.rules).string = {min_len:1}];
   repeated UserExtra user_extras = 13;
+}
+
+message ImportUserRequest{
+  message data{
+    optional string phone = 1[(validate.rules).string = {len:11}];
+    optional string email = 2[(validate.rules).string = {email:true}];
+    optional string real_name = 6[(validate.rules).string = {min_len:1}];
+    string gender = 9[(validate.rules).string = {in: ["M","F","U"]}];
+  }
+  repeated data list = 1[(validate.rules).repeated = {min_items:1,max_items:1000}];
 }
 
 message AddUserReply {

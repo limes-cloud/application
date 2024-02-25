@@ -49,6 +49,13 @@ service Service{
     };
   }
 
+  rpc ImportUser (ImportUserRequest)  returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/user-center/admin/v1/users",
+      body:"*"
+    };
+  }
+
   rpc UpdateUser (UpdateUserRequest)  returns (google.protobuf.Empty) {
     option (google.api.http) = {
       put: "/user-center/admin/v1/user",
@@ -210,7 +217,7 @@ service Service{
   // 解析token信息
   rpc ParseToken (google.protobuf.Empty)  returns (ParseTokenReply) {
     option (google.api.http) = {
-      post: "/user-center/client/v1/token/parse",
+      post: "/user-center/client/token/parse",
       body: "*"
     };
   }
@@ -218,7 +225,7 @@ service Service{
   // 刷新token时长
   rpc RefreshToken (google.protobuf.Empty)  returns (LoginReply) {
     option (google.api.http) = {
-      post: "/user-center/client/v1/token/refresh",
+      post: "/user-center/client/token/refresh",
     };
   }
 

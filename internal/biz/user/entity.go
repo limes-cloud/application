@@ -14,7 +14,7 @@ type User struct {
 	Username    *string      `json:"username" gorm:"unique;binary;type:char(32);comment:账号"`
 	Password    string       `json:"password" gorm:"size:256;comment:密码"`
 	NickName    string       `json:"nick_name" gorm:"size:32;comment:昵称"`
-	RealName    string       `json:"real_name" gorm:"size:32;comment:真实姓名"`
+	RealName    *string      `json:"real_name" gorm:"size:32;comment:真实姓名"`
 	Avatar      string       `json:"avatar" gorm:"size:128;comment:头像"`
 	Gender      string       `json:"gender" gorm:"default:U;type:enum('F','M','U');comment:昵称"`
 	Status      *bool        `json:"status" gorm:"comment:状态"`
