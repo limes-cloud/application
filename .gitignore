@@ -42,4 +42,4 @@ bin/
 
 node_modules
 uni_modules
-tmp
+tmp/
