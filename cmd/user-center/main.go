@@ -34,12 +34,12 @@ func RegisterServer(c config.Config, hs *http.Server, gs *grpc.Server) {
 		}
 	})
 
-	// 注册服务
-	service.New(conf, hs, gs)
-
 	// 初始化逻辑
 	ior := initiator.New(conf)
 	if err := ior.Run(); err != nil {
 		panic("initiator error:" + err.Error())
 	}
+
+	// 注册服务
+	service.New(conf, hs, gs)
 }

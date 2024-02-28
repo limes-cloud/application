@@ -4,12 +4,12 @@ import (
 	"github.com/limes-cloud/kratosx"
 	"github.com/limes-cloud/kratosx/pkg/util"
 
+	"github.com/limes-cloud/user-center/api/auth"
 	"github.com/limes-cloud/user-center/api/errors"
-	"github.com/limes-cloud/user-center/types"
 )
 
 func New(uid, aid, cid uint32, appKey string) map[string]any {
-	data := types.Auth{
+	data := auth.Auth{
 		UserID:     uid,
 		AppID:      aid,
 		ChannelID:  cid,
@@ -22,8 +22,8 @@ func New(uid, aid, cid uint32, appKey string) map[string]any {
 	return m
 }
 
-func Get(ctx kratosx.Context) (*types.Auth, error) {
-	data := types.Auth{}
+func Get(ctx kratosx.Context) (*auth.Auth, error) {
+	data := auth.Auth{}
 	if err := ctx.JWT().Parse(ctx.Ctx(), &data); err != nil {
 		return nil, err
 	}

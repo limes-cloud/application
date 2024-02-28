@@ -10,13 +10,13 @@ import (
 	"github.com/limes-cloud/kratosx/pkg/util"
 	"google.golang.org/protobuf/proto"
 
+	"github.com/limes-cloud/user-center/api/auth"
 	"github.com/limes-cloud/user-center/api/errors"
 	"github.com/limes-cloud/user-center/internal/biz/app"
 	"github.com/limes-cloud/user-center/internal/biz/channel"
 	"github.com/limes-cloud/user-center/internal/consts"
 	"github.com/limes-cloud/user-center/internal/pkg/authorizer"
 	"github.com/limes-cloud/user-center/internal/pkg/md"
-	"github.com/limes-cloud/user-center/types"
 )
 
 const (
@@ -105,7 +105,7 @@ func (u *UseCase) email(ctx kratosx.Context, tp, email string) (*CaptchaResponse
 }
 
 // ParseToken 解析token数据
-func (u *UseCase) ParseToken(ctx kratosx.Context) (*types.Auth, error) {
+func (u *UseCase) ParseToken(ctx kratosx.Context) (*auth.Auth, error) {
 	data, err := md.Get(ctx)
 	if err != nil {
 		return nil, err

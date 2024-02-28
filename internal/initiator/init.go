@@ -3,7 +3,6 @@ package initiator
 import (
 	"context"
 
-	"github.com/go-kratos/kratos/v2/log"
 	"github.com/limes-cloud/kratosx"
 
 	"github.com/limes-cloud/user-center/internal/config"
@@ -24,13 +23,8 @@ func New(conf *config.Config) *Initiator {
 func (a *Initiator) Run() error {
 	ctx := kratosx.MustContext(context.Background())
 
-	if migrate.IsInit(ctx) {
-		log.Error("already init server")
-		return nil
-	}
-
 	// 自动迁移
-	migrate.Init(ctx, a.conf)
+	migrate.Run(ctx, a.conf)
 
 	return nil
 }
