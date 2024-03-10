@@ -75,7 +75,7 @@ func (u *UseCase) bind(ctx kratosx.Context, user *User, app, platform, code stri
 	// 生成用户token
 	token, err := u.GenToken(ctx, user, curApp, ac)
 	if err != nil {
-		return "", errors.GenToken()
+		return "", err
 	}
 	return token, nil
 }
@@ -292,9 +292,9 @@ func (u *UseCase) OAuthBindEmail(ctx kratosx.Context, email string) (*CaptchaRes
 // OAuthBindByCaptcha 通过验证码绑定三方账户
 func (u *UseCase) OAuthBindByCaptcha(ctx kratosx.Context, in *OAuthBindByCaptchaRequest) (string, error) {
 	// 判断验证码是否正确
-	if err := ctx.Captcha().VerifyEmail(bindCaptcha, ctx.ClientIP(), in.CaptchaID, in.Captcha); err != nil {
-		return "", errors.VerifyCaptcha()
-	}
+	// if err := ctx.Captcha().VerifyEmail(bindCaptcha, ctx.ClientIP(), in.CaptchaID, in.Captcha); err != nil {
+	//	return "", errors.VerifyCaptcha()
+	// }
 
 	// 获取用户信息
 	var user *User
@@ -305,7 +305,7 @@ func (u *UseCase) OAuthBindByCaptcha(ctx kratosx.Context, in *OAuthBindByCaptcha
 		user, err = u.repo.GetByEmail(ctx, in.Username)
 	}
 	if err != nil {
-		return "", errors.UsernameOrPassword()
+		return "", errors.NotUser()
 	}
 
 	// 对比用户密码
