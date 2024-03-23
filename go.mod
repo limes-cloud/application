@@ -10,7 +10,7 @@ require (
 	github.com/jinzhu/copier v0.4.0
 	github.com/json-iterator/go v1.1.12
 	github.com/limes-cloud/configure v1.0.22
-	github.com/limes-cloud/kratosx v1.0.25
+	github.com/limes-cloud/kratosx v1.0.26
 	github.com/limes-cloud/resource v1.0.2
 	go.uber.org/automaxprocs v1.5.3
 	google.golang.org/genproto/googleapis/api v0.0.0-20240125205218-1f4bbc51befe
