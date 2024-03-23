@@ -14,14 +14,14 @@ service Service{
   // 获取分页应用
   rpc PageApp (PageAppRequest) returns (PageAppReply) {
     option (google.api.http) = {
-      get: "/user-center/admin/v1/apps",
+      get: "/user-center/v1/apps",
     };
   }
 
   // 获取指定的应用
   rpc GetAppByKeyword (GetAppByKeywordRequest) returns (App) {
     option (google.api.http) = {
-      get: "/user-center/admin/v1/app",
+      get: "/user-center/v1/app",
       additional_bindings:{
         get: "/user-center/client/v1/app",
       }
@@ -31,7 +31,7 @@ service Service{
   // 添加应用
   rpc AddApp (AddAppRequest) returns (AddAppReply) {
     option (google.api.http) = {
-      post: "/user-center/admin/v1/app",
+      post: "/user-center/v1/app",
       body:"*"
     };
   }
@@ -39,7 +39,7 @@ service Service{
   // 更新应用
   rpc UpdateApp (UpdateAppRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/user-center/admin/v1/app",
+      put: "/user-center/v1/app",
       body:"*"
     };
   }
@@ -47,7 +47,7 @@ service Service{
   // 删除应用
   rpc DeleteApp (DeleteAppRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/user-center/admin/v1/app",
+      delete: "/user-center/v1/app",
     };
   }
 }

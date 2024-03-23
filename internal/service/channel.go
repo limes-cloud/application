@@ -41,7 +41,7 @@ func (s *ChannelService) AllChannel(ctx context.Context, _ *empty.Empty) (*pb.Al
 	}
 
 	// 请求资源中心,错了直接忽略，不影响主流程
-	resource, err := service.NewResource(ctx, s.conf.Service.Resource)
+	resource, err := service.NewResource(ctx)
 	if err == nil {
 		for ind, item := range reply.List {
 			reply.List[ind].Resource, _ = resource.GetFileBySha(ctx, &resourcepb.GetFileByShaRequest{Sha: item.Logo})

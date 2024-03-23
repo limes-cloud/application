@@ -41,11 +41,11 @@ type ServiceHTTPServer interface {
 
 func RegisterServiceHTTPServer(s *http.Server, srv ServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/user-center/admin/v1/channels", _Service_AllChannel0_HTTP_Handler(srv))
-	r.GET("/user-center/admin/v1/channel/types", _Service_GetTypes0_HTTP_Handler(srv))
-	r.POST("/user-center/admin/v1/channel", _Service_AddChannel0_HTTP_Handler(srv))
-	r.PUT("/user-center/admin/v1/channel", _Service_UpdateChannel0_HTTP_Handler(srv))
-	r.DELETE("/user-center/admin/v1/channel", _Service_DeleteChannel0_HTTP_Handler(srv))
+	r.GET("/user-center/v1/channels", _Service_AllChannel0_HTTP_Handler(srv))
+	r.GET("/user-center/v1/channel/types", _Service_GetTypes0_HTTP_Handler(srv))
+	r.POST("/user-center/v1/channel", _Service_AddChannel0_HTTP_Handler(srv))
+	r.PUT("/user-center/v1/channel", _Service_UpdateChannel0_HTTP_Handler(srv))
+	r.DELETE("/user-center/v1/channel", _Service_DeleteChannel0_HTTP_Handler(srv))
 }
 
 func _Service_AllChannel0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context) error {
@@ -167,7 +167,7 @@ func NewServiceHTTPClient(client *http.Client) ServiceHTTPClient {
 
 func (c *ServiceHTTPClientImpl) AddChannel(ctx context.Context, in *AddChannelRequest, opts ...http.CallOption) (*AddChannelReply, error) {
 	var out AddChannelReply
-	pattern := "/user-center/admin/v1/channel"
+	pattern := "/user-center/v1/channel"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceAddChannel))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -180,7 +180,7 @@ func (c *ServiceHTTPClientImpl) AddChannel(ctx context.Context, in *AddChannelRe
 
 func (c *ServiceHTTPClientImpl) AllChannel(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*AllChannelReply, error) {
 	var out AllChannelReply
-	pattern := "/user-center/admin/v1/channels"
+	pattern := "/user-center/v1/channels"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceAllChannel))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -193,7 +193,7 @@ func (c *ServiceHTTPClientImpl) AllChannel(ctx context.Context, in *emptypb.Empt
 
 func (c *ServiceHTTPClientImpl) DeleteChannel(ctx context.Context, in *DeleteChannelRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/channel"
+	pattern := "/user-center/v1/channel"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceDeleteChannel))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -206,7 +206,7 @@ func (c *ServiceHTTPClientImpl) DeleteChannel(ctx context.Context, in *DeleteCha
 
 func (c *ServiceHTTPClientImpl) GetTypes(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*GetTypesReply, error) {
 	var out GetTypesReply
-	pattern := "/user-center/admin/v1/channel/types"
+	pattern := "/user-center/v1/channel/types"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceGetTypes))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -219,7 +219,7 @@ func (c *ServiceHTTPClientImpl) GetTypes(ctx context.Context, in *emptypb.Empty,
 
 func (c *ServiceHTTPClientImpl) UpdateChannel(ctx context.Context, in *UpdateChannelRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/channel"
+	pattern := "/user-center/v1/channel"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceUpdateChannel))
 	opts = append(opts, http.PathTemplate(pattern))

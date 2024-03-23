@@ -46,7 +46,7 @@ func (s *AppService) PageApp(ctx context.Context, in *pb.PageAppRequest) (*pb.Pa
 	}
 
 	// 请求资源中心,错了直接忽略，不影响主流程
-	resource, err := service.NewResource(ctx, s.conf.Service.Resource)
+	resource, err := service.NewResource(ctx)
 	if err == nil {
 		for ind, item := range reply.List {
 			reply.List[ind].Resource, _ = resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{Sha: item.Logo})
@@ -68,7 +68,7 @@ func (s *AppService) GetAppByKeyword(ctx context.Context, in *pb.GetAppByKeyword
 	}
 
 	// 请求资源中心,错了直接忽略，不影响主流程
-	resource, err := service.NewResource(ctx, s.conf.Service.Resource)
+	resource, err := service.NewResource(ctx)
 	if err == nil {
 		reply.Resource, _ = resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{Sha: app.Logo})
 		for ind, channel := range reply.Channels {

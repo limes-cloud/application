@@ -3,14 +3,20 @@ package service
 import (
 	"context"
 
-	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/limes-cloud/kratosx"
 	resource "github.com/limes-cloud/resource/api/v1"
+
+	"github.com/limes-cloud/user-center/api/errors"
 )
 
-func NewResource(ctx context.Context, host string) (resource.ServiceClient, error) {
-	conn, err := grpc.DialInsecure(ctx, grpc.WithEndpoint(host))
+const (
+	Resource = "Resource"
+)
+
+func NewResource(ctx context.Context) (resource.ServiceClient, error) {
+	conn, err := kratosx.MustContext(ctx).GrpcConn(Resource)
 	if err != nil {
-		return nil, err
+		return nil, errors.ResourceServer()
 	}
 	return resource.NewServiceClient(conn), nil
 }

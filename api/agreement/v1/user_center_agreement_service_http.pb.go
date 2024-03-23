@@ -20,16 +20,16 @@ var _ = binding.EncodeURL
 
 const _ = http.SupportPackageIsVersion1
 
-const OperationServiceAddContent = "/agreementpb.Service/AddContent"
-const OperationServiceAddScene = "/agreementpb.Service/AddScene"
-const OperationServiceDeleteContent = "/agreementpb.Service/DeleteContent"
-const OperationServiceDeleteScene = "/agreementpb.Service/DeleteScene"
-const OperationServiceGetContent = "/agreementpb.Service/GetContent"
-const OperationServiceGetSceneByKeyword = "/agreementpb.Service/GetSceneByKeyword"
-const OperationServicePageContent = "/agreementpb.Service/PageContent"
-const OperationServicePageScene = "/agreementpb.Service/PageScene"
-const OperationServiceUpdateContent = "/agreementpb.Service/UpdateContent"
-const OperationServiceUpdateScene = "/agreementpb.Service/UpdateScene"
+const OperationServiceAddContent = "/agreement.Service/AddContent"
+const OperationServiceAddScene = "/agreement.Service/AddScene"
+const OperationServiceDeleteContent = "/agreement.Service/DeleteContent"
+const OperationServiceDeleteScene = "/agreement.Service/DeleteScene"
+const OperationServiceGetContent = "/agreement.Service/GetContent"
+const OperationServiceGetSceneByKeyword = "/agreement.Service/GetSceneByKeyword"
+const OperationServicePageContent = "/agreement.Service/PageContent"
+const OperationServicePageScene = "/agreement.Service/PageScene"
+const OperationServiceUpdateContent = "/agreement.Service/UpdateContent"
+const OperationServiceUpdateScene = "/agreement.Service/UpdateScene"
 
 type ServiceHTTPServer interface {
 	// AddContent 新增协议内容
@@ -56,17 +56,17 @@ type ServiceHTTPServer interface {
 
 func RegisterServiceHTTPServer(s *http.Server, srv ServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/user-center/admin/v1/agreement/contents", _Service_PageContent0_HTTP_Handler(srv))
+	r.GET("/user-center/v1/agreement/contents", _Service_PageContent0_HTTP_Handler(srv))
 	r.GET("/user-center/client/v1/agreement/content", _Service_GetContent0_HTTP_Handler(srv))
-	r.GET("/user-center/admin/v1/agreement/content", _Service_GetContent1_HTTP_Handler(srv))
-	r.POST("/user-center/admin/v1/agreement/content", _Service_AddContent0_HTTP_Handler(srv))
-	r.PUT("/user-center/admin/v1/agreement/content", _Service_UpdateContent0_HTTP_Handler(srv))
-	r.DELETE("/user-center/admin/v1/agreement/content", _Service_DeleteContent0_HTTP_Handler(srv))
-	r.GET("/user-center/admin/v1/agreement/scenes", _Service_PageScene0_HTTP_Handler(srv))
+	r.GET("/user-center/v1/agreement/content", _Service_GetContent1_HTTP_Handler(srv))
+	r.POST("/user-center/v1/agreement/content", _Service_AddContent0_HTTP_Handler(srv))
+	r.PUT("/user-center/v1/agreement/content", _Service_UpdateContent0_HTTP_Handler(srv))
+	r.DELETE("/user-center/v1/agreement/content", _Service_DeleteContent0_HTTP_Handler(srv))
+	r.GET("/user-center/v1/agreement/scenes", _Service_PageScene0_HTTP_Handler(srv))
 	r.GET("/user-center/client/v1/agreement/scene", _Service_GetSceneByKeyword0_HTTP_Handler(srv))
-	r.POST("/user-center/admin/v1/agreement/scene", _Service_AddScene0_HTTP_Handler(srv))
-	r.PUT("/user-center/admin/v1/agreement/scene", _Service_UpdateScene0_HTTP_Handler(srv))
-	r.DELETE("/user-center/admin/v1/agreement/scene", _Service_DeleteScene0_HTTP_Handler(srv))
+	r.POST("/user-center/v1/agreement/scene", _Service_AddScene0_HTTP_Handler(srv))
+	r.PUT("/user-center/v1/agreement/scene", _Service_UpdateScene0_HTTP_Handler(srv))
+	r.DELETE("/user-center/v1/agreement/scene", _Service_DeleteScene0_HTTP_Handler(srv))
 }
 
 func _Service_PageContent0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context) error {
@@ -313,7 +313,7 @@ func NewServiceHTTPClient(client *http.Client) ServiceHTTPClient {
 
 func (c *ServiceHTTPClientImpl) AddContent(ctx context.Context, in *AddContentRequest, opts ...http.CallOption) (*AddContentReply, error) {
 	var out AddContentReply
-	pattern := "/user-center/admin/v1/agreement/content"
+	pattern := "/user-center/v1/agreement/content"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceAddContent))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -326,7 +326,7 @@ func (c *ServiceHTTPClientImpl) AddContent(ctx context.Context, in *AddContentRe
 
 func (c *ServiceHTTPClientImpl) AddScene(ctx context.Context, in *AddSceneRequest, opts ...http.CallOption) (*AddSceneReply, error) {
 	var out AddSceneReply
-	pattern := "/user-center/admin/v1/agreement/scene"
+	pattern := "/user-center/v1/agreement/scene"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceAddScene))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -339,7 +339,7 @@ func (c *ServiceHTTPClientImpl) AddScene(ctx context.Context, in *AddSceneReques
 
 func (c *ServiceHTTPClientImpl) DeleteContent(ctx context.Context, in *DeleteContentRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/agreement/content"
+	pattern := "/user-center/v1/agreement/content"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceDeleteContent))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -352,7 +352,7 @@ func (c *ServiceHTTPClientImpl) DeleteContent(ctx context.Context, in *DeleteCon
 
 func (c *ServiceHTTPClientImpl) DeleteScene(ctx context.Context, in *DeleteSceneRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/agreement/scene"
+	pattern := "/user-center/v1/agreement/scene"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceDeleteScene))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -365,7 +365,7 @@ func (c *ServiceHTTPClientImpl) DeleteScene(ctx context.Context, in *DeleteScene
 
 func (c *ServiceHTTPClientImpl) GetContent(ctx context.Context, in *GetContentRequest, opts ...http.CallOption) (*Content, error) {
 	var out Content
-	pattern := "/user-center/admin/v1/agreement/content"
+	pattern := "/user-center/v1/agreement/content"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceGetContent))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -391,7 +391,7 @@ func (c *ServiceHTTPClientImpl) GetSceneByKeyword(ctx context.Context, in *GetSc
 
 func (c *ServiceHTTPClientImpl) PageContent(ctx context.Context, in *PageContentRequest, opts ...http.CallOption) (*PageContentReply, error) {
 	var out PageContentReply
-	pattern := "/user-center/admin/v1/agreement/contents"
+	pattern := "/user-center/v1/agreement/contents"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServicePageContent))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -404,7 +404,7 @@ func (c *ServiceHTTPClientImpl) PageContent(ctx context.Context, in *PageContent
 
 func (c *ServiceHTTPClientImpl) PageScene(ctx context.Context, in *PageSceneRequest, opts ...http.CallOption) (*PageSceneReply, error) {
 	var out PageSceneReply
-	pattern := "/user-center/admin/v1/agreement/scenes"
+	pattern := "/user-center/v1/agreement/scenes"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServicePageScene))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -417,7 +417,7 @@ func (c *ServiceHTTPClientImpl) PageScene(ctx context.Context, in *PageSceneRequ
 
 func (c *ServiceHTTPClientImpl) UpdateContent(ctx context.Context, in *UpdateContentRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/agreement/content"
+	pattern := "/user-center/v1/agreement/content"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceUpdateContent))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -430,7 +430,7 @@ func (c *ServiceHTTPClientImpl) UpdateContent(ctx context.Context, in *UpdateCon
 
 func (c *ServiceHTTPClientImpl) UpdateScene(ctx context.Context, in *UpdateSceneRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/agreement/scene"
+	pattern := "/user-center/v1/agreement/scene"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceUpdateScene))
 	opts = append(opts, http.PathTemplate(pattern))

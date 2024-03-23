@@ -13,33 +13,33 @@ import "user_center_field.proto";
 service Service{
   rpc AllFieldType (google.protobuf.Empty)  returns (AllFieldTypeReply) {
     option (google.api.http) = {
-      get: "/user-center/admin/v1/field/types",
+      get: "/user-center/v1/field/types",
     };
   }
 
   rpc PageField (PageFieldRequest)  returns (PageFieldReply) {
     option (google.api.http) = {
-      get: "/user-center/admin/v1/fields",
+      get: "/user-center/v1/fields",
     };
   }
 
   rpc AddField (AddFieldRequest)  returns (AddFieldReply) {
     option (google.api.http) = {
-      post: "/user-center/admin/v1/field",
+      post: "/user-center/v1/field",
       body:"*"
     };
   }
 
   rpc UpdateField (UpdateFieldRequest)  returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/user-center/admin/v1/field",
+      put: "/user-center/v1/field",
       body:"*"
     };
   }
 
   rpc DeleteField (DeleteFieldRequest)  returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/user-center/admin/v1/field",
+      delete: "/user-center/v1/field",
     };
   }
 

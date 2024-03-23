@@ -9,10 +9,10 @@ require (
 	github.com/golang/protobuf v1.5.3
 	github.com/jinzhu/copier v0.4.0
 	github.com/json-iterator/go v1.1.12
-	github.com/limes-cloud/configure v1.0.14
-	github.com/limes-cloud/kratosx v1.0.24
+	github.com/limes-cloud/configure v1.0.22
+	github.com/limes-cloud/kratosx v1.0.25
 	github.com/limes-cloud/resource v1.0.2
-	go.uber.org/automaxprocs v1.5.1
+	go.uber.org/automaxprocs v1.5.3
 	google.golang.org/genproto/googleapis/api v0.0.0-20240125205218-1f4bbc51befe
 	google.golang.org/grpc v1.61.0
 	google.golang.org/protobuf v1.32.0
@@ -79,7 +79,6 @@ require (
 	github.com/lufia/plan9stats v0.0.0-20231016141302-07b5767bb0ed // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
-	github.com/mbndr/figlet4go v0.0.0-20190224160619-d6cef5b186ea // indirect
 	github.com/microsoft/go-mssqldb v1.6.0 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect

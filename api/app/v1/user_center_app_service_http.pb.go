@@ -41,12 +41,12 @@ type ServiceHTTPServer interface {
 
 func RegisterServiceHTTPServer(s *http.Server, srv ServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/user-center/admin/v1/apps", _Service_PageApp0_HTTP_Handler(srv))
+	r.GET("/user-center/v1/apps", _Service_PageApp0_HTTP_Handler(srv))
 	r.GET("/user-center/client/v1/app", _Service_GetAppByKeyword0_HTTP_Handler(srv))
-	r.GET("/user-center/admin/v1/app", _Service_GetAppByKeyword1_HTTP_Handler(srv))
-	r.POST("/user-center/admin/v1/app", _Service_AddApp0_HTTP_Handler(srv))
-	r.PUT("/user-center/admin/v1/app", _Service_UpdateApp0_HTTP_Handler(srv))
-	r.DELETE("/user-center/admin/v1/app", _Service_DeleteApp0_HTTP_Handler(srv))
+	r.GET("/user-center/v1/app", _Service_GetAppByKeyword1_HTTP_Handler(srv))
+	r.POST("/user-center/v1/app", _Service_AddApp0_HTTP_Handler(srv))
+	r.PUT("/user-center/v1/app", _Service_UpdateApp0_HTTP_Handler(srv))
+	r.DELETE("/user-center/v1/app", _Service_DeleteApp0_HTTP_Handler(srv))
 }
 
 func _Service_PageApp0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context) error {
@@ -187,7 +187,7 @@ func NewServiceHTTPClient(client *http.Client) ServiceHTTPClient {
 
 func (c *ServiceHTTPClientImpl) AddApp(ctx context.Context, in *AddAppRequest, opts ...http.CallOption) (*AddAppReply, error) {
 	var out AddAppReply
-	pattern := "/user-center/admin/v1/app"
+	pattern := "/user-center/v1/app"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceAddApp))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -200,7 +200,7 @@ func (c *ServiceHTTPClientImpl) AddApp(ctx context.Context, in *AddAppRequest, o
 
 func (c *ServiceHTTPClientImpl) DeleteApp(ctx context.Context, in *DeleteAppRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/app"
+	pattern := "/user-center/v1/app"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceDeleteApp))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -213,7 +213,7 @@ func (c *ServiceHTTPClientImpl) DeleteApp(ctx context.Context, in *DeleteAppRequ
 
 func (c *ServiceHTTPClientImpl) GetAppByKeyword(ctx context.Context, in *GetAppByKeywordRequest, opts ...http.CallOption) (*App, error) {
 	var out App
-	pattern := "/user-center/admin/v1/app"
+	pattern := "/user-center/v1/app"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceGetAppByKeyword))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -226,7 +226,7 @@ func (c *ServiceHTTPClientImpl) GetAppByKeyword(ctx context.Context, in *GetAppB
 
 func (c *ServiceHTTPClientImpl) PageApp(ctx context.Context, in *PageAppRequest, opts ...http.CallOption) (*PageAppReply, error) {
 	var out PageAppReply
-	pattern := "/user-center/admin/v1/apps"
+	pattern := "/user-center/v1/apps"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServicePageApp))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -239,7 +239,7 @@ func (c *ServiceHTTPClientImpl) PageApp(ctx context.Context, in *PageAppRequest,
 
 func (c *ServiceHTTPClientImpl) UpdateApp(ctx context.Context, in *UpdateAppRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/app"
+	pattern := "/user-center/v1/app"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceUpdateApp))
 	opts = append(opts, http.PathTemplate(pattern))

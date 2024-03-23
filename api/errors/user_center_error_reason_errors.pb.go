@@ -477,3 +477,19 @@ func NotUserFormat(format string, args ...any) *errors.Error {
 func NotUser() *errors.Error {
 	return errors.New(200, ErrorReason_NotUser.String(), "用户不存在")
 }
+
+func IsResourceServer(err error) bool {
+	if err == nil {
+		return false
+	}
+	e := errors.FromError(err)
+	return e.Reason == ErrorReason_ResourceServer.String() && e.Code == 200
+}
+
+func ResourceServerFormat(format string, args ...any) *errors.Error {
+	return errors.New(200, ErrorReason_ResourceServer.String(), "资源服务异常:"+fmt.Sprintf(format, args...))
+}
+
+func ResourceServer() *errors.Error {
+	return errors.New(200, ErrorReason_ResourceServer.String(), "资源服务异常")
+}

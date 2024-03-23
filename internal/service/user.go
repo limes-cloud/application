@@ -77,7 +77,7 @@ func (s *UserService) transformUserReply(ctx kratosx.Context, user *biz.User) (*
 	reply.ExtraList = []*pb.User_Extra{}
 
 	// 请求资源中心,错了直接忽略，不影响主流程
-	resource, rer := service.NewResource(ctx, s.conf.Service.Resource)
+	resource, rer := service.NewResource(ctx)
 	if rer == nil {
 		if reply.Avatar != "" {
 			reply.Resource, _ = resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{
@@ -169,7 +169,7 @@ func (s *UserService) GetSimpleUser(ctx context.Context, in *pb.GetSimpleUserReq
 		return nil, errors.Transform()
 	}
 
-	resource, err := service.NewResource(ctx, s.conf.Service.Resource)
+	resource, err := service.NewResource(ctx)
 	if err == nil {
 		reply.Resource, _ = resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{Sha: reply.Avatar})
 	}
@@ -187,7 +187,7 @@ func (s *UserService) GetBaseUser(ctx context.Context, in *pb.GetBaseUserRequest
 		return nil, errors.Transform()
 	}
 
-	resource, err := service.NewResource(ctx, s.conf.Service.Resource)
+	resource, err := service.NewResource(ctx)
 	if err == nil {
 		reply.Resource, _ = resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{Sha: reply.Avatar})
 	}
@@ -247,7 +247,7 @@ func (s *UserService) PageUser(ctx context.Context, in *pb.PageUserRequest) (*pb
 	}
 
 	// 请求资源中心,错了直接忽略，不影响主流程
-	resource, err := service.NewResource(ctx, s.conf.Service.Resource)
+	resource, err := service.NewResource(ctx)
 	if err == nil {
 		for index, item := range reply.List {
 			if item.Avatar != "" {

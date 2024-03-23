@@ -14,21 +14,21 @@ service Service{
   // AllChannel 获取全部渠道信息
   rpc AllChannel (google.protobuf.Empty)  returns (AllChannelReply) {
     option (google.api.http) = {
-      get: "/user-center/admin/v1/channels",
+      get: "/user-center/v1/channels",
     };
   }
 
   // AllChannel 获取全部渠道信息
   rpc GetTypes (google.protobuf.Empty)  returns (GetTypesReply) {
     option (google.api.http) = {
-      get: "/user-center/admin/v1/channel/types",
+      get: "/user-center/v1/channel/types",
     };
   }
 
   // AddChannel 添加渠道信息
   rpc AddChannel (AddChannelRequest)  returns (AddChannelReply) {
     option (google.api.http) = {
-      post: "/user-center/admin/v1/channel",
+      post: "/user-center/v1/channel",
       body:"*"
     };
   }
@@ -36,7 +36,7 @@ service Service{
   // UpdateChannel 更新渠道信息
   rpc UpdateChannel (UpdateChannelRequest)  returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/user-center/admin/v1/channel",
+      put: "/user-center/v1/channel",
       body:"*"
     };
   }
@@ -44,7 +44,7 @@ service Service{
   // DeleteChannel 删除渠道信息
   rpc DeleteChannel (DeleteChannelRequest)  returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/user-center/admin/v1/channel",
+      delete: "/user-center/v1/channel",
     };
   }
 }

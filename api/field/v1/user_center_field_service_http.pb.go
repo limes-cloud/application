@@ -36,11 +36,11 @@ type ServiceHTTPServer interface {
 
 func RegisterServiceHTTPServer(s *http.Server, srv ServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/user-center/admin/v1/field/types", _Service_AllFieldType0_HTTP_Handler(srv))
-	r.GET("/user-center/admin/v1/fields", _Service_PageField0_HTTP_Handler(srv))
-	r.POST("/user-center/admin/v1/field", _Service_AddField0_HTTP_Handler(srv))
-	r.PUT("/user-center/admin/v1/field", _Service_UpdateField0_HTTP_Handler(srv))
-	r.DELETE("/user-center/admin/v1/field", _Service_DeleteField0_HTTP_Handler(srv))
+	r.GET("/user-center/v1/field/types", _Service_AllFieldType0_HTTP_Handler(srv))
+	r.GET("/user-center/v1/fields", _Service_PageField0_HTTP_Handler(srv))
+	r.POST("/user-center/v1/field", _Service_AddField0_HTTP_Handler(srv))
+	r.PUT("/user-center/v1/field", _Service_UpdateField0_HTTP_Handler(srv))
+	r.DELETE("/user-center/v1/field", _Service_DeleteField0_HTTP_Handler(srv))
 }
 
 func _Service_AllFieldType0_HTTP_Handler(srv ServiceHTTPServer) func(ctx http.Context) error {
@@ -162,7 +162,7 @@ func NewServiceHTTPClient(client *http.Client) ServiceHTTPClient {
 
 func (c *ServiceHTTPClientImpl) AddField(ctx context.Context, in *AddFieldRequest, opts ...http.CallOption) (*AddFieldReply, error) {
 	var out AddFieldReply
-	pattern := "/user-center/admin/v1/field"
+	pattern := "/user-center/v1/field"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceAddField))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -175,7 +175,7 @@ func (c *ServiceHTTPClientImpl) AddField(ctx context.Context, in *AddFieldReques
 
 func (c *ServiceHTTPClientImpl) AllFieldType(ctx context.Context, in *emptypb.Empty, opts ...http.CallOption) (*AllFieldTypeReply, error) {
 	var out AllFieldTypeReply
-	pattern := "/user-center/admin/v1/field/types"
+	pattern := "/user-center/v1/field/types"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceAllFieldType))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -188,7 +188,7 @@ func (c *ServiceHTTPClientImpl) AllFieldType(ctx context.Context, in *emptypb.Em
 
 func (c *ServiceHTTPClientImpl) DeleteField(ctx context.Context, in *DeleteFieldRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/field"
+	pattern := "/user-center/v1/field"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceDeleteField))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -201,7 +201,7 @@ func (c *ServiceHTTPClientImpl) DeleteField(ctx context.Context, in *DeleteField
 
 func (c *ServiceHTTPClientImpl) PageField(ctx context.Context, in *PageFieldRequest, opts ...http.CallOption) (*PageFieldReply, error) {
 	var out PageFieldReply
-	pattern := "/user-center/admin/v1/fields"
+	pattern := "/user-center/v1/fields"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServicePageField))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -214,7 +214,7 @@ func (c *ServiceHTTPClientImpl) PageField(ctx context.Context, in *PageFieldRequ
 
 func (c *ServiceHTTPClientImpl) UpdateField(ctx context.Context, in *UpdateFieldRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/field"
+	pattern := "/user-center/v1/field"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceUpdateField))
 	opts = append(opts, http.PathTemplate(pattern))

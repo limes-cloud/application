@@ -19,7 +19,7 @@ service Service{
 
   rpc GetUser (GetUserRequest)  returns (User) {
     option (google.api.http) = {
-      get: "/user-center/admin/v1/user",
+      get: "/user-center/v1/user",
     };
   }
 
@@ -38,41 +38,41 @@ service Service{
 
   rpc PageUser (PageUserRequest)  returns (PageUserReply) {
     option (google.api.http) = {
-      get: "/user-center/admin/v1/users",
+      get: "/user-center/v1/users",
     };
   }
 
   rpc AddUser (AddUserRequest)  returns (AddUserReply) {
     option (google.api.http) = {
-      post: "/user-center/admin/v1/user",
+      post: "/user-center/v1/user",
       body:"*"
     };
   }
 
   rpc ImportUser (ImportUserRequest)  returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/user-center/admin/v1/users",
+      post: "/user-center/v1/users",
       body:"*"
     };
   }
 
   rpc UpdateUser (UpdateUserRequest)  returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      put: "/user-center/admin/v1/user",
+      put: "/user-center/v1/user",
       body:"*"
     };
   }
 
   rpc DeleteUser (DeleteUserRequest)  returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/user-center/admin/v1/user",
+      delete: "/user-center/v1/user",
     };
   }
 
   // 禁用用户
   rpc DisableUser (DisableUserRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/user-center/admin/v1/user/disable",
+      post: "/user-center/v1/user/disable",
       body: "*",
     };
   }
@@ -80,7 +80,7 @@ service Service{
   // 启用用户
   rpc EnableUser (EnableUserRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/user-center/admin/v1/user/enable",
+      post: "/user-center/v1/user/enable",
       body: "*",
     };
   }
@@ -88,7 +88,7 @@ service Service{
   // 下线用户
   rpc OfflineUser (OfflineUserRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/user-center/admin/v1/user/offline",
+      post: "/user-center/v1/user/offline",
       body: "*",
     };
   }
@@ -96,7 +96,7 @@ service Service{
   // 添加用户应用
   rpc AddUserApp (AddUserAppRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/user-center/admin/v1/user/app",
+      post: "/user-center/v1/user/app",
       body: "*",
     };
   }
@@ -104,7 +104,7 @@ service Service{
   // 删除用户应用
   rpc DeleteUserApp (DeleteUserAppRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      delete: "/user-center/admin/v1/user/app",
+      delete: "/user-center/v1/user/app",
     };
   }
 

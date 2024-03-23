@@ -7,7 +7,7 @@ info:
     description: 渠道服务接口定义，渠道主要是配置用户登录时的可选登录方法
     version: 0.0.1
 paths:
-    /user-center/admin/v1/field:
+    /user-center/v1/field:
         put:
             tags:
                 - Service
@@ -71,7 +71,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /user-center/admin/v1/field/types:
+    /user-center/v1/field/types:
         get:
             tags:
                 - Service
@@ -89,7 +89,7 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
-    /user-center/admin/v1/fields:
+    /user-center/v1/fields:
         get:
             tags:
                 - Service

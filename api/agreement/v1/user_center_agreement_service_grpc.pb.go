@@ -20,16 +20,16 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Service_PageContent_FullMethodName       = "/agreementpb.Service/PageContent"
-	Service_GetContent_FullMethodName        = "/agreementpb.Service/GetContent"
-	Service_AddContent_FullMethodName        = "/agreementpb.Service/AddContent"
-	Service_UpdateContent_FullMethodName     = "/agreementpb.Service/UpdateContent"
-	Service_DeleteContent_FullMethodName     = "/agreementpb.Service/DeleteContent"
-	Service_PageScene_FullMethodName         = "/agreementpb.Service/PageScene"
-	Service_GetSceneByKeyword_FullMethodName = "/agreementpb.Service/GetSceneByKeyword"
-	Service_AddScene_FullMethodName          = "/agreementpb.Service/AddScene"
-	Service_UpdateScene_FullMethodName       = "/agreementpb.Service/UpdateScene"
-	Service_DeleteScene_FullMethodName       = "/agreementpb.Service/DeleteScene"
+	Service_PageContent_FullMethodName       = "/agreement.Service/PageContent"
+	Service_GetContent_FullMethodName        = "/agreement.Service/GetContent"
+	Service_AddContent_FullMethodName        = "/agreement.Service/AddContent"
+	Service_UpdateContent_FullMethodName     = "/agreement.Service/UpdateContent"
+	Service_DeleteContent_FullMethodName     = "/agreement.Service/DeleteContent"
+	Service_PageScene_FullMethodName         = "/agreement.Service/PageScene"
+	Service_GetSceneByKeyword_FullMethodName = "/agreement.Service/GetSceneByKeyword"
+	Service_AddScene_FullMethodName          = "/agreement.Service/AddScene"
+	Service_UpdateScene_FullMethodName       = "/agreement.Service/UpdateScene"
+	Service_DeleteScene_FullMethodName       = "/agreement.Service/DeleteScene"
 )
 
 // ServiceClient is the client API for Service service.
@@ -414,7 +414,7 @@ func _Service_DeleteScene_Handler(srv interface{}, ctx context.Context, dec func
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Service_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "agreementpb.Service",
+	ServiceName: "agreement.Service",
 	HandlerType: (*ServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

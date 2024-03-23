@@ -104,19 +104,19 @@ type ServiceHTTPServer interface {
 
 func RegisterServiceHTTPServer(s *http.Server, srv ServiceHTTPServer) {
 	r := s.Route("/")
-	r.GET("/user-center/admin/v1/user", _Service_GetUser0_HTTP_Handler(srv))
+	r.GET("/user-center/v1/user", _Service_GetUser0_HTTP_Handler(srv))
 	r.GET("/user-center/client/v1/user", _Service_GetCurrentUser0_HTTP_Handler(srv))
 	r.PUT("/user-center/client/v1/user", _Service_UpdateCurrentUser0_HTTP_Handler(srv))
-	r.GET("/user-center/admin/v1/users", _Service_PageUser0_HTTP_Handler(srv))
-	r.POST("/user-center/admin/v1/user", _Service_AddUser0_HTTP_Handler(srv))
-	r.POST("/user-center/admin/v1/users", _Service_ImportUser0_HTTP_Handler(srv))
-	r.PUT("/user-center/admin/v1/user", _Service_UpdateUser0_HTTP_Handler(srv))
-	r.DELETE("/user-center/admin/v1/user", _Service_DeleteUser0_HTTP_Handler(srv))
-	r.POST("/user-center/admin/v1/user/disable", _Service_DisableUser0_HTTP_Handler(srv))
-	r.POST("/user-center/admin/v1/user/enable", _Service_EnableUser0_HTTP_Handler(srv))
-	r.POST("/user-center/admin/v1/user/offline", _Service_OfflineUser0_HTTP_Handler(srv))
-	r.POST("/user-center/admin/v1/user/app", _Service_AddUserApp0_HTTP_Handler(srv))
-	r.DELETE("/user-center/admin/v1/user/app", _Service_DeleteUserApp0_HTTP_Handler(srv))
+	r.GET("/user-center/v1/users", _Service_PageUser0_HTTP_Handler(srv))
+	r.POST("/user-center/v1/user", _Service_AddUser0_HTTP_Handler(srv))
+	r.POST("/user-center/v1/users", _Service_ImportUser0_HTTP_Handler(srv))
+	r.PUT("/user-center/v1/user", _Service_UpdateUser0_HTTP_Handler(srv))
+	r.DELETE("/user-center/v1/user", _Service_DeleteUser0_HTTP_Handler(srv))
+	r.POST("/user-center/v1/user/disable", _Service_DisableUser0_HTTP_Handler(srv))
+	r.POST("/user-center/v1/user/enable", _Service_EnableUser0_HTTP_Handler(srv))
+	r.POST("/user-center/v1/user/offline", _Service_OfflineUser0_HTTP_Handler(srv))
+	r.POST("/user-center/v1/user/app", _Service_AddUserApp0_HTTP_Handler(srv))
+	r.DELETE("/user-center/v1/user/app", _Service_DeleteUserApp0_HTTP_Handler(srv))
 	r.POST("/user-center/client/v1/login/oauth", _Service_OAuthLogin0_HTTP_Handler(srv))
 	r.POST("/user-center/client/v1/bind/oauth/password", _Service_OAuthBindByPassword0_HTTP_Handler(srv))
 	r.POST("/user-center/client/v1/bind/oauth/captcha", _Service_OAuthBindByCaptcha0_HTTP_Handler(srv))
@@ -782,7 +782,7 @@ func NewServiceHTTPClient(client *http.Client) ServiceHTTPClient {
 
 func (c *ServiceHTTPClientImpl) AddUser(ctx context.Context, in *AddUserRequest, opts ...http.CallOption) (*AddUserReply, error) {
 	var out AddUserReply
-	pattern := "/user-center/admin/v1/user"
+	pattern := "/user-center/v1/user"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceAddUser))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -795,7 +795,7 @@ func (c *ServiceHTTPClientImpl) AddUser(ctx context.Context, in *AddUserRequest,
 
 func (c *ServiceHTTPClientImpl) AddUserApp(ctx context.Context, in *AddUserAppRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/user/app"
+	pattern := "/user-center/v1/user/app"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceAddUserApp))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -860,7 +860,7 @@ func (c *ServiceHTTPClientImpl) CaptchaRegisterEmail(ctx context.Context, in *Ca
 
 func (c *ServiceHTTPClientImpl) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/user"
+	pattern := "/user-center/v1/user"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceDeleteUser))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -873,7 +873,7 @@ func (c *ServiceHTTPClientImpl) DeleteUser(ctx context.Context, in *DeleteUserRe
 
 func (c *ServiceHTTPClientImpl) DeleteUserApp(ctx context.Context, in *DeleteUserAppRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/user/app"
+	pattern := "/user-center/v1/user/app"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceDeleteUserApp))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -886,7 +886,7 @@ func (c *ServiceHTTPClientImpl) DeleteUserApp(ctx context.Context, in *DeleteUse
 
 func (c *ServiceHTTPClientImpl) DisableUser(ctx context.Context, in *DisableUserRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/user/disable"
+	pattern := "/user-center/v1/user/disable"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceDisableUser))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -899,7 +899,7 @@ func (c *ServiceHTTPClientImpl) DisableUser(ctx context.Context, in *DisableUser
 
 func (c *ServiceHTTPClientImpl) EnableUser(ctx context.Context, in *EnableUserRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/user/enable"
+	pattern := "/user-center/v1/user/enable"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceEnableUser))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -925,7 +925,7 @@ func (c *ServiceHTTPClientImpl) GetCurrentUser(ctx context.Context, in *emptypb.
 
 func (c *ServiceHTTPClientImpl) GetUser(ctx context.Context, in *GetUserRequest, opts ...http.CallOption) (*User, error) {
 	var out User
-	pattern := "/user-center/admin/v1/user"
+	pattern := "/user-center/v1/user"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServiceGetUser))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -938,7 +938,7 @@ func (c *ServiceHTTPClientImpl) GetUser(ctx context.Context, in *GetUserRequest,
 
 func (c *ServiceHTTPClientImpl) ImportUser(ctx context.Context, in *ImportUserRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/users"
+	pattern := "/user-center/v1/users"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceImportUser))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -1016,7 +1016,7 @@ func (c *ServiceHTTPClientImpl) OAuthLogin(ctx context.Context, in *OAuthLoginRe
 
 func (c *ServiceHTTPClientImpl) OfflineUser(ctx context.Context, in *OfflineUserRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/user/offline"
+	pattern := "/user-center/v1/user/offline"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceOfflineUser))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -1029,7 +1029,7 @@ func (c *ServiceHTTPClientImpl) OfflineUser(ctx context.Context, in *OfflineUser
 
 func (c *ServiceHTTPClientImpl) PageUser(ctx context.Context, in *PageUserRequest, opts ...http.CallOption) (*PageUserReply, error) {
 	var out PageUserReply
-	pattern := "/user-center/admin/v1/users"
+	pattern := "/user-center/v1/users"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationServicePageUser))
 	opts = append(opts, http.PathTemplate(pattern))
@@ -1146,7 +1146,7 @@ func (c *ServiceHTTPClientImpl) UpdateCurrentUser(ctx context.Context, in *Updat
 
 func (c *ServiceHTTPClientImpl) UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...http.CallOption) (*emptypb.Empty, error) {
 	var out emptypb.Empty
-	pattern := "/user-center/admin/v1/user"
+	pattern := "/user-center/v1/user"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationServiceUpdateUser))
 	opts = append(opts, http.PathTemplate(pattern))

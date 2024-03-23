@@ -40,6 +40,7 @@ enum ErrorReason {
   GetAuthInfo= 32[(errors.message)="获取授权信息失败"];
   UnBind= 33[(errors.code)=401,(errors.message)="用户未绑定"];
   NotUser= 34[(errors.message)="用户不存在"];
+  ResourceServer = 35[(errors.message)="资源服务异常"];
 }
  
 
