@@ -9,16 +9,16 @@ import (
 
 type App struct {
 	ktypes.BaseModel
-	Keyword       string             `json:"keyword" gorm:"unique;not null;size:32;comment:应用标识"`
-	Logo          string             `json:"logo" gorm:"not null;size:128;comment:应用logo"`
-	Name          string             `json:"name" gorm:"not null;size:32;comment:应用名称"`
-	Status        *bool              `json:"status" gorm:"not null;comment:应用状态"`
-	Version       string             `json:"version" gorm:"size:32;comment:应用版本"`
-	Copyright     string             `json:"copyright" gorm:"size:128;comment:应用版权"`
-	AllowRegistry *bool              `json:"allow_registry" gorm:"not null;comment:是否允许注册"`
-	Description   string             `json:"description" gorm:"size:128;comment:应用描述"`
-	Fields        []*field.Field     `json:"fields" gorm:"many2many:app_field;constraint:onDelete:cascade"`
-	Channels      []*channel.Channel `json:"channels" gorm:"many2many:app_channel;constraint:onDelete:cascade"`
+	Keyword       string             `json:"keyword"`
+	Logo          string             `json:"logo"`
+	Name          string             `json:"name"`
+	Status        *bool              `json:"status"`
+	Version       string             `json:"version"`
+	Copyright     string             `json:"copyright"`
+	AllowRegistry *bool              `json:"allow_registry"`
+	Description   string             `json:"description"`
+	Fields        []*field.Field     `json:"fields" gorm:"many2many:app_field"`
+	Channels      []*channel.Channel `json:"channels" gorm:"many2many:app_channel"`
 	AppChannels   []*AppChannel      `json:"app_channels"`
 	AppFields     []*AppField        `json:"app_fields"`
 }
