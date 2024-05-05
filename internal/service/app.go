@@ -6,7 +6,7 @@ import (
 	"github.com/golang/protobuf/ptypes/empty"
 	"github.com/jinzhu/copier"
 	"github.com/limes-cloud/kratosx"
-	resourceV1 "github.com/limes-cloud/resource/api/v1"
+	resourceV1 "github.com/limes-cloud/resource/api/file/v1"
 
 	pb "github.com/limes-cloud/user-center/api/app/v1"
 	"github.com/limes-cloud/user-center/api/errors"

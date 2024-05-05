@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/limes-cloud/kratosx"
-	resource "github.com/limes-cloud/resource/api/v1"
+	resource "github.com/limes-cloud/resource/api/file/v1"
 
 	"github.com/limes-cloud/user-center/api/errors"
 )

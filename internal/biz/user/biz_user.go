@@ -3,7 +3,6 @@ package user
 import (
 	"github.com/limes-cloud/kratosx"
 	ktypes "github.com/limes-cloud/kratosx/types"
-	v1 "github.com/limes-cloud/resource/api/v1"
 	"google.golang.org/protobuf/proto"
 
 	"github.com/limes-cloud/user-center/api/errors"
@@ -122,7 +121,7 @@ func (u *UseCase) Disable(ctx kratosx.Context, id uint32, desc string) error {
 		DisableDesc: proto.String(desc),
 	}
 	if err := u.repo.Update(ctx, user); err != nil {
-		return v1.DatabaseError()
+		return errors.Database()
 	}
 	return nil
 }
@@ -140,7 +139,7 @@ func (u *UseCase) Offline(ctx kratosx.Context, id uint32) error {
 func (u *UseCase) AddApp(ctx kratosx.Context, uid, aid uint32) (uint32, error) {
 	id, err := u.repo.AddUserApp(ctx, uid, aid)
 	if err != nil {
-		return 0, v1.DatabaseErrorFormat(err.Error())
+		return 0, errors.DatabaseFormat(err.Error())
 	}
 	return id, nil
 }
@@ -148,7 +147,7 @@ func (u *UseCase) AddApp(ctx kratosx.Context, uid, aid uint32) (uint32, error) {
 // DeleteApp 删除用户应用
 func (u *UseCase) DeleteApp(ctx kratosx.Context, uid, aid uint32) error {
 	if err := u.repo.DeleteUserApp(ctx, uid, aid); err != nil {
-		return v1.DatabaseErrorFormat(err.Error())
+		return errors.DatabaseFormat(err.Error())
 	}
 	return nil
 }

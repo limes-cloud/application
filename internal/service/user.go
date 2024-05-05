@@ -7,7 +7,7 @@ import (
 	"github.com/jinzhu/copier"
 	"github.com/limes-cloud/kratosx"
 	"github.com/limes-cloud/kratosx/pkg/util"
-	resourceV1 "github.com/limes-cloud/resource/api/v1"
+	resourceV1 "github.com/limes-cloud/resource/api/file/v1"
 	"google.golang.org/protobuf/proto"
 	"google.golang.org/protobuf/types/known/structpb"
 
