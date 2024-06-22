@@ -1,25 +1,20 @@
 package channel
 
-import (
-	ktypes "github.com/limes-cloud/kratosx/types"
-)
-
 type Channel struct {
-	ktypes.CreateModel
-	Logo     string `json:"logo"`
-	Platform string `json:"platform"`
-	Name     string `json:"name"`
-	Ak       string `json:"ak"`
-	Sk       string `json:"sk"`
-	Extra    string `json:"extra"`
-	Status   *bool  `json:"status"`
-}
-
-func (t Channel) TableName() string {
-	return "channel"
+	Id        uint32  `json:"id"`
+	Logo      string  `json:"logo"`
+	LogoUrl   string  `json:"logoUrl"`
+	Keyword   string  `json:"keyword"`
+	Name      string  `json:"name"`
+	Status    *bool   `json:"status"`
+	Ak        *string `json:"ak"`
+	Sk        *string `json:"sk"`
+	Extra     *string `json:"extra"`
+	CreatedAt int64   `json:"createdAt"`
+	UpdatedAt int64   `json:"updatedAt"`
 }
 
 type Typer struct {
-	Platform string `json:"platform"`
-	Name     string
+	Keyword string `json:"keyword"`
+	Name    string `json:"name"`
 }

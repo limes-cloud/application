@@ -2,68 +2,83 @@ package app
 
 import (
 	"github.com/limes-cloud/kratosx"
+	"google.golang.org/protobuf/proto"
 
-	"github.com/limes-cloud/user-center/api/errors"
-	"github.com/limes-cloud/user-center/internal/config"
+	"github.com/limes-cloud/usercenter/api/usercenter/errors"
+	"github.com/limes-cloud/usercenter/internal/conf"
 )
 
 type UseCase struct {
-	config *config.Config
-	repo   Repo
+	conf *conf.Config
+	repo Repo
 }
 
-func NewUseCase(config *config.Config, repo Repo) *UseCase {
-	return &UseCase{config: config, repo: repo}
+func NewUseCase(config *conf.Config, repo Repo) *UseCase {
+	return &UseCase{conf: config, repo: repo}
 }
 
-// GetByID 获取指定应用
-func (u *UseCase) GetByID(ctx kratosx.Context, id uint32) (*App, error) {
-	app, err := u.repo.GetByID(ctx, id)
-	if err != nil {
-		return nil, errors.NotRecord()
+// GetApp 获取指定的应用信息
+func (u *UseCase) GetApp(ctx kratosx.Context, req *GetAppRequest) (*App, error) {
+	var (
+		res *App
+		err error
+	)
+
+	if req.Id != nil {
+		res, err = u.repo.GetApp(ctx, *req.Id)
+	} else if req.Keyword != nil {
+		res, err = u.repo.GetAppByKeyword(ctx, *req.Keyword)
+	} else {
+		return nil, errors.ParamsError()
 	}
-	return app, nil
-}
 
-// GetByKeyword 获取指定应用
-func (u *UseCase) GetByKeyword(ctx kratosx.Context, keyword string) (*App, error) {
-	app, err := u.repo.GetByKeyword(ctx, keyword)
 	if err != nil {
-		return nil, errors.NotRecord()
+		return nil, errors.GetError(err.Error())
 	}
-	return app, nil
+	return res, nil
 }
 
-// Page 获取全部登录应用
-func (u *UseCase) Page(ctx kratosx.Context, req *PageAppRequest) ([]*App, uint32, error) {
-	app, total, err := u.repo.Page(ctx, req)
+// ListApp 获取应用信息列表
+func (u *UseCase) ListApp(ctx kratosx.Context, req *ListAppRequest) ([]*App, uint32, error) {
+	list, total, err := u.repo.ListApp(ctx, req)
 	if err != nil {
-		return nil, 0, errors.NotRecord()
+		return nil, 0, errors.ListError(err.Error())
 	}
-	return app, total, nil
+	return list, total, nil
 }
 
-// Add 添加登录应用信息
-func (u *UseCase) Add(ctx kratosx.Context, app *App) (uint32, error) {
-	id, err := u.repo.Create(ctx, app)
+// CreateApp 创建应用信息
+func (u *UseCase) CreateApp(ctx kratosx.Context, req *App) (uint32, error) {
+	req.Status = proto.Bool(false)
+	req.DisableDesc = proto.String("应用未发布")
+	id, err := u.repo.CreateApp(ctx, req)
 	if err != nil {
-		return 0, errors.DatabaseFormat(err.Error())
+		return 0, errors.CreateError(err.Error())
 	}
 	return id, nil
 }
 
-// Update 更新登录应用信息
-func (u *UseCase) Update(ctx kratosx.Context, app *App) error {
-	if err := u.repo.Update(ctx, app); err != nil {
-		return errors.DatabaseFormat(err.Error())
+// UpdateApp 更新应用信息
+func (u *UseCase) UpdateApp(ctx kratosx.Context, req *App) error {
+	if err := u.repo.UpdateApp(ctx, req); err != nil {
+		return errors.UpdateError(err.Error())
 	}
 	return nil
 }
 
-// Delete 删除登录应用信息
-func (u *UseCase) Delete(ctx kratosx.Context, id uint32) error {
-	if err := u.repo.Delete(ctx, id); err != nil {
-		return errors.DatabaseFormat(err.Error())
+// UpdateAppStatus 更新应用信息状态
+func (u *UseCase) UpdateAppStatus(ctx kratosx.Context, req *UpdateAppStatusRequest) error {
+	if err := u.repo.UpdateAppStatus(ctx, req); err != nil {
+		return errors.UpdateError(err.Error())
 	}
 	return nil
+}
+
+// DeleteApp 删除应用信息
+func (u *UseCase) DeleteApp(ctx kratosx.Context, ids []uint32) (uint32, error) {
+	total, err := u.repo.DeleteApp(ctx, ids)
+	if err != nil {
+		return 0, errors.DeleteError(err.Error())
+	}
+	return total, nil
 }

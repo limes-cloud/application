@@ -4,21 +4,21 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
-type textType struct {
+type stringType struct {
 }
 
-func (t textType) Name() string {
-	return "文本"
+func (t stringType) Name() string {
+	return "字符"
 }
 
-func (t textType) Validate(_ *structpb.Value) bool {
+func (t stringType) Validate(_ *structpb.Value) bool {
 	return true
 }
 
-func (t textType) ToString(in *structpb.Value) string {
+func (t stringType) ToString(in *structpb.Value) string {
 	return in.GetStringValue()
 }
 
-func (t textType) ToValue(in string) *structpb.Value {
+func (t stringType) ToValue(in string) *structpb.Value {
 	return structpb.NewStringValue(in)
 }

@@ -43,3 +43,5 @@ bin/
 node_modules
 uni_modules
 tmp/
+autocode
+web_ts

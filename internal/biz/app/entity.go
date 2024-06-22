@@ -1,46 +1,44 @@
 package app
 
-import (
-	ktypes "github.com/limes-cloud/kratosx/types"
-
-	"github.com/limes-cloud/user-center/internal/biz/channel"
-	"github.com/limes-cloud/user-center/internal/biz/field"
-)
-
 type App struct {
-	ktypes.BaseModel
-	Keyword       string             `json:"keyword"`
-	Logo          string             `json:"logo"`
-	Name          string             `json:"name"`
-	Status        *bool              `json:"status"`
-	Version       string             `json:"version"`
-	Copyright     string             `json:"copyright"`
-	AllowRegistry *bool              `json:"allow_registry"`
-	Description   string             `json:"description"`
-	Fields        []*field.Field     `json:"fields" gorm:"many2many:app_field"`
-	Channels      []*channel.Channel `json:"channels" gorm:"many2many:app_channel"`
-	AppChannels   []*AppChannel      `json:"app_channels"`
-	AppFields     []*AppField        `json:"app_fields"`
-}
-
-func (t App) TableName() string {
-	return "app"
+	Id            uint32        `json:"id"`
+	Logo          string        `json:"logo"`
+	LogoUrl       string        `json:"logoUrl"`
+	Keyword       string        `json:"keyword"`
+	Name          string        `json:"name"`
+	Status        *bool         `json:"status"`
+	DisableDesc   *string       `json:"disableDesc"`
+	AllowRegistry *bool         `json:"allowRegistry"`
+	Version       string        `json:"version"`
+	Copyright     string        `json:"copyright"`
+	Extra         *string       `json:"extra"`
+	Description   *string       `json:"description"`
+	CreatedAt     int64         `json:"createdAt"`
+	UpdatedAt     int64         `json:"updatedAt"`
+	AppChannels   []*AppChannel `json:"appChannels"`
+	AppFields     []*AppField   `json:"appFields"`
+	Channels      []*Channel    `json:"channels"`
+	Fields        []*Field      `json:"fields"`
 }
 
 type AppChannel struct {
-	AppID     uint32 `json:"app_id"`
-	ChannelID uint32 `json:"channel_id"`
-}
-
-func (t AppChannel) TableName() string {
-	return "app_channel"
+	ChannelId uint32 `json:"channelId"`
 }
 
 type AppField struct {
-	AppID   uint32 `json:"app_id"`
-	FieldID uint32 `json:"field_id"`
+	FieldId uint32 `json:"fieldId"`
 }
 
-func (t AppField) TableName() string {
-	return "app_field"
+type Channel struct {
+	Id      uint32 `json:"id"`
+	Logo    string `json:"logo"`
+	Name    string `json:"name"`
+	Keyword string `json:"keyword"`
+}
+
+type Field struct {
+	Id      uint32 `json:"id"`
+	Keyword string `json:"keyword"`
+	Name    string `json:"name"`
+	Type    string `json:"type"`
 }

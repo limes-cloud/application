@@ -26,10 +26,10 @@ func init() {
 	register("bool", &boolType{})
 	register("datetime", &datetimeType{})
 	register("email", &emailType{})
-	register("id_card", &idCardType{})
+	register("idCard", &idCardType{})
 	register("number", &numberType{})
 	register("phone", &phoneType{})
-	register("text", &textType{})
+	register("string", &stringType{})
 }
 
 func (f field) GetType(tp string) Type {

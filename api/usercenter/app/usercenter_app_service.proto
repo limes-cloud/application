@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+package usercenter.api.usercenter.app.v1;
+
+option go_package = "./v1;v1";
+option java_multiple_files = true;
+option java_package = "usercenter.api.usercenter.app.v1";
+option java_outer_classname = "AppV1";
+
+import "api/usercenter/app/usercenter_app.proto";
+import "google/api/annotations.proto";
+
+service App{
+
+  // GetApp 获取指定的应用信息
+  rpc GetApp (GetAppRequest) returns (GetAppReply) {
+    option (google.api.http) = {
+      get: "/usercenter/api/v1/app",
+      additional_bindings:{
+        get: "/usercenter/client/v1/app",
+      }
+    };
+  }
+
+  // ListApp 获取应用信息列表
+  rpc ListApp (ListAppRequest) returns (ListAppReply) {
+    option (google.api.http) = {
+      get: "/usercenter/api/v1/apps",
+    };
+  }
+
+  // CreateApp 创建应用信息
+  rpc CreateApp (CreateAppRequest) returns (CreateAppReply) {
+    option (google.api.http) = {
+      post: "/usercenter/api/v1/app",
+      body: "*"
+    };
+  }
+
+  // UpdateApp 更新应用信息
+  rpc UpdateApp (UpdateAppRequest) returns (UpdateAppReply) {
+    option (google.api.http) = {
+      put: "/usercenter/api/v1/app",
+      body: "*"
+    };
+  }
+
+  // UpdateAppStatus 更新应用信息状态
+  rpc UpdateAppStatus (UpdateAppStatusRequest) returns (UpdateAppStatusReply) {
+    option (google.api.http) = {
+      put: "/usercenter/api/v1/app/status",
+      body: "*"
+    };
+  }
+
+  // DeleteApp 删除应用信息
+  rpc DeleteApp (DeleteAppRequest) returns (DeleteAppReply) {
+    option (google.api.http) = {
+      delete: "/usercenter/api/v1/app",
+    };
+  }
+
+}

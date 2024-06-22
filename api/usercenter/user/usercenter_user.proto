@@ -1,0 +1,243 @@
+syntax = "proto3";
+
+package usercenter.api.usercenter.user.v1;
+
+option go_package = "./v1;v1";
+option java_multiple_files = true;
+option java_package = "usercenter.api.usercenter.user.v1";
+option java_outer_classname = "UserV1";
+
+import "validate/validate.proto";
+
+message GetCurrentUserRequest{}
+
+message GetCurrentUserReply{
+  uint32 id = 1;
+  optional string phone = 2;
+  optional string email = 3;
+  optional string username = 4;
+  string nickName = 5;
+  optional string realName = 6;
+  optional string avatar = 7;
+  optional string avatarUrl = 8;
+  optional string gender = 9;
+}
+
+message GetUserRequest {
+  optional uint32 id = 1[(validate.rules).uint32 = {gt: 0}];
+  optional string phone = 2;
+  optional string email = 3;
+  optional string username = 4;
+}
+
+message GetUserReply {
+  uint32 id = 1;
+  optional string phone = 2;
+  optional string email = 3;
+  optional string username = 4;
+  string nickName = 5;
+  optional string realName = 6;
+  optional string avatar = 7;
+  optional string avatarUrl = 8;
+  optional string gender = 9;
+  optional bool status = 10;
+  optional string disableDesc = 11;
+  string from = 12;
+  string fromDesc = 13;
+  uint32 createdAt = 14;
+  uint32 updatedAt = 15;
+}
+
+message UpdateCurrentUserRequest {
+  string nickName = 1;
+  string avatar = 2;
+  string gender = 3;
+}
+
+message UpdateCurrentUserReply {
+}
+
+
+message ListUserRequest {
+  uint32 page = 1[(validate.rules).uint32 = {gt: 0}];
+  uint32 pageSize = 2[(validate.rules).uint32 = {gt: 0,lte:50}];
+  optional string order = 3[(validate.rules).string = {in: ["asc","desc"]}];
+  optional string orderBy = 4[(validate.rules).string = {in: ["id","created_at"]}];
+  optional string phone = 5;
+  optional string email = 6;
+  optional string username = 7;
+  optional string realName = 8;
+  optional string gender = 9;
+  optional bool status = 10;
+  optional string from = 11;
+  repeated uint32 createdAts = 12;
+  optional uint32 appId = 13;
+}
+
+message ListUserReply {
+  message User {
+    uint32 id = 1;
+    optional string phone = 2;
+    optional string email = 3;
+    optional string username = 4;
+    string nickName = 5;
+    optional string realName = 6;
+    optional string avatar = 7;
+    optional string avatarUrl = 8;
+    optional string gender = 9;
+    optional bool status = 10;
+    optional string disableDesc = 11;
+    string from = 12;
+    string fromDesc = 13;
+    uint32 createdAt = 14;
+    uint32 updatedAt = 15;
+  }
+
+  uint32 total = 1;
+  repeated User list = 2;
+}
+
+message CreateUserRequest {
+  optional string phone = 1;
+  optional string email = 2;
+  optional string realName = 3;
+  optional string gender = 4;
+}
+
+message CreateUserReply {
+  uint32 id = 1;
+}
+
+message ImportUserRequest {
+  repeated CreateUserRequest list = 1;
+}
+
+message ImportUserReply {
+    uint32 total = 1;
+}
+
+message ExportUserRequest {
+  optional string phone = 1;
+  optional string email = 2;
+  optional string username = 3;
+  optional string realName = 4;
+  optional string gender = 5;
+  optional bool status = 6;
+  optional string from = 7;
+  repeated uint32 createdAts = 8;
+}
+
+message ExportUserReply {
+  string src = 1;
+}
+
+message UpdateUserRequest {
+  uint32 id = 1[(validate.rules).uint32 = {gt: 0}];
+  optional string phone = 2;
+  optional string email = 3;
+  optional string username = 4;
+  optional string password = 5;
+  string nickName = 6[(validate.rules).string = {min_len: 1}];
+  optional string realName = 7;
+  optional string avatar = 8;
+  optional string gender = 9;
+  optional string disableDesc = 10;
+}
+
+message UpdateUserReply {
+}
+
+message UpdateUserStatusRequest {
+  uint32 id = 1[(validate.rules).uint32 = {gt: 0}];
+  bool status = 2;
+  optional string disableDesc = 3[(validate.rules).string = {min_len: 1}];
+}
+
+message UpdateUserStatusReply {
+}
+
+message DeleteUserRequest {
+  repeated uint32 ids = 1[(validate.rules).repeated = {min_items: 1, unique:true, max_items:50}];
+}
+
+message DeleteUserReply {
+  uint32 total = 1;
+}
+
+message GetTrashUserRequest {
+  uint32 id = 1[(validate.rules).uint32 = {gt: 0}];
+}
+
+message GetTrashUserReply {
+  uint32 id = 1;
+  optional string phone = 2;
+  optional string email = 3;
+  optional string username = 4;
+  optional string password = 5;
+  string nickName = 6;
+  optional string realName = 7;
+  optional string avatar = 8;
+  optional string gender = 9;
+  optional bool status = 10;
+  optional string disableDesc = 11;
+  string from = 12;
+  string fromDesc = 13;
+  uint32 createdAt = 14;
+  uint32 updatedAt = 15;
+  uint32 deletedAt = 16;
+}
+
+message ListTrashUserRequest {
+  uint32 page = 1[(validate.rules).uint32 = {gt: 0}];
+  uint32 pageSize = 2[(validate.rules).uint32 = {gt: 0,lte:50}];
+  optional string order = 3[(validate.rules).string = {in: ["asc","desc"]}];
+  optional string orderBy = 4[(validate.rules).string = {in: ["id","created_at"]}];
+  optional string phone = 5;
+  optional string email = 6;
+  optional string username = 7;
+  optional string realName = 8;
+  optional string gender = 9;
+  optional bool status = 10;
+  optional string from = 11;
+  repeated uint32 createdAts = 12;
+}
+
+message ListTrashUserReply {
+  message User {
+    uint32 id = 1;
+    optional string phone = 2;
+    optional string email = 3;
+    optional string username = 4;
+    optional string password = 5;
+    string nickName = 6;
+    optional string realName = 7;
+    optional string avatar = 8;
+    optional string gender = 9;
+    optional bool status = 10;
+    optional string disableDesc = 11;
+    string from = 12;
+    string fromDesc = 13;
+    uint32 createdAt = 14;
+    uint32 updatedAt = 15;
+    uint32 deletedAt = 16;
+  }
+
+  uint32 total = 1;
+  repeated User list = 2;
+}
+
+message DeleteTrashUserRequest {
+  repeated uint32 ids = 1[(validate.rules).repeated = {min_items: 1, unique:true, max_items:50}];
+}
+
+message DeleteTrashUserReply {
+  uint32 total = 1;
+}
+
+message RevertTrashUserRequest {
+  uint32 id = 1[(validate.rules).uint32 = {gt: 0}];
+}
+
+message RevertTrashUserReply {
+}
+

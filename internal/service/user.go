@@ -3,547 +3,266 @@ package service
 import (
 	"context"
 
-	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/jinzhu/copier"
+	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/limes-cloud/kratosx"
-	"github.com/limes-cloud/kratosx/pkg/util"
-	resourceV1 "github.com/limes-cloud/resource/api/file/v1"
-	"google.golang.org/protobuf/proto"
-	"google.golang.org/protobuf/types/known/structpb"
+	"github.com/limes-cloud/kratosx/pkg/valx"
 
-	"github.com/limes-cloud/user-center/api/errors"
-	pb "github.com/limes-cloud/user-center/api/user/v1"
-	"github.com/limes-cloud/user-center/internal/biz/app"
-	fieldbiz "github.com/limes-cloud/user-center/internal/biz/field"
-	biz "github.com/limes-cloud/user-center/internal/biz/user"
-	"github.com/limes-cloud/user-center/internal/config"
-	fielddata "github.com/limes-cloud/user-center/internal/data/field"
-	data "github.com/limes-cloud/user-center/internal/data/user"
-	"github.com/limes-cloud/user-center/internal/pkg/field"
-	"github.com/limes-cloud/user-center/internal/pkg/md"
-	"github.com/limes-cloud/user-center/internal/pkg/service"
+	"github.com/limes-cloud/usercenter/api/usercenter/errors"
+	pb "github.com/limes-cloud/usercenter/api/usercenter/user/v1"
+	"github.com/limes-cloud/usercenter/internal/biz/user"
+	"github.com/limes-cloud/usercenter/internal/conf"
+	"github.com/limes-cloud/usercenter/internal/data"
 )
 
 type UserService struct {
-	pb.UnimplementedServiceServer
-	uc   *biz.UseCase
-	fuc  *fieldbiz.UseCase
-	conf *config.Config
+	pb.UnimplementedUserServer
+	uc *user.UseCase
 }
 
-func NewUser(conf *config.Config) *UserService {
+func NewUserService(conf *conf.Config) *UserService {
 	return &UserService{
-		conf: conf,
-		uc:   biz.NewUseCase(conf, data.NewRepo()),
-		fuc:  fieldbiz.NewUseCase(conf, fielddata.NewRepo()),
+		uc: user.NewUseCase(conf, data.NewUserRepo()),
 	}
 }
 
-func (s *UserService) GetUser(ctx context.Context, in *pb.GetUserRequest) (*pb.User, error) {
-	var err error
-	var user *biz.User
-	switch in.Condition.(type) {
-	case *pb.GetUserRequest_Id:
-		cond := in.Condition.(*pb.GetUserRequest_Id)
-		user, err = s.uc.Get(kratosx.MustContext(ctx), cond.Id)
-	case *pb.GetUserRequest_Email:
-		cond := in.Condition.(*pb.GetUserRequest_Email)
-		user, err = s.uc.GetByEmail(kratosx.MustContext(ctx), cond.Email)
-	case *pb.GetUserRequest_Phone:
-		cond := in.Condition.(*pb.GetUserRequest_Phone)
-		user, err = s.uc.GetByPhone(kratosx.MustContext(ctx), cond.Phone)
-	case *pb.GetUserRequest_Username:
-		cond := in.Condition.(*pb.GetUserRequest_Username)
-		user, err = s.uc.GetByPhone(kratosx.MustContext(ctx), cond.Username)
-	default:
-		user, err = nil, errors.NotFound()
-	}
+func init() {
+	register(func(c *conf.Config, hs *http.Server, gs *grpc.Server) {
+		srv := NewUserService(c)
+		pb.RegisterUserHTTPServer(hs, srv)
+		pb.RegisterUserServer(gs, srv)
+	})
+}
+
+// GetCurrentUser 获取当前用户信息
+func (s *UserService) GetCurrentUser(c context.Context, _ *pb.GetCurrentUserRequest) (*pb.GetCurrentUserReply, error) {
+	var (
+		ctx = kratosx.MustContext(c)
+	)
+
+	result, err := s.uc.GetCurrentUser(ctx)
 	if err != nil {
 		return nil, err
 	}
 
-	return s.transformUserReply(kratosx.MustContext(ctx), user)
-}
-
-func (s *UserService) transformUserReply(ctx kratosx.Context, user *biz.User) (*pb.User, error) {
-	reply := pb.User{}
-	if err := copier.Copy(&reply, user); err != nil {
-		return nil, errors.Transform()
-	}
-
-	reply.Apps = make([]*pb.User_App, 0)
-	reply.Channels = make([]*pb.User_Channel, 0)
-	reply.Extra = make(map[string]*structpb.Value)
-	reply.ExtraList = []*pb.User_Extra{}
-
-	// 请求资源中心,错了直接忽略，不影响主流程
-	resource, rer := service.NewResource(ctx)
-	if rer == nil {
-		if reply.Avatar != "" {
-			reply.Resource, _ = resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{
-				Sha: reply.Avatar,
-			})
-		}
-	}
-
-	// 组装数据apps
-	for _, item := range user.UserApps {
-		replyApp := &pb.User_App{
-			Id:        item.App.ID,
-			Name:      item.App.Name,
-			Logo:      item.App.Logo,
-			CreatedAt: uint32(item.CreatedAt),
-			LoginAt:   uint32(item.LoginAt),
-		}
-		if rer == nil {
-			replyApp.Resource, _ = resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{Sha: item.App.Logo})
-		}
-		reply.Apps = append(reply.Apps, replyApp)
-	}
-
-	// 转换授权信息
-	for _, item := range user.Auths {
-		replyChannel := &pb.User_Channel{
-			Id:        item.Channel.ID,
-			Name:      item.Channel.Name,
-			Logo:      item.Channel.Logo,
-			CreatedAt: uint32(item.CreatedAt),
-			LoginAt:   uint32(item.LoginAt),
-		}
-		if rer == nil {
-			replyChannel.Resource, _ = resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{Sha: item.Channel.Logo})
-		}
-		reply.Channels = append(reply.Channels, replyChannel)
-	}
-
-	// 转换扩展字段
-	// 转换extra
-	efs := s.fuc.TypeSet(kratosx.MustContext(ctx))
-	fir := field.New()
-
-	var userFields []string
-	var curApp *app.App
-
-	hasFilter := false
-	appId := md.AppID(ctx)
-	if appId != 0 {
-		for _, item := range user.UserApps {
-			if item.App.ID == appId {
-				curApp = item.App
-			}
-		}
-	}
-	if curApp != nil {
-		for _, item := range curApp.Fields {
-			userFields = append(userFields, item.Keyword)
-		}
-		hasFilter = true
-	}
-
-	for _, item := range user.UserExtras {
-		if hasFilter && !util.InList(userFields, item.Keyword) {
-			continue
-		}
-		if efs[item.Keyword] != nil {
-			tp := fir.GetType(efs[item.Keyword].Type)
-			reply.Extra[item.Keyword] = tp.ToValue(item.Value)
-			reply.ExtraList = append(reply.ExtraList, &pb.User_Extra{
-				Name:     efs[item.Keyword].Name,
-				Keyword:  efs[item.Keyword].Keyword,
-				Type:     efs[item.Keyword].Type,
-				TypeName: tp.Name(),
-				Value:    reply.Extra[item.Keyword],
-			})
-		}
+	reply := pb.GetCurrentUserReply{}
+	if err := valx.Transform(result, &reply); err != nil {
+		ctx.Logger().Warnw("msg", "reply transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
 	return &reply, nil
 }
 
-func (s *UserService) GetSimpleUser(ctx context.Context, in *pb.GetSimpleUserRequest) (*pb.SimpleUser, error) {
-	user, err := s.uc.GetBase(kratosx.MustContext(ctx), in.Id)
+// UpdateCurrentUser 更新当前用户信息
+func (s *UserService) UpdateCurrentUser(c context.Context, req *pb.UpdateCurrentUserRequest) (*pb.UpdateCurrentUserReply, error) {
+	return &pb.UpdateCurrentUserReply{}, s.uc.UpdateCurrentUser(kratosx.MustContext(c), &user.UpdateCurrentUserRequest{
+		NickName: req.NickName,
+		Avatar:   req.Avatar,
+		Gender:   req.Gender,
+	})
+}
+
+// GetUser 获取指定的用户信息
+func (s *UserService) GetUser(c context.Context, req *pb.GetUserRequest) (*pb.GetUserReply, error) {
+	var (
+		in  = user.GetUserRequest{}
+		ctx = kratosx.MustContext(c)
+	)
+
+	if err := valx.Transform(req, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
+	}
+
+	result, err := s.uc.GetUser(ctx, &in)
 	if err != nil {
 		return nil, err
 	}
-	reply := pb.SimpleUser{}
-	if err := copier.Copy(&reply, user); err != nil {
-		return nil, errors.Transform()
+
+	reply := pb.GetUserReply{}
+	if err := valx.Transform(result, &reply); err != nil {
+		ctx.Logger().Warnw("msg", "reply transform err", "err", err.Error())
+		return nil, errors.TransformError()
+	}
+	return &reply, nil
+}
+
+// ListUser 获取用户信息列表
+func (s *UserService) ListUser(c context.Context, req *pb.ListUserRequest) (*pb.ListUserReply, error) {
+	var (
+		in  = user.ListUserRequest{}
+		ctx = kratosx.MustContext(c)
+	)
+
+	if err := valx.Transform(req, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
 
-	resource, err := service.NewResource(ctx)
-	if err == nil {
-		reply.Resource, _ = resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{Sha: reply.Avatar})
+	result, total, err := s.uc.ListUser(ctx, &in)
+	if err != nil {
+		return nil, err
+	}
+
+	reply := pb.ListUserReply{Total: total}
+	if err := valx.Transform(result, &reply.List); err != nil {
+		ctx.Logger().Warnw("msg", "reply transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
 
 	return &reply, nil
 }
 
-func (s *UserService) GetBaseUser(ctx context.Context, in *pb.GetBaseUserRequest) (*pb.BaseUser, error) {
-	user, err := s.uc.GetBase(kratosx.MustContext(ctx), in.Id)
+// CreateUser 创建用户信息
+func (s *UserService) CreateUser(c context.Context, req *pb.CreateUserRequest) (*pb.CreateUserReply, error) {
+	var (
+		in  = user.User{}
+		ctx = kratosx.MustContext(c)
+	)
+
+	if err := valx.Transform(req, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
+	}
+
+	id, err := s.uc.CreateUser(ctx, &in)
 	if err != nil {
 		return nil, err
 	}
-	reply := pb.BaseUser{}
-	if err := copier.Copy(&reply, user); err != nil {
-		return nil, errors.Transform()
+
+	return &pb.CreateUserReply{Id: id}, nil
+}
+
+// ImportUser 导入用户信息
+func (s *UserService) ImportUser(c context.Context, req *pb.ImportUserRequest) (*pb.ImportUserReply, error) {
+	var (
+		in  []*user.User
+		ctx = kratosx.MustContext(c)
+	)
+
+	if err := valx.Transform(req.List, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
 
-	resource, err := service.NewResource(ctx)
-	if err == nil {
-		reply.Resource, _ = resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{Sha: reply.Avatar})
+	total, err := s.uc.ImportUser(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.ImportUserReply{Total: total}, nil
+}
+
+// ExportUser 导出用户信息
+func (s *UserService) ExportUser(c context.Context, req *pb.ExportUserRequest) (*pb.ExportUserReply, error) {
+	var (
+		in  = user.ExportUserRequest{}
+		ctx = kratosx.MustContext(c)
+	)
+
+	if err := valx.Transform(req, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
+	}
+
+	src, err := s.uc.ExportUser(ctx, &in)
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.ExportUserReply{Src: src}, nil
+}
+
+// UpdateUser 更新用户信息
+func (s *UserService) UpdateUser(c context.Context, req *pb.UpdateUserRequest) (*pb.UpdateUserReply, error) {
+	var (
+		in  = user.User{}
+		ctx = kratosx.MustContext(c)
+	)
+
+	if err := valx.Transform(req, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
+	}
+
+	if err := s.uc.UpdateUser(ctx, &in); err != nil {
+		return nil, err
+	}
+
+	return &pb.UpdateUserReply{}, nil
+}
+
+// UpdateUserStatus 更新用户信息状态
+func (s *UserService) UpdateUserStatus(c context.Context, req *pb.UpdateUserStatusRequest) (*pb.UpdateUserStatusReply, error) {
+	return &pb.UpdateUserStatusReply{}, s.uc.UpdateUserStatus(kratosx.MustContext(c), &user.UpdateUserStatusRequest{
+		Id:          req.Id,
+		Status:      req.Status,
+		DisableDesc: req.DisableDesc,
+	})
+}
+
+// DeleteUser 删除用户信息
+func (s *UserService) DeleteUser(c context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserReply, error) {
+	total, err := s.uc.DeleteUser(kratosx.MustContext(c), req.Ids)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.DeleteUserReply{Total: total}, nil
+}
+
+// GetTrashUser 获取回收站指定的用户信息
+func (s *UserService) GetTrashUser(c context.Context, req *pb.GetTrashUserRequest) (*pb.GetTrashUserReply, error) {
+	var ctx = kratosx.MustContext(c)
+
+	result, err := s.uc.GetTrashUser(ctx, req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	reply := pb.GetTrashUserReply{}
+	if err := valx.Transform(result, &reply); err != nil {
+		ctx.Logger().Warnw("msg", "reply transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
 	return &reply, nil
 }
 
-func (s *UserService) GetCurrentUser(ctx context.Context, _ *empty.Empty) (*pb.User, error) {
-	kCtx := kratosx.MustContext(ctx)
-	user, err := s.uc.Get(kCtx, md.UserID(kratosx.MustContext(ctx)))
-	if err != nil {
-		return nil, err
-	}
-	return s.transformUserReply(kCtx, user)
-}
+// ListTrashUser 获取回收站用户信息列表
+func (s *UserService) ListTrashUser(c context.Context, req *pb.ListTrashUserRequest) (*pb.ListTrashUserReply, error) {
+	var (
+		in  = user.ListTrashUserRequest{}
+		ctx = kratosx.MustContext(c)
+	)
 
-func (s *UserService) UpdateCurrentUser(ctx context.Context, in *pb.UpdateCurrentUserRequest) (*empty.Empty, error) {
-	user := biz.User{}
-	if err := copier.Copy(&user, in); err != nil {
-		return nil, errors.Transform()
+	if err := valx.Transform(req, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
 
-	kCtx := kratosx.MustContext(ctx)
-	user.ID = md.UserID(kCtx)
-
-	// 转换extra
-	efs := s.fuc.TypeSet(kCtx)
-	fd := field.New()
-
-	for key, value := range in.Extra {
-		if efs[key] == nil {
-			continue
-		}
-		tp := fd.GetType(efs[key].Type)
-		user.UserExtras = append(user.UserExtras, &biz.UserExtra{
-			Keyword: key,
-			Value:   tp.ToString(value),
-		})
-	}
-
-	return nil, s.uc.Update(kratosx.MustContext(ctx), &user)
-}
-
-func (s *UserService) PageUser(ctx context.Context, in *pb.PageUserRequest) (*pb.PageUserReply, error) {
-	var req biz.PageUserRequest
-	if err := copier.Copy(&req, in); err != nil {
-		return nil, errors.Transform()
-	}
-
-	list, total, err := s.uc.Page(kratosx.MustContext(ctx), &req)
+	result, total, err := s.uc.ListTrashUser(ctx, &in)
 	if err != nil {
 		return nil, err
 	}
 
-	reply := pb.PageUserReply{Total: total}
-	if err := copier.Copy(&reply.List, list); err != nil {
-		return nil, errors.Transform()
-	}
-
-	// 请求资源中心,错了直接忽略，不影响主流程
-	resource, err := service.NewResource(ctx)
-	if err == nil {
-		for index, item := range reply.List {
-			if item.Avatar != "" {
-				reply.List[index].Resource, _ = resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{
-					Sha: item.Avatar,
-				})
-			}
-		}
-	}
-	return &reply, nil
-}
-
-func (s *UserService) AddUser(ctx context.Context, in *pb.AddUserRequest) (*pb.AddUserReply, error) {
-	var user biz.User
-	if err := copier.Copy(&user, in); err != nil {
-		return nil, errors.Transform()
-	}
-
-	id, err := s.uc.Add(kratosx.MustContext(ctx), &user)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.AddUserReply{Id: id}, nil
-}
-
-func (s *UserService) ImportUser(ctx context.Context, in *pb.ImportUserRequest) (*empty.Empty, error) {
-	var users []*biz.User
-	var enable = proto.Bool(true)
-	for _, item := range in.List {
-		user := &biz.User{
-			Status:   enable,
-			Phone:    item.Phone,
-			Email:    item.Email,
-			RealName: item.RealName,
-			Gender:   item.Gender,
-		}
-		if user.NickName == "" && user.RealName != nil {
-			user.NickName = *user.RealName
-		}
-		users = append(users, user)
-	}
-	return nil, s.uc.Import(kratosx.MustContext(ctx), users)
-}
-
-func (s *UserService) UpdateUser(ctx context.Context, in *pb.UpdateUserRequest) (*empty.Empty, error) {
-	var user biz.User
-	if err := copier.Copy(&user, in); err != nil {
-		return nil, errors.Transform()
-	}
-	return nil, s.uc.Update(kratosx.MustContext(ctx), &user)
-}
-
-func (s *UserService) DeleteUser(ctx context.Context, in *pb.DeleteUserRequest) (*empty.Empty, error) {
-	return nil, s.uc.Delete(kratosx.MustContext(ctx), in.Id)
-}
-
-func (s *UserService) DisableUser(ctx context.Context, in *pb.DisableUserRequest) (*empty.Empty, error) {
-	return nil, s.uc.Disable(kratosx.MustContext(ctx), in.Id, in.Desc)
-}
-
-func (s *UserService) EnableUser(ctx context.Context, in *pb.EnableUserRequest) (*empty.Empty, error) {
-	return nil, s.uc.Enable(kratosx.MustContext(ctx), in.Id)
-}
-
-func (s *UserService) OfflineUser(ctx context.Context, in *pb.OfflineUserRequest) (*empty.Empty, error) {
-	return nil, s.uc.Offline(kratosx.MustContext(ctx), in.Id)
-}
-
-func (s *UserService) AddUserApp(ctx context.Context, in *pb.AddUserAppRequest) (*empty.Empty, error) {
-	_, err := s.uc.AddApp(kratosx.MustContext(ctx), in.UserId, in.AppId)
-	return nil, err
-}
-
-func (s *UserService) DeleteUserApp(ctx context.Context, in *pb.DeleteUserAppRequest) (*empty.Empty, error) {
-	return nil, s.uc.DeleteApp(kratosx.MustContext(ctx), in.UserId, in.AppId)
-}
-
-func (s *UserService) OAuthLogin(ctx context.Context, in *pb.OAuthLoginRequest) (*pb.LoginReply, error) {
-	var req biz.OAuthLoginRequest
-	if err := copier.Copy(&req, in); err != nil {
-		return nil, errors.Transform()
-	}
-
-	token, err := s.uc.OAuthLogin(kratosx.MustContext(ctx), &req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &pb.LoginReply{
-		Token: token,
-	}, nil
-}
-
-func (s *UserService) OAuthBindByPassword(ctx context.Context, in *pb.OAuthBindByPasswordRequest) (*pb.BindReply, error) {
-	var req biz.OAuthBindByPasswordRequest
-	if err := copier.Copy(&req, in); err != nil {
-		return nil, errors.Transform()
-	}
-
-	token, err := s.uc.OAuthBindByPassword(kratosx.MustContext(ctx), &req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &pb.BindReply{
-		Token: token,
-	}, nil
-}
-
-func (s *UserService) OAuthBindByCaptcha(ctx context.Context, in *pb.OAuthBindByCaptchaRequest) (*pb.BindReply, error) {
-	var req biz.OAuthBindByCaptchaRequest
-	if err := copier.Copy(&req, in); err != nil {
-		return nil, errors.Transform()
-	}
-
-	token, err := s.uc.OAuthBindByCaptcha(kratosx.MustContext(ctx), &req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &pb.BindReply{
-		Token: token,
-	}, nil
-}
-
-func (s *UserService) OAuthBindImageCaptcha(ctx context.Context, _ *empty.Empty) (*pb.CaptchaReply, error) {
-	res, err := s.uc.OAuthBindCaptcha(kratosx.MustContext(ctx))
-	if err != nil {
-		return nil, err
-	}
-
-	reply := pb.CaptchaReply{}
-	if err := copier.Copy(&reply, res); err != nil {
-		return nil, errors.Transform()
+	reply := pb.ListTrashUserReply{Total: total}
+	if err := valx.Transform(result, &reply.List); err != nil {
+		ctx.Logger().Warnw("msg", "reply transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
 
 	return &reply, nil
 }
 
-func (s *UserService) OAuthBindEmailCaptcha(ctx context.Context, in *pb.OAuthBindEmailCaptchaRequest) (*pb.CaptchaReply, error) {
-	res, err := s.uc.OAuthBindEmail(kratosx.MustContext(ctx), in.Email)
+// DeleteTrashUser 删除回收站用户信息
+func (s *UserService) DeleteTrashUser(ctx context.Context, req *pb.DeleteTrashUserRequest) (*pb.DeleteTrashUserReply, error) {
+	total, err := s.uc.DeleteTrashUser(kratosx.MustContext(ctx), req.Ids)
 	if err != nil {
 		return nil, err
 	}
-
-	reply := pb.CaptchaReply{}
-	if err := copier.Copy(&reply, res); err != nil {
-		return nil, errors.Transform()
-	}
-
-	return &reply, nil
+	return &pb.DeleteTrashUserReply{Total: total}, nil
 }
 
-func (s *UserService) PasswordLogin(ctx context.Context, in *pb.PasswordLoginRequest) (*pb.LoginReply, error) {
-	var req biz.PasswordLoginRequest
-	if err := copier.Copy(&req, in); err != nil {
-		return nil, errors.Transform()
-	}
-
-	token, err := s.uc.PasswordLogin(kratosx.MustContext(ctx), &req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &pb.LoginReply{
-		Token: token,
-	}, nil
-}
-
-func (s *UserService) PasswordLoginCaptcha(ctx context.Context, _ *empty.Empty) (*pb.CaptchaReply, error) {
-	res, err := s.uc.PasswordLoginCaptcha(kratosx.MustContext(ctx))
-	if err != nil {
-		return nil, err
-	}
-
-	reply := pb.CaptchaReply{}
-	if err := copier.Copy(&reply, res); err != nil {
-		return nil, errors.Transform()
-	}
-
-	return &reply, nil
-}
-
-func (s *UserService) PasswordRegister(ctx context.Context, in *pb.PasswordRegisterRequest) (*pb.RegisterReply, error) {
-	var req biz.PasswordRegisterRequest
-	if err := copier.Copy(&req, in); err != nil {
-		return nil, errors.Transform()
-	}
-
-	token, err := s.uc.PasswordRegister(kratosx.MustContext(ctx), &req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &pb.RegisterReply{
-		Token: token,
-	}, nil
-}
-
-func (s *UserService) PasswordRegisterCaptcha(ctx context.Context, _ *empty.Empty) (*pb.CaptchaReply, error) {
-	res, err := s.uc.PasswordRegisterCaptcha(kratosx.MustContext(ctx))
-	if err != nil {
-		return nil, err
-	}
-
-	reply := pb.CaptchaReply{}
-	if err := copier.Copy(&reply, res); err != nil {
-		return nil, errors.Transform()
-	}
-
-	return &reply, nil
-}
-
-func (s *UserService) PasswordRegisterCheck(ctx context.Context, in *pb.PasswordRegisterCheckRequest) (*pb.PasswordRegisterCheckReply, error) {
-	return &pb.PasswordRegisterCheckReply{
-		Allow: s.uc.PasswordRegisterCheck(kratosx.MustContext(ctx), in.Username),
-	}, nil
-}
-
-func (s *UserService) CaptchaLogin(ctx context.Context, in *pb.CaptchaLoginRequest) (*pb.LoginReply, error) {
-	var req biz.CaptchaLoginRequest
-	if err := copier.Copy(&req, in); err != nil {
-		return nil, errors.Transform()
-	}
-
-	token, err := s.uc.CaptchaLogin(kratosx.MustContext(ctx), &req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &pb.LoginReply{
-		Token: token,
-	}, nil
-}
-
-func (s *UserService) CaptchaLoginEmail(ctx context.Context, in *pb.CaptchaLoginEmailRequest) (*pb.CaptchaReply, error) {
-	res, err := s.uc.CaptchaLoginEmail(kratosx.MustContext(ctx), in.Email)
-	if err != nil {
-		return nil, err
-	}
-
-	reply := pb.CaptchaReply{}
-	if err := copier.Copy(&reply, res); err != nil {
-		return nil, errors.Transform()
-	}
-
-	return &reply, nil
-}
-
-func (s *UserService) CaptchaRegisterEmail(ctx context.Context, in *pb.CaptchaRegisterEmailRequest) (*pb.CaptchaReply, error) {
-	res, err := s.uc.CaptchaRegisterEmail(kratosx.MustContext(ctx), in.Email)
-	if err != nil {
-		return nil, err
-	}
-
-	reply := pb.CaptchaReply{}
-	if err := copier.Copy(&reply, res); err != nil {
-		return nil, errors.Transform()
-	}
-
-	return &reply, nil
-}
-
-func (s *UserService) CaptchaRegister(ctx context.Context, in *pb.CaptchaRegisterRequest) (*pb.RegisterReply, error) {
-	var req biz.CaptchaRegisterRequest
-	if err := copier.Copy(&req, in); err != nil {
-		return nil, errors.Transform()
-	}
-
-	token, err := s.uc.CaptchaRegister(kratosx.MustContext(ctx), &req)
-	if err != nil {
-		return nil, err
-	}
-
-	return &pb.RegisterReply{
-		Token: token,
-	}, nil
-}
-
-func (s *UserService) ParseToken(ctx context.Context, _ *empty.Empty) (*pb.ParseTokenReply, error) {
-	res, err := s.uc.ParseToken(kratosx.MustContext(ctx))
-	if err != nil {
-		return nil, err
-	}
-
-	reply := pb.ParseTokenReply{}
-	if err := copier.Copy(&reply, res); err != nil {
-		return nil, errors.Transform()
-	}
-	return &reply, nil
-}
-
-func (s *UserService) RefreshToken(ctx context.Context, _ *empty.Empty) (*pb.LoginReply, error) {
-	token, err := s.uc.RefreshToken(kratosx.MustContext(ctx))
-	if err != nil {
-		return nil, err
-	}
-	return &pb.LoginReply{Token: token}, nil
+// RevertTrashUser 还原回收站用户信息
+func (s *UserService) RevertTrashUser(ctx context.Context, req *pb.RevertTrashUserRequest) (*pb.RevertTrashUserReply, error) {
+	return &pb.RevertTrashUserReply{}, s.uc.RevertTrashUser(kratosx.MustContext(ctx), req.Id)
 }

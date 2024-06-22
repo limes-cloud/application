@@ -4,7 +4,9 @@ import (
 	"errors"
 	"time"
 
+	json "github.com/json-iterator/go"
 	"github.com/limes-cloud/kratosx"
+	"github.com/limes-cloud/kratosx/pkg/lock"
 )
 
 type Authorizer interface {
@@ -14,8 +16,11 @@ type Authorizer interface {
 }
 
 type GetAuthInfoRequest struct {
-	Token string
+	Ak    string
+	Sk    string
+	Extra string
 	Code  string
+	Token string
 }
 
 type GetAuthInfoReply struct {
@@ -24,9 +29,10 @@ type GetAuthInfoReply struct {
 }
 
 type GetAccessTokenRequest struct {
-	Ak   string
-	Sk   string
-	Code string
+	Ak    string
+	Sk    string
+	Extra string
+	Code  string
 }
 
 type GetAccessTokenReply struct {
@@ -48,7 +54,7 @@ type Config struct {
 	Ak       string
 	Sk       string
 	Code     string
-	Redirect string
+	Extra    string
 	Platform string
 }
 
@@ -73,15 +79,37 @@ func (c *authorizer) GetAuthorizer(platform string) Authorizer {
 }
 
 func (c *authorizer) GetToken(ctx kratosx.Context) (*GetAccessTokenReply, error) {
-	atr := c.GetAuthorizer(c.config.Platform)
-	if atr == nil {
-		return nil, errors.New("not exist channel authorizer")
-	}
-	return atr.GetAccessToken(ctx, GetAccessTokenRequest{
-		Ak:   c.config.Ak,
-		Sk:   c.config.Sk,
-		Code: c.config.Code,
+	var (
+		reply   *GetAccessTokenReply
+		key     = "auth:token:" + c.config.Platform
+		lockKey = "auth:token:" + c.config.Platform + ":lock"
+	)
+
+	lk := lock.New(ctx.Redis(), lockKey)
+	err := lk.AcquireFunc(ctx, func() error {
+		err := ctx.Redis().Get(ctx, key).Scan(reply)
+		return err
+	}, func() error {
+		atr := c.GetAuthorizer(c.config.Platform)
+		if atr == nil {
+			return errors.New("not exist channel authorizer")
+		}
+		res, err := atr.GetAccessToken(ctx, GetAccessTokenRequest{
+			Ak:    c.config.Ak,
+			Sk:    c.config.Sk,
+			Code:  c.config.Code,
+			Extra: c.config.Extra,
+		})
+		if err != nil {
+			return err
+		}
+		resStr, _ := json.MarshalToString(res)
+		ctx.Redis().Set(ctx, key, resStr, res.Expire-10*time.Second)
+		reply = res
+		return nil
 	})
+
+	return reply, err
 }
 
 func (c *authorizer) GetAuthInfo(ctx kratosx.Context, token string) (*GetAuthInfoReply, error) {
@@ -90,7 +118,10 @@ func (c *authorizer) GetAuthInfo(ctx kratosx.Context, token string) (*GetAuthInf
 		return nil, errors.New("not exist channel authorizer")
 	}
 	return atr.GetAuthInfo(ctx, GetAuthInfoRequest{
-		Token: token,
+		Ak:    c.config.Ak,
+		Sk:    c.config.Sk,
 		Code:  c.config.Code,
+		Extra: c.config.Extra,
+		Token: token,
 	})
 }

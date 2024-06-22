@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package usercenter.api.usercenter.field.v1;
+
+option go_package = "./v1;v1";
+option java_multiple_files = true;
+option java_package = "usercenter.api.usercenter.field.v1";
+option java_outer_classname = "FieldV1";
+
+import "api/usercenter/field/usercenter_field.proto";
+import "google/api/annotations.proto";
+
+service Field{
+
+  // ListFieldType 获取可用的字段列表
+  rpc ListFieldType (ListFieldTypeRequest) returns (ListFieldTypeReply) {
+    option (google.api.http) = {
+      get: "/usercenter/api/v1/field/types",
+    };
+  }
+
+  // ListField 获取用户字段列表
+  rpc ListField (ListFieldRequest) returns (ListFieldReply) {
+    option (google.api.http) = {
+      get: "/usercenter/api/v1/fields",
+    };
+  }
+
+  // CreateField 创建用户字段
+  rpc CreateField (CreateFieldRequest) returns (CreateFieldReply) {
+    option (google.api.http) = {
+      post: "/usercenter/api/v1/field",
+      body: "*"
+    };
+  }
+
+  // UpdateField 更新用户字段
+  rpc UpdateField (UpdateFieldRequest) returns (UpdateFieldReply) {
+    option (google.api.http) = {
+      put: "/usercenter/api/v1/field",
+      body: "*"
+    };
+  }
+
+  // UpdateFieldStatus 更新用户字段状态
+  rpc UpdateFieldStatus (UpdateFieldStatusRequest) returns (UpdateFieldStatusReply) {
+    option (google.api.http) = {
+      put: "/usercenter/api/v1/field/status",
+      body: "*"
+    };
+  }
+
+  // DeleteField 删除用户字段
+  rpc DeleteField (DeleteFieldRequest) returns (DeleteFieldReply) {
+    option (google.api.http) = {
+      delete: "/usercenter/api/v1/field",
+    };
+  }
+
+}

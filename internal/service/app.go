@@ -3,128 +3,165 @@ package service
 import (
 	"context"
 
-	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/jinzhu/copier"
+	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/limes-cloud/kratosx"
-	resourceV1 "github.com/limes-cloud/resource/api/file/v1"
+	"github.com/limes-cloud/kratosx/pkg/valx"
 
-	pb "github.com/limes-cloud/user-center/api/app/v1"
-	"github.com/limes-cloud/user-center/api/errors"
-	biz "github.com/limes-cloud/user-center/internal/biz/app"
-	"github.com/limes-cloud/user-center/internal/config"
-	data "github.com/limes-cloud/user-center/internal/data/app"
-	"github.com/limes-cloud/user-center/internal/pkg/service"
+	pb "github.com/limes-cloud/usercenter/api/usercenter/app/v1"
+	"github.com/limes-cloud/usercenter/api/usercenter/errors"
+	"github.com/limes-cloud/usercenter/internal/biz/app"
+	"github.com/limes-cloud/usercenter/internal/conf"
+	"github.com/limes-cloud/usercenter/internal/data"
 )
 
 type AppService struct {
-	pb.UnimplementedServiceServer
-	uc   *biz.UseCase
-	conf *config.Config
+	pb.UnimplementedAppServer
+	uc *app.UseCase
 }
 
-func NewApp(conf *config.Config) *AppService {
+func NewAppService(conf *conf.Config) *AppService {
 	return &AppService{
-		conf: conf,
-		uc:   biz.NewUseCase(conf, data.NewRepo()),
+		uc: app.NewUseCase(conf, data.NewAppRepo()),
 	}
 }
 
-func (s *AppService) PageApp(ctx context.Context, in *pb.PageAppRequest) (*pb.PageAppReply, error) {
-	var req biz.PageAppRequest
-	if err := copier.Copy(&req, in); err != nil {
-		return nil, errors.Transform()
+func init() {
+	register(func(c *conf.Config, hs *http.Server, gs *grpc.Server) {
+		srv := NewAppService(c)
+		pb.RegisterAppHTTPServer(hs, srv)
+		pb.RegisterAppServer(gs, srv)
+	})
+}
+
+// GetApp 获取指定的应用信息
+func (s *AppService) GetApp(c context.Context, req *pb.GetAppRequest) (*pb.GetAppReply, error) {
+	var (
+		in  = app.GetAppRequest{}
+		ctx = kratosx.MustContext(c)
+	)
+
+	if err := valx.Transform(req, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
 
-	list, total, err := s.uc.Page(kratosx.MustContext(ctx), &req)
+	result, err := s.uc.GetApp(ctx, &in)
 	if err != nil {
 		return nil, err
 	}
 
-	reply := pb.PageAppReply{Total: total}
-	if err := copier.Copy(&reply.List, list); err != nil {
-		return nil, errors.Transform()
+	reply := pb.GetAppReply{}
+	if err := valx.Transform(result, &reply); err != nil {
+		ctx.Logger().Warnw("msg", "reply transform err", "err", err.Error())
+		return nil, errors.TransformError()
+	}
+	return &reply, nil
+}
+
+// ListApp 获取应用信息列表
+func (s *AppService) ListApp(c context.Context, req *pb.ListAppRequest) (*pb.ListAppReply, error) {
+	var (
+		in  = app.ListAppRequest{}
+		ctx = kratosx.MustContext(c)
+	)
+
+	if err := valx.Transform(req, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
 
-	// 请求资源中心,错了直接忽略，不影响主流程
-	resource, err := service.NewResource(ctx)
-	if err == nil {
-		for ind, item := range reply.List {
-			reply.List[ind].Resource, _ = resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{Sha: item.Logo})
-		}
+	result, total, err := s.uc.ListApp(ctx, &in)
+	if err != nil {
+		return nil, err
+	}
+
+	reply := pb.ListAppReply{Total: total}
+	if err := valx.Transform(result, &reply.List); err != nil {
+		ctx.Logger().Warnw("msg", "reply transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
 
 	return &reply, nil
 }
 
-func (s *AppService) GetAppByKeyword(ctx context.Context, in *pb.GetAppByKeywordRequest) (*pb.App, error) {
-	app, err := s.uc.GetByKeyword(kratosx.MustContext(ctx), in.Keyword)
+// CreateApp 创建应用信息
+func (s *AppService) CreateApp(c context.Context, req *pb.CreateAppRequest) (*pb.CreateAppReply, error) {
+	var (
+		in  = app.App{}
+		ctx = kratosx.MustContext(c)
+	)
+
+	if err := valx.Transform(req, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
+	}
+
+	for _, item := range req.ChannelIds {
+		in.AppChannels = append(in.AppChannels, &app.AppChannel{
+			ChannelId: item,
+		})
+	}
+
+	for _, item := range req.FieldIds {
+		in.AppFields = append(in.AppFields, &app.AppField{
+			FieldId: item,
+		})
+	}
+
+	id, err := s.uc.CreateApp(ctx, &in)
 	if err != nil {
 		return nil, err
 	}
 
-	reply := pb.App{}
-	if err := copier.Copy(&reply, app); err != nil {
-		return nil, errors.Transform()
-	}
-
-	// 请求资源中心,错了直接忽略，不影响主流程
-	resource, err := service.NewResource(ctx)
-	if err == nil {
-		reply.Resource, _ = resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{Sha: app.Logo})
-		for ind, channel := range reply.Channels {
-			if res, _ := resource.GetFileBySha(ctx, &resourceV1.GetFileByShaRequest{Sha: channel.Logo}); res != nil {
-				reply.Channels[ind].Logo = res.Src
-			}
-		}
-	}
-
-	return &reply, nil
+	return &pb.CreateAppReply{Id: id}, nil
 }
 
-func (s *AppService) AddApp(ctx context.Context, in *pb.AddAppRequest) (*pb.AddAppReply, error) {
-	var app biz.App
-	if err := copier.Copy(&app, in); err != nil {
-		return nil, errors.Transform()
+// UpdateApp 更新应用信息
+func (s *AppService) UpdateApp(c context.Context, req *pb.UpdateAppRequest) (*pb.UpdateAppReply, error) {
+	var (
+		in  = app.App{}
+		ctx = kratosx.MustContext(c)
+	)
+
+	if err := valx.Transform(req, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
 
-	for _, id := range in.ChannelIds {
-		app.AppChannels = append(app.AppChannels, &biz.AppChannel{
-			ChannelID: id,
-		})
-	}
-	for _, id := range in.FieldIds {
-		app.AppFields = append(app.AppFields, &biz.AppField{
-			FieldID: id,
+	for _, item := range req.ChannelIds {
+		in.AppChannels = append(in.AppChannels, &app.AppChannel{
+			ChannelId: item,
 		})
 	}
 
-	id, err := s.uc.Add(kratosx.MustContext(ctx), &app)
+	for _, item := range req.FieldIds {
+		in.AppFields = append(in.AppFields, &app.AppField{
+			FieldId: item,
+		})
+	}
+
+	if err := s.uc.UpdateApp(ctx, &in); err != nil {
+		return nil, err
+	}
+
+	return &pb.UpdateAppReply{}, nil
+}
+
+// UpdateAppStatus 更新应用信息状态
+func (s *AppService) UpdateAppStatus(c context.Context, req *pb.UpdateAppStatusRequest) (*pb.UpdateAppStatusReply, error) {
+	return &pb.UpdateAppStatusReply{}, s.uc.UpdateAppStatus(kratosx.MustContext(c), &app.UpdateAppStatusRequest{
+		Id:          req.Id,
+		Status:      req.Status,
+		DisableDesc: req.DisableDesc,
+	})
+}
+
+// DeleteApp 删除应用信息
+func (s *AppService) DeleteApp(c context.Context, req *pb.DeleteAppRequest) (*pb.DeleteAppReply, error) {
+	total, err := s.uc.DeleteApp(kratosx.MustContext(c), req.Ids)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.AddAppReply{Id: id}, nil
-}
-
-func (s *AppService) UpdateApp(ctx context.Context, in *pb.UpdateAppRequest) (*empty.Empty, error) {
-	var app biz.App
-	if err := copier.Copy(&app, in); err != nil {
-		return nil, errors.Transform()
-	}
-
-	for _, id := range in.ChannelIds {
-		app.AppChannels = append(app.AppChannels, &biz.AppChannel{
-			ChannelID: id,
-		})
-	}
-	for _, id := range in.FieldIds {
-		app.AppFields = append(app.AppFields, &biz.AppField{
-			FieldID: id,
-		})
-	}
-
-	return nil, s.uc.Update(kratosx.MustContext(ctx), &app)
-}
-
-func (s *AppService) DeleteApp(ctx context.Context, in *pb.DeleteAppRequest) (*empty.Empty, error) {
-	return nil, s.uc.Delete(kratosx.MustContext(ctx), in.Id)
+	return &pb.DeleteAppReply{Total: total}, nil
 }

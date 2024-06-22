@@ -3,80 +3,129 @@ package service
 import (
 	"context"
 
-	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/jinzhu/copier"
+	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/limes-cloud/kratosx"
+	"github.com/limes-cloud/kratosx/pkg/valx"
 
-	"github.com/limes-cloud/user-center/api/errors"
-	pb "github.com/limes-cloud/user-center/api/field/v1"
-	biz "github.com/limes-cloud/user-center/internal/biz/field"
-	"github.com/limes-cloud/user-center/internal/config"
-	data "github.com/limes-cloud/user-center/internal/data/field"
+	"github.com/limes-cloud/usercenter/api/usercenter/errors"
+	pb "github.com/limes-cloud/usercenter/api/usercenter/field/v1"
+	"github.com/limes-cloud/usercenter/internal/biz/field"
+	"github.com/limes-cloud/usercenter/internal/conf"
+	"github.com/limes-cloud/usercenter/internal/data"
 )
 
 type FieldService struct {
-	pb.UnimplementedServiceServer
-	uc   *biz.UseCase
-	conf *config.Config
+	pb.UnimplementedFieldServer
+	uc *field.UseCase
 }
 
-func NewField(conf *config.Config) *FieldService {
+func NewFieldService(conf *conf.Config) *FieldService {
 	return &FieldService{
-		conf: conf,
-		uc:   biz.NewUseCase(conf, data.NewRepo()),
+		uc: field.NewUseCase(conf, data.NewFieldRepo()),
 	}
 }
 
-func (s *FieldService) AllFieldType(_ context.Context, _ *empty.Empty) (*pb.AllFieldTypeReply, error) {
-	list := s.uc.TypeList()
-	reply := pb.AllFieldTypeReply{}
-	if err := copier.Copy(&reply.List, list); err != nil {
-		return nil, errors.Transform()
+func init() {
+	register(func(c *conf.Config, hs *http.Server, gs *grpc.Server) {
+		srv := NewFieldService(c)
+		pb.RegisterFieldHTTPServer(hs, srv)
+		pb.RegisterFieldServer(gs, srv)
+	})
+}
+
+// ListFieldType 获取字段类型列表
+func (s *FieldService) ListFieldType(c context.Context, req *pb.ListFieldTypeRequest) (*pb.ListFieldTypeReply, error) {
+	var (
+		reply = pb.ListFieldTypeReply{}
+	)
+
+	list := s.uc.ListFieldType()
+	for _, item := range list {
+		reply.List = append(reply.List, &pb.ListFieldTypeReply_Type{
+			Name: item.Name,
+			Type: item.Type,
+		})
 	}
 
 	return &reply, nil
 }
 
-func (s *FieldService) PageField(ctx context.Context, in *pb.PageFieldRequest) (*pb.PageFieldReply, error) {
-	var req biz.PageFieldRequest
-	if err := copier.Copy(&req, in); err != nil {
-		return nil, errors.Transform()
+// ListField 获取用户字段列表
+func (s *FieldService) ListField(c context.Context, req *pb.ListFieldRequest) (*pb.ListFieldReply, error) {
+	var (
+		in  = field.ListFieldRequest{}
+		ctx = kratosx.MustContext(c)
+	)
+
+	if err := valx.Transform(req, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
 
-	list, total, err := s.uc.Page(kratosx.MustContext(ctx), &req)
+	result, total, err := s.uc.ListField(ctx, &in)
 	if err != nil {
 		return nil, err
 	}
 
-	reply := pb.PageFieldReply{Total: total}
-	if err := copier.Copy(&reply.List, list); err != nil {
-		return nil, errors.Transform()
+	reply := pb.ListFieldReply{Total: total}
+	if err := valx.Transform(result, &reply.List); err != nil {
+		ctx.Logger().Warnw("msg", "reply transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
 
 	return &reply, nil
 }
 
-func (s *FieldService) AddField(ctx context.Context, in *pb.AddFieldRequest) (*pb.AddFieldReply, error) {
-	var field biz.Field
-	if err := copier.Copy(&field, in); err != nil {
-		return nil, errors.Transform()
+// CreateField 创建用户字段
+func (s *FieldService) CreateField(c context.Context, req *pb.CreateFieldRequest) (*pb.CreateFieldReply, error) {
+	var (
+		in  = field.Field{}
+		ctx = kratosx.MustContext(c)
+	)
+
+	if err := valx.Transform(req, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
-	id, err := s.uc.Add(kratosx.MustContext(ctx), &field)
+
+	id, err := s.uc.CreateField(ctx, &in)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.AddFieldReply{Id: id}, nil
+
+	return &pb.CreateFieldReply{Id: id}, nil
 }
 
-func (s *FieldService) UpdateField(ctx context.Context, in *pb.UpdateFieldRequest) (*empty.Empty, error) {
-	var field biz.Field
-	if err := copier.Copy(&field, in); err != nil {
-		return nil, errors.Transform()
+// UpdateField 更新用户字段
+func (s *FieldService) UpdateField(c context.Context, req *pb.UpdateFieldRequest) (*pb.UpdateFieldReply, error) {
+	var (
+		in  = field.Field{}
+		ctx = kratosx.MustContext(c)
+	)
+
+	if err := valx.Transform(req, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
 
-	return nil, s.uc.Update(kratosx.MustContext(ctx), &field)
+	if err := s.uc.UpdateField(ctx, &in); err != nil {
+		return nil, err
+	}
+
+	return &pb.UpdateFieldReply{}, nil
 }
 
-func (s *FieldService) DeleteField(ctx context.Context, in *pb.DeleteFieldRequest) (*empty.Empty, error) {
-	return nil, s.uc.Delete(kratosx.MustContext(ctx), in.Id)
+// UpdateFieldStatus 更新用户字段状态
+func (s *FieldService) UpdateFieldStatus(c context.Context, req *pb.UpdateFieldStatusRequest) (*pb.UpdateFieldStatusReply, error) {
+	return &pb.UpdateFieldStatusReply{}, s.uc.UpdateFieldStatus(kratosx.MustContext(c), req.Id, req.Status)
+}
+
+// DeleteField 删除用户字段
+func (s *FieldService) DeleteField(c context.Context, req *pb.DeleteFieldRequest) (*pb.DeleteFieldReply, error) {
+	total, err := s.uc.DeleteField(kratosx.MustContext(c), req.Ids)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.DeleteFieldReply{Total: total}, nil
 }

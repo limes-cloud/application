@@ -3,88 +3,122 @@ package service
 import (
 	"context"
 
-	"github.com/golang/protobuf/ptypes/empty"
-	"github.com/jinzhu/copier"
+	"github.com/go-kratos/kratos/v2/transport/grpc"
+	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/limes-cloud/kratosx"
-	resourcepb "github.com/limes-cloud/resource/api/file/v1"
+	"github.com/limes-cloud/kratosx/pkg/valx"
 
-	pb "github.com/limes-cloud/user-center/api/channel/v1"
-	"github.com/limes-cloud/user-center/api/errors"
-	biz "github.com/limes-cloud/user-center/internal/biz/channel"
-	"github.com/limes-cloud/user-center/internal/config"
-	data "github.com/limes-cloud/user-center/internal/data/channel"
-	"github.com/limes-cloud/user-center/internal/pkg/service"
+	pb "github.com/limes-cloud/usercenter/api/usercenter/channel/v1"
+	"github.com/limes-cloud/usercenter/api/usercenter/errors"
+	"github.com/limes-cloud/usercenter/internal/biz/channel"
+	"github.com/limes-cloud/usercenter/internal/conf"
+	"github.com/limes-cloud/usercenter/internal/data"
 )
 
 type ChannelService struct {
-	pb.UnimplementedServiceServer
-	uc   *biz.UseCase
-	conf *config.Config
+	pb.UnimplementedChannelServer
+	uc *channel.UseCase
 }
 
-func NewChannel(conf *config.Config) *ChannelService {
+func NewChannelService(conf *conf.Config) *ChannelService {
 	return &ChannelService{
-		conf: conf,
-		uc:   biz.NewUseCase(conf, data.NewRepo()),
+		uc: channel.NewUseCase(conf, data.NewChannelRepo()),
 	}
 }
 
-func (s *ChannelService) AllChannel(ctx context.Context, _ *empty.Empty) (*pb.AllChannelReply, error) {
-	list, err := s.uc.All(kratosx.MustContext(ctx))
-	if err != nil {
-		return nil, err
-	}
+func init() {
+	register(func(c *conf.Config, hs *http.Server, gs *grpc.Server) {
+		srv := NewChannelService(c)
+		pb.RegisterChannelHTTPServer(hs, srv)
+		pb.RegisterChannelServer(gs, srv)
+	})
+}
 
-	reply := pb.AllChannelReply{}
-	if err := copier.Copy(&reply.List, list); err != nil {
-		return nil, errors.Transform()
-	}
-
-	// 请求资源中心,错了直接忽略，不影响主流程
-	resource, err := service.NewResource(ctx)
-	if err == nil {
-		for ind, item := range reply.List {
-			reply.List[ind].Resource, _ = resource.GetFileBySha(ctx, &resourcepb.GetFileByShaRequest{Sha: item.Logo})
-		}
+// ListChannelType 获取登陆渠道可用列表
+func (s *ChannelService) ListChannelType(_ context.Context, _ *pb.ListChannelTypeRequest) (*pb.ListChannelTypeReply, error) {
+	types := s.uc.GetTypes()
+	reply := pb.ListChannelTypeReply{}
+	if err := valx.Transform(types, &reply.List); err != nil {
+		return nil, errors.TransformError()
 	}
 	return &reply, nil
 }
 
-func (s *ChannelService) GetTypes(_ context.Context, _ *empty.Empty) (*pb.GetTypesReply, error) {
-	list, err := s.uc.GetTypes()
+// ListChannel 获取登陆渠道列表
+func (s *ChannelService) ListChannel(c context.Context, req *pb.ListChannelRequest) (*pb.ListChannelReply, error) {
+	var (
+		in  = channel.ListChannelRequest{}
+		ctx = kratosx.MustContext(c)
+	)
+
+	if err := valx.Transform(req, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
+	}
+
+	result, total, err := s.uc.ListChannel(ctx, &in)
 	if err != nil {
 		return nil, err
 	}
 
-	reply := pb.GetTypesReply{}
-	if err := copier.Copy(&reply.List, list); err != nil {
-		return nil, errors.Transform()
+	reply := pb.ListChannelReply{Total: total}
+	if err := valx.Transform(result, &reply.List); err != nil {
+		ctx.Logger().Warnw("msg", "reply transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
 
 	return &reply, nil
 }
 
-func (s *ChannelService) AddChannel(ctx context.Context, in *pb.AddChannelRequest) (*pb.AddChannelReply, error) {
-	var channel biz.Channel
-	if err := copier.Copy(&channel, in); err != nil {
-		return nil, errors.Transform()
+// CreateChannel 创建登陆渠道
+func (s *ChannelService) CreateChannel(c context.Context, req *pb.CreateChannelRequest) (*pb.CreateChannelReply, error) {
+	var (
+		in  = channel.Channel{}
+		ctx = kratosx.MustContext(c)
+	)
+
+	if err := valx.Transform(req, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
 
-	id, err := s.uc.Add(kratosx.MustContext(ctx), &channel)
+	id, err := s.uc.CreateChannel(ctx, &in)
 	if err != nil {
 		return nil, err
 	}
-	return &pb.AddChannelReply{Id: id}, nil
+
+	return &pb.CreateChannelReply{Id: id}, nil
 }
 
-func (s *ChannelService) UpdateChannel(ctx context.Context, in *pb.UpdateChannelRequest) (*empty.Empty, error) {
-	var channel biz.Channel
-	if err := copier.Copy(&channel, in); err != nil {
-		return nil, errors.Transform()
+// UpdateChannel 更新登陆渠道
+func (s *ChannelService) UpdateChannel(c context.Context, req *pb.UpdateChannelRequest) (*pb.UpdateChannelReply, error) {
+	var (
+		in  = channel.Channel{}
+		ctx = kratosx.MustContext(c)
+	)
+
+	if err := valx.Transform(req, &in); err != nil {
+		ctx.Logger().Warnw("msg", "req transform err", "err", err.Error())
+		return nil, errors.TransformError()
 	}
-	return nil, s.uc.Update(kratosx.MustContext(ctx), &channel)
+
+	if err := s.uc.UpdateChannel(ctx, &in); err != nil {
+		return nil, err
+	}
+
+	return &pb.UpdateChannelReply{}, nil
 }
 
-func (s *ChannelService) DeleteChannel(ctx context.Context, in *pb.DeleteChannelRequest) (*empty.Empty, error) {
-	return nil, s.uc.Delete(kratosx.MustContext(ctx), in.Id)
+// UpdateChannelStatus 更新登陆渠道状态
+func (s *ChannelService) UpdateChannelStatus(c context.Context, req *pb.UpdateChannelStatusRequest) (*pb.UpdateChannelStatusReply, error) {
+	return &pb.UpdateChannelStatusReply{}, s.uc.UpdateChannelStatus(kratosx.MustContext(c), req.Id, req.Status)
+}
+
+// DeleteChannel 删除登陆渠道
+func (s *ChannelService) DeleteChannel(c context.Context, req *pb.DeleteChannelRequest) (*pb.DeleteChannelReply, error) {
+	total, err := s.uc.DeleteChannel(kratosx.MustContext(c), req.Ids)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.DeleteChannelReply{Total: total}, nil
 }

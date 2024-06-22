@@ -1,78 +1,64 @@
 package user
 
-type PageUserRequest struct {
-	Page     uint32   `json:"page"`
-	PageSize uint32   `json:"page_size"`
-	App      *string  `json:"app"`
-	Username *string  `json:"username"`
-	Phone    *string  `json:"phone"`
-	Email    *string  `json:"email"`
-	InIds    []uint32 `json:"in_ids"`
-	NotInIds []uint32 `json:"not_in_ids"`
+type GetUserRequest struct {
+	Id       *uint32 `json:"id"`
+	Phone    *string `json:"phone"`
+	Email    *string `json:"email"`
+	Username *string `json:"username"`
 }
 
-type OAuthLoginRequest struct {
-	App      string `json:"app"`
-	Code     string `json:"code"`
-	Platform string `json:"platform"`
+type ListUserRequest struct {
+	Page       uint32  `json:"page"`
+	PageSize   uint32  `json:"pageSize"`
+	Order      *string `json:"order"`
+	OrderBy    *string `json:"orderBy"`
+	Phone      *string `json:"phone"`
+	Email      *string `json:"email"`
+	Username   *string `json:"username"`
+	RealName   *string `json:"realName"`
+	Gender     *string `json:"gender"`
+	Status     *bool   `json:"status"`
+	From       *string `json:"from"`
+	CreatedAts []int64 `json:"createdAts"`
+	AppId      *uint32 `json:"appId"`
 }
 
-type OAuthBindByPasswordRequest struct {
-	Username  string
-	Password  string
-	Captcha   string
-	CaptchaID string
-	App       string
-	Code      string
-	Platform  string
+type ListTrashUserRequest struct {
+	Page       uint32  `json:"page"`
+	PageSize   uint32  `json:"pageSize"`
+	Order      *string `json:"order"`
+	OrderBy    *string `json:"orderBy"`
+	Phone      *string `json:"phone"`
+	Email      *string `json:"email"`
+	Username   *string `json:"username"`
+	RealName   *string `json:"realName"`
+	Gender     *string `json:"gender"`
+	Status     *bool   `json:"status"`
+	From       *string `json:"from"`
+	CreatedAts []int64 `json:"createdAts"`
+	AppId      *uint32 `json:"appId"`
 }
 
-type OAuthBindByCaptchaRequest struct {
-	Username  string
-	Captcha   string
-	CaptchaID string
-	App       string
-	Code      string
-	Platform  string
+type ExportUserRequest struct {
+	Phone      *string `json:"phone"`
+	Email      *string `json:"email"`
+	Username   *string `json:"username"`
+	RealName   *string `json:"realName"`
+	Gender     *string `json:"gender"`
+	Status     *bool   `json:"status"`
+	From       *string `json:"from"`
+	CreatedAts []int64 `json:"createdAts"`
+	AppId      *uint32 `json:"appId"`
 }
 
-type PasswordLoginRequest struct {
-	App       string `json:"app"`
-	Username  string `json:"username"`
-	Password  string `json:"password"`
-	Captcha   string `json:"captcha"`
-	CaptchaID string `json:"captcha_id"`
+type UpdateUserStatusRequest struct {
+	Id          uint32  `json:"id"`
+	Status      bool    `json:"status"`
+	DisableDesc *string `json:"disableDesc"`
 }
 
-type PasswordRegisterRequest struct {
-	App       string `json:"app"`
-	Username  string `json:"username"`
-	Password  string `json:"password"`
-	Captcha   string `json:"captcha"`
-	CaptchaID string `json:"captcha_id"`
-}
-
-type CaptchaLoginRequest struct {
-	App       string `json:"app"`
-	Username  string `json:"username"`
-	Captcha   string `json:"captcha"`
-	CaptchaID string `json:"captcha_id"`
-}
-
-type CaptchaRegisterRequest struct {
-	App       string `json:"app"`
-	Username  string `json:"username"`
-	Captcha   string `json:"captcha"`
-	CaptchaID string `json:"captcha_id"`
-}
-
-type Password struct {
-	Password string `json:"password"`
-	Time     int64  `json:"time"`
-}
-
-type CaptchaResponse struct {
-	ID     string `json:"id"`
-	Expire int    `json:"expire"`
-	Base64 string `json:"base64"`
+type UpdateCurrentUserRequest struct {
+	NickName string `json:"nickName"`
+	Avatar   string `json:"avatar"`
+	Gender   string `json:"gender"`
 }

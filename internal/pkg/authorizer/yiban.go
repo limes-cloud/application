@@ -2,12 +2,12 @@ package authorizer
 
 import (
 	"errors"
+	"strconv"
 	"time"
 
 	"github.com/forgoer/openssl"
 	json "github.com/json-iterator/go"
 	"github.com/limes-cloud/kratosx"
-	"github.com/limes-cloud/kratosx/pkg/util"
 )
 
 type yb struct {
@@ -18,11 +18,6 @@ func init() {
 }
 
 type yiBanAccessTokenInfo struct {
-	// VisitTime int64 `json:"visit_time"`
-
-	// VisitUser struct {
-	//	UserId string `json:"userid"`
-	// } `json:"visit_user"`
 	VisitOauth struct {
 		AccessToken  string `json:"access_token"`
 		TokenExpires string `json:"token_expires"`
@@ -52,7 +47,7 @@ func (y yb) Name() string {
 }
 
 func (y yb) GetAccessToken(ctx kratosx.Context, req GetAccessTokenRequest) (*GetAccessTokenReply, error) {
-	src := util.HexToByte(req.Code)
+	src := y.hexToByte(req.Code)
 	iv := []byte(req.Ak)
 	key := []byte(req.Sk)
 
@@ -69,7 +64,7 @@ func (y yb) GetAccessToken(ctx kratosx.Context, req GetAccessTokenRequest) (*Get
 
 	return &GetAccessTokenReply{
 		Token:  res.VisitOauth.AccessToken,
-		Expire: time.Duration(util.ToInt64(res.VisitOauth.TokenExpires)),
+		Expire: time.Duration(y.toInt64(res.VisitOauth.TokenExpires)),
 	}, nil
 }
 
@@ -90,4 +85,21 @@ func (y yb) GetAuthInfo(ctx kratosx.Context, req GetAuthInfoRequest) (*GetAuthIn
 	}
 
 	return &GetAuthInfoReply{AuthId: data.Info.YbUserid}, nil
+}
+
+func (y yb) hexToByte(hex string) []byte {
+	length := len(hex) / 2
+	slice := make([]byte, length)
+	rs := []rune(hex)
+	for i := 0; i < length; i++ {
+		s := string(rs[i*2 : i*2+2])
+		value, _ := strconv.ParseInt(s, 16, 10)
+		slice[i] = byte(value & 0xFF)
+	}
+	return slice
+}
+
+func (y yb) toInt64(in string) int64 {
+	val, _ := strconv.ParseInt(in, 10, 64)
+	return val
 }

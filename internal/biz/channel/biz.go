@@ -4,41 +4,33 @@ import (
 	"sort"
 
 	"github.com/limes-cloud/kratosx"
+	"google.golang.org/protobuf/proto"
 
-	"github.com/limes-cloud/user-center/api/errors"
-	"github.com/limes-cloud/user-center/internal/config"
-	"github.com/limes-cloud/user-center/internal/consts"
-	"github.com/limes-cloud/user-center/internal/pkg/authorizer"
+	"github.com/limes-cloud/usercenter/api/usercenter/errors"
+	"github.com/limes-cloud/usercenter/internal/conf"
+	"github.com/limes-cloud/usercenter/internal/consts"
+	"github.com/limes-cloud/usercenter/internal/pkg/authorizer"
 )
 
 type UseCase struct {
-	config *config.Config
-	repo   Repo
+	conf *conf.Config
+	repo Repo
 }
 
-func NewUseCase(config *config.Config, repo Repo) *UseCase {
-	return &UseCase{config: config, repo: repo}
-}
-
-// All 获取全部登录通道
-func (u *UseCase) All(ctx kratosx.Context) ([]*Channel, error) {
-	channel, err := u.repo.All(ctx)
-	if err != nil {
-		return nil, errors.NotRecord()
-	}
-	return channel, nil
+func NewUseCase(config *conf.Config, repo Repo) *UseCase {
+	return &UseCase{conf: config, repo: repo}
 }
 
 // GetTypes 获取可以开通的登录渠道
-func (u *UseCase) GetTypes() ([]*Typer, error) {
+func (u *UseCase) GetTypes() []*Typer {
 	list := []*Typer{
 		{
-			Platform: consts.PasswordChannel,
-			Name:     "密码",
+			Keyword: consts.PasswordChannel,
+			Name:    "密码",
 		},
 		{
-			Platform: consts.CaptchaChannel,
-			Name:     "验证码",
+			Keyword: consts.EmailChannel,
+			Name:    "邮箱",
 		},
 	}
 
@@ -51,44 +43,54 @@ func (u *UseCase) GetTypes() ([]*Typer, error) {
 	sort.Strings(keys)
 	for _, key := range keys {
 		list = append(list, &Typer{
-			Platform: key,
-			Name:     set[key].Name(),
+			Keyword: key,
+			Name:    set[key].Name(),
 		})
 	}
 
-	return list, nil
+	return list
 }
 
-// GetByPlatform 获取指定登录通道
-func (u *UseCase) GetByPlatform(ctx kratosx.Context, platform string) (*Channel, error) {
-	channel, err := u.repo.GetByPlatform(ctx, platform)
+// ListChannel 获取登陆渠道列表
+func (u *UseCase) ListChannel(ctx kratosx.Context, req *ListChannelRequest) ([]*Channel, uint32, error) {
+	list, total, err := u.repo.ListChannel(ctx, req)
 	if err != nil {
-		return nil, errors.NotRecord()
+		return nil, 0, errors.ListError(err.Error())
 	}
-	return channel, nil
+	return list, total, nil
 }
 
-// Add 添加登录通道信息
-func (u *UseCase) Add(ctx kratosx.Context, channel *Channel) (uint32, error) {
-	id, err := u.repo.Create(ctx, channel)
+// CreateChannel 创建登陆渠道
+func (u *UseCase) CreateChannel(ctx kratosx.Context, req *Channel) (uint32, error) {
+	req.Status = proto.Bool(false)
+	id, err := u.repo.CreateChannel(ctx, req)
 	if err != nil {
-		return 0, errors.DatabaseFormat(err.Error())
+		return 0, errors.CreateError(err.Error())
 	}
 	return id, nil
 }
 
-// Update 更新登录通道信息
-func (u *UseCase) Update(ctx kratosx.Context, channel *Channel) error {
-	if err := u.repo.Update(ctx, channel); err != nil {
-		return errors.DatabaseFormat(err.Error())
+// UpdateChannel 更新登陆渠道
+func (u *UseCase) UpdateChannel(ctx kratosx.Context, req *Channel) error {
+	if err := u.repo.UpdateChannel(ctx, req); err != nil {
+		return errors.UpdateError(err.Error())
 	}
 	return nil
 }
 
-// Delete 删除登录通道信息
-func (u *UseCase) Delete(ctx kratosx.Context, id uint32) error {
-	if err := u.repo.Delete(ctx, id); err != nil {
-		return errors.DatabaseFormat(err.Error())
+// UpdateChannelStatus 更新登陆渠道状态
+func (u *UseCase) UpdateChannelStatus(ctx kratosx.Context, id uint32, status bool) error {
+	if err := u.repo.UpdateChannelStatus(ctx, id, status); err != nil {
+		return errors.UpdateError(err.Error())
 	}
 	return nil
+}
+
+// DeleteChannel 删除登陆渠道
+func (u *UseCase) DeleteChannel(ctx kratosx.Context, ids []uint32) (uint32, error) {
+	total, err := u.repo.DeleteChannel(ctx, ids)
+	if err != nil {
+		return 0, errors.DeleteError(err.Error())
+	}
+	return total, nil
 }
