@@ -10,9 +10,9 @@ require (
 	github.com/golang/protobuf v1.5.4
 	github.com/google/uuid v1.6.0
 	github.com/json-iterator/go v1.1.12
-	github.com/limes-cloud/configure v1.0.35
+	github.com/limes-cloud/configure v1.0.39
 	github.com/limes-cloud/kratosx v1.0.45
-	github.com/limes-cloud/resource v1.0.14
+	github.com/limes-cloud/resource v1.0.17
 	go.uber.org/automaxprocs v1.5.3
 	google.golang.org/genproto/googleapis/api v0.0.0-20240429193739-8cf5692501f6
 	google.golang.org/grpc v1.63.2
