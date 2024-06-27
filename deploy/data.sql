@@ -19,7 +19,7 @@ SET time_zone = "+00:00";
 --
 -- 表的结构 `app`
 --
-
+DROP TABLE IF EXISTS `app`;
 CREATE TABLE `app` (
                        `id` bigint(20) UNSIGNED NOT NULL COMMENT '主键ID',
                        `logo` varchar(128) NOT NULL COMMENT '图标',
@@ -48,7 +48,7 @@ INSERT INTO `app` (`id`, `logo`, `keyword`, `name`, `status`, `version`, `copyri
 --
 -- 表的结构 `app_channel`
 --
-
+DROP TABLE IF EXISTS `app_channel`;
 CREATE TABLE `app_channel` (
                                `id` bigint(20) UNSIGNED NOT NULL COMMENT '主键ID',
                                `app_id` bigint(20) UNSIGNED NOT NULL COMMENT '应用id',
@@ -71,7 +71,7 @@ INSERT INTO `app_channel` (`id`, `app_id`, `channel_id`) VALUES
 --
 -- 表的结构 `app_field`
 --
-
+DROP TABLE IF EXISTS `app_field`;
 CREATE TABLE `app_field` (
                              `id` bigint(20) UNSIGNED NOT NULL COMMENT '主键ID',
                              `app_id` bigint(20) UNSIGNED NOT NULL COMMENT '应用id',
@@ -90,7 +90,7 @@ INSERT INTO `app_field` (`id`, `app_id`, `field_id`) VALUES
 --
 -- 表的结构 `auth`
 --
-
+DROP TABLE IF EXISTS `auth`;
 CREATE TABLE `auth` (
                         `id` bigint(20) UNSIGNED NOT NULL COMMENT '主键ID',
                         `user_id` bigint(20) UNSIGNED NOT NULL,
@@ -118,7 +118,7 @@ INSERT INTO `auth` (`id`, `user_id`, `app_id`, `status`, `disable_desc`, `token`
 --
 -- 表的结构 `channel`
 --
-
+DROP TABLE IF EXISTS `channel`;
 CREATE TABLE `channel` (
                            `id` bigint(20) UNSIGNED NOT NULL COMMENT '主键ID',
                            `logo` varchar(128) NOT NULL COMMENT '图标',
@@ -148,7 +148,7 @@ INSERT INTO `channel` (`id`, `logo`, `keyword`, `name`, `ak`, `sk`, `extra`, `st
 --
 -- 表的结构 `extra`
 --
-
+DROP TABLE IF EXISTS `extra`;
 CREATE TABLE `extra` (
                          `id` bigint(20) UNSIGNED NOT NULL COMMENT '主键ID',
                          `user_id` bigint(20) UNSIGNED NOT NULL COMMENT '用户',
@@ -163,7 +163,7 @@ CREATE TABLE `extra` (
 --
 -- 表的结构 `field`
 --
-
+DROP TABLE IF EXISTS `field`;
 CREATE TABLE `field` (
                          `id` bigint(20) UNSIGNED NOT NULL COMMENT '主键ID',
                          `keyword` char(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL COMMENT '字段标识',
@@ -187,7 +187,7 @@ INSERT INTO `field` (`id`, `keyword`, `type`, `name`, `status`, `description`, `
 --
 -- 表的结构 `gorm_init`
 --
-
+DROP TABLE IF EXISTS `gorm_init`;
 CREATE TABLE `gorm_init` (
                              `id` int(10) UNSIGNED NOT NULL,
                              `init` tinyint(1) DEFAULT NULL
@@ -205,7 +205,7 @@ INSERT INTO `gorm_init` (`id`, `init`) VALUES
 --
 -- 表的结构 `oauth`
 --
-
+DROP TABLE IF EXISTS `oauth`;
 CREATE TABLE `oauth` (
                          `id` bigint(20) UNSIGNED NOT NULL COMMENT '主键ID',
                          `user_id` bigint(20) UNSIGNED DEFAULT NULL,
@@ -230,7 +230,7 @@ INSERT INTO `oauth` (`id`, `user_id`, `channel_id`, `auth_id`, `union_id`, `toke
 --
 -- 表的结构 `user`
 --
-
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
                         `id` bigint(20) UNSIGNED NOT NULL COMMENT '主键ID',
                         `phone` char(15) DEFAULT NULL COMMENT '手机',
