@@ -266,7 +266,7 @@ INSERT INTO `user` (`id`, `phone`, `email`, `username`, `password`, `nick_name`,
 --
 -- 表的结构 `userinfo`
 --
-
+DROP TABLE IF EXISTS `userinfo`;
 CREATE TABLE `userinfo` (
                             `id` bigint(20) UNSIGNED NOT NULL COMMENT '主键ID',
                             `user_id` bigint(20) UNSIGNED NOT NULL COMMENT '用户',
@@ -288,7 +288,7 @@ INSERT INTO `userinfo` (`id`, `user_id`, `keyword`, `value`, `created_at`, `upda
 --
 -- 表的结构 `user_app`
 --
-
+DROP TABLE IF EXISTS `user_app`;
 CREATE TABLE `user_app` (
                             `id` bigint(20) UNSIGNED NOT NULL COMMENT '主键ID',
                             `user_id` bigint(20) UNSIGNED NOT NULL,
@@ -301,6 +301,44 @@ CREATE TABLE `user_app` (
                             `expired_at` bigint(20) NOT NULL DEFAULT '0' COMMENT '过期时间',
                             `created_at` bigint(20) UNSIGNED NOT NULL COMMENT '创建时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户应用信息';
+
+DROP TABLE IF EXISTS `feedback_category`;
+CREATE TABLE `feedback_category` (
+                                     `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+                                     `name` varchar(32) NOT NULL COMMENT '分类名称',
+                                     `created_at` bigint unsigned NOT NULL DEFAULT 0 COMMENT '创建时间',
+                                     PRIMARY KEY (`id`),
+                                     UNIQUE (`name`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='反馈分类';
+
+DROP TABLE IF EXISTS `feedback`;
+CREATE TABLE `feedback` (
+                            `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+                            `app_id` bigint unsigned NOT NULL COMMENT '应用id',
+                            `user_id` bigint unsigned NOT NULL COMMENT '用户id',
+                            `category_id` bigint unsigned NOT NULL COMMENT '分类id',
+                            `title` varchar(128) NOT NULL COMMENT '标题',
+                            `content` text NOT NULL COMMENT '内容',
+                            `status` char(32) NOT NULL COMMENT '状态',
+                            `images` tinytext DEFAULT NULL COMMENT '图片',
+                            `contact` char(32) DEFAULT NULL COMMENT '联系方式',
+                            `device` text NOT NULL COMMENT '设备',
+                            `platform` char(32) NOT NULL COMMENT '平台',
+                            `version` varchar(32) DEFAULT NULL COMMENT '版本',
+                            `md5` varchar(64) NOT NULL COMMENT 'md5值',
+                            `processed_by` bigint unsigned DEFAULT NULL COMMENT '处理人',
+                            `processed_result` varchar(256) DEFAULT NULL COMMENT '处理结果',
+                            `created_at` bigint unsigned NOT NULL COMMENT '创建时间',
+                            `updated_at` bigint unsigned NOT NULL COMMENT '修改时间',
+                            PRIMARY KEY (`id`),
+                            KEY (`created_at`),
+                            KEY (`updated_at`),
+                            UNIQUE KEY(md5),
+                            FOREIGN KEY(`app_id`) REFERENCES app(`id`) ON DELETE CASCADE,
+                            FOREIGN KEY(`user_id`) REFERENCES user(`id`) ON DELETE CASCADE,
+                            FOREIGN KEY(`category_id`) REFERENCES feedback_category(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='反馈信息';
+
 
 --
 -- 转储表的索引
