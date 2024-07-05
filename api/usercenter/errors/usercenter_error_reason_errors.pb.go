@@ -770,3 +770,23 @@ func LoginError(args ...any) *errors.Error {
 		return errors.New(500, ErrorReason_LoginError.String(), "登陆失败:"+msg)
 	}
 }
+
+func IsExistFeedbackError(err error) bool {
+	if err == nil {
+		return false
+	}
+	e := errors.FromError(err)
+	return e.Reason == ErrorReason_ExistFeedbackError.String() && e.Code == 500
+}
+
+func ExistFeedbackError(args ...any) *errors.Error {
+	switch len(args) {
+	case 0:
+		return errors.New(500, ErrorReason_ExistFeedbackError.String(), "已存在重复的反馈内容")
+	case 1:
+		return errors.New(500, ErrorReason_ExistFeedbackError.String(), "已存在重复的反馈内容:"+fmt.Sprint(args[0]))
+	default:
+		msg := fmt.Sprintf(fmt.Sprint(args[0]), args[1:]...)
+		return errors.New(500, ErrorReason_ExistFeedbackError.String(), "已存在重复的反馈内容:"+msg)
+	}
+}
