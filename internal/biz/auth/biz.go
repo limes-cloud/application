@@ -222,7 +222,7 @@ func (u *UseCase) OAuthLogin(ctx kratosx.Context, req *OAuthLoginRequest) (*OAut
 }
 
 // EmailLogin 邮箱登陆
-func (u *UseCase) EmailLogin(ctx kratosx.Context, req *EmailLoginRequest) (*EmailLoginReply, error) {
+func (u *UseCase) EmailLogin(ctx kratosx.Context, req *EmailLoginRequest) (*TokenInfo, error) {
 	app, err := u.repo.GetApp(ctx, req.App)
 	if err != nil {
 		return nil, errors.OAuthLoginError(err.Error())
@@ -243,7 +243,7 @@ func (u *UseCase) EmailLogin(ctx kratosx.Context, req *EmailLoginRequest) (*Emai
 		return nil, errors.NotUserError()
 	}
 
-	reply := EmailLoginReply{Expire: uint32(time.Now().Unix() + int64(ctx.Config().App().JWT.Expire.Seconds()))}
+	reply := TokenInfo{Expire: uint32(time.Now().Unix() + int64(ctx.Config().App().JWT.Expire.Seconds()))}
 	if err := ctx.Transaction(func(ctx kratosx.Context) error {
 		reply.Token, err = u.GenToken(ctx, app, user)
 		if err != nil {
@@ -339,7 +339,7 @@ func (u *UseCase) PasswordLogin(ctx kratosx.Context, req *PasswordLoginRequest) 
 }
 
 // EmailRegister 邮箱注册
-func (u *UseCase) EmailRegister(ctx kratosx.Context, req *EmailRegisterRequest) (*EmailRegisterReply, error) {
+func (u *UseCase) EmailRegister(ctx kratosx.Context, req *EmailRegisterRequest) (*TokenInfo, error) {
 	app, err := u.repo.GetApp(ctx, req.App)
 	if err != nil {
 		return nil, errors.RegisterError(err.Error())
@@ -380,7 +380,7 @@ func (u *UseCase) EmailRegister(ctx kratosx.Context, req *EmailRegisterRequest) 
 		return nil, errors.RegisterError(err.Error())
 	}
 
-	reply := EmailRegisterReply{Expire: uint32(time.Now().Unix() + int64(ctx.Config().App().JWT.Expire.Seconds()))}
+	reply := TokenInfo{Expire: uint32(time.Now().Unix() + int64(ctx.Config().App().JWT.Expire.Seconds()))}
 	if err := ctx.Transaction(func(ctx kratosx.Context) error {
 		reply.Token, err = u.GenToken(ctx, app, user)
 		if err != nil {
@@ -411,7 +411,7 @@ func (u *UseCase) EmailRegister(ctx kratosx.Context, req *EmailRegisterRequest) 
 }
 
 // PasswordRegister 密码注册
-func (u *UseCase) PasswordRegister(ctx kratosx.Context, req *PasswordRegisterRequest) (*PasswordRegisterReply, error) {
+func (u *UseCase) PasswordRegister(ctx kratosx.Context, req *PasswordRegisterRequest) (*TokenInfo, error) {
 	app, err := u.repo.GetApp(ctx, req.App)
 	if err != nil {
 		return nil, errors.RegisterError(err.Error())
@@ -471,7 +471,7 @@ func (u *UseCase) PasswordRegister(ctx kratosx.Context, req *PasswordRegisterReq
 		return nil, errors.RegisterError(err.Error())
 	}
 
-	reply := PasswordRegisterReply{Expire: uint32(time.Now().Unix() + int64(ctx.Config().App().JWT.Expire.Seconds()))}
+	reply := TokenInfo{Expire: uint32(time.Now().Unix() + int64(ctx.Config().App().JWT.Expire.Seconds()))}
 	if err := ctx.Transaction(func(ctx kratosx.Context) error {
 		reply.Token, err = u.GenToken(ctx, app, user)
 		if err != nil {
@@ -500,7 +500,7 @@ func (u *UseCase) PasswordRegister(ctx kratosx.Context, req *PasswordRegisterReq
 }
 
 // EmailBind 邮箱注册
-func (u *UseCase) EmailBind(ctx kratosx.Context, req *EmailBindRequest) (*EmailBindReply, error) {
+func (u *UseCase) EmailBind(ctx kratosx.Context, req *EmailBindRequest) (*TokenInfo, error) {
 	app, err := u.repo.GetApp(ctx, req.App)
 	if err != nil {
 		return nil, errors.BindError(err.Error())
@@ -519,7 +519,7 @@ func (u *UseCase) EmailBind(ctx kratosx.Context, req *EmailBindRequest) (*EmailB
 		return nil, errors.NotUserError()
 	}
 
-	reply := EmailBindReply{Expire: uint32(time.Now().Unix() + int64(ctx.Config().App().JWT.Expire.Seconds()))}
+	reply := TokenInfo{Expire: uint32(time.Now().Unix() + int64(ctx.Config().App().JWT.Expire.Seconds()))}
 	if err := ctx.Transaction(func(ctx kratosx.Context) error {
 		reply.Token, err = u.GenToken(ctx, app, user)
 		if err != nil {
@@ -539,7 +539,7 @@ func (u *UseCase) EmailBind(ctx kratosx.Context, req *EmailBindRequest) (*EmailB
 }
 
 // PasswordBind 密码注册
-func (u *UseCase) PasswordBind(ctx kratosx.Context, req *PasswordBindRequest) (*PasswordBindReply, error) {
+func (u *UseCase) PasswordBind(ctx kratosx.Context, req *PasswordBindRequest) (*TokenInfo, error) {
 	app, err := u.repo.GetApp(ctx, req.App)
 	if err != nil {
 		return nil, errors.BindError(err.Error())
@@ -586,7 +586,7 @@ func (u *UseCase) PasswordBind(ctx kratosx.Context, req *PasswordBindRequest) (*
 		return nil, errors.PasswordError()
 	}
 
-	reply := PasswordBindReply{Expire: uint32(time.Now().Unix() + int64(ctx.Config().App().JWT.Expire.Seconds()))}
+	reply := TokenInfo{Expire: uint32(time.Now().Unix() + int64(ctx.Config().App().JWT.Expire.Seconds()))}
 	if err := ctx.Transaction(func(ctx kratosx.Context) error {
 		reply.Token, err = u.GenToken(ctx, app, user)
 		if err != nil {
@@ -601,6 +601,32 @@ func (u *UseCase) PasswordBind(ctx kratosx.Context, req *PasswordBindRequest) (*
 		return nil, err
 	}
 	return &reply, nil
+}
+
+// RefreshToken 刷新用户token
+func (u *UseCase) RefreshToken(ctx kratosx.Context) (*TokenInfo, error) {
+	var err error
+	reply := TokenInfo{Expire: uint32(time.Now().Unix() + int64(ctx.Config().App().JWT.Expire.Seconds()))}
+	reply.Token, err = ctx.JWT().Renewal(ctx)
+	if err != nil {
+		return nil, errors.RefreshTokenError(err.Error())
+	}
+	return &reply, nil
+}
+
+// Logout 用户退出登陆
+func (u *UseCase) Logout(ctx kratosx.Context) error {
+	token := ctx.Token()
+	if token == "" {
+		return nil
+	}
+
+	if ctx.JWT().IsBlacklist(token) {
+		return errors.RefreshTokenError()
+	}
+
+	ctx.JWT().AddBlacklist(token)
+	return nil
 }
 
 // verifyCaptcha 验证验证码

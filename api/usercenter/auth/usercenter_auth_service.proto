@@ -13,6 +13,20 @@ import "google/protobuf/empty.proto";
 
 service Auth{
 
+  // 刷新token时长
+  rpc RefreshToken (RefreshTokenRequest)  returns (RefreshTokenReply) {
+    option (google.api.http) = {
+      post: "/usercenter/client/v1/token/refresh",
+    };
+  }
+
+  // 退出登陆
+  rpc Logout (LogoutRequest)  returns (LogoutReply) {
+    option (google.api.http) = {
+      post: "/usercenter/client/v1/logout",
+    };
+  }
+
   // 解析token信息
   rpc Auth (google.protobuf.Empty)  returns (AuthReply) {
     option (google.api.http) = {
@@ -97,7 +111,7 @@ service Auth{
     };
   }
 
-  // EmailLogin 邮箱注册
+  // EmailRegister 邮箱注册
   rpc EmailRegister (EmailRegisterRequest) returns (EmailRegisterReply) {
     option (google.api.http) = {
       post: "/usercenter/client/v1/register/email",
@@ -105,7 +119,7 @@ service Auth{
     };
   }
 
-  // PasswordLogin 密码注册
+  // PasswordRegister 密码注册
   rpc PasswordRegister (PasswordRegisterRequest) returns (PasswordRegisterReply) {
     option (google.api.http) = {
       post: "/usercenter/client/v1/register/password",
@@ -113,7 +127,7 @@ service Auth{
     };
   }
 
-  // EmailLogin 邮箱注册
+  // EmailBind 邮箱绑定
   rpc EmailBind (EmailBindRequest) returns (EmailBindReply) {
     option (google.api.http) = {
       post: "/usercenter/client/v1/bind/email",
@@ -121,7 +135,7 @@ service Auth{
     };
   }
 
-  // PasswordLogin 密码注册
+  // PasswordBind 密码绑定
   rpc PasswordBind (PasswordBindRequest) returns (PasswordBindReply) {
     option (google.api.http) = {
       post: "/usercenter/client/v1/bind/password",

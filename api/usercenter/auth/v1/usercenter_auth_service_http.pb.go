@@ -30,10 +30,12 @@ const OperationAuthEmailRegister = "/usercenter.api.usercenter.auth.v1.Auth/Emai
 const OperationAuthGenAuthCaptcha = "/usercenter.api.usercenter.auth.v1.Auth/GenAuthCaptcha"
 const OperationAuthListAuth = "/usercenter.api.usercenter.auth.v1.Auth/ListAuth"
 const OperationAuthListOAuth = "/usercenter.api.usercenter.auth.v1.Auth/ListOAuth"
+const OperationAuthLogout = "/usercenter.api.usercenter.auth.v1.Auth/Logout"
 const OperationAuthOAuthLogin = "/usercenter.api.usercenter.auth.v1.Auth/OAuthLogin"
 const OperationAuthPasswordBind = "/usercenter.api.usercenter.auth.v1.Auth/PasswordBind"
 const OperationAuthPasswordLogin = "/usercenter.api.usercenter.auth.v1.Auth/PasswordLogin"
 const OperationAuthPasswordRegister = "/usercenter.api.usercenter.auth.v1.Auth/PasswordRegister"
+const OperationAuthRefreshToken = "/usercenter.api.usercenter.auth.v1.Auth/RefreshToken"
 const OperationAuthUpdateAuthStatus = "/usercenter.api.usercenter.auth.v1.Auth/UpdateAuthStatus"
 
 type AuthHTTPServer interface {
@@ -45,11 +47,11 @@ type AuthHTTPServer interface {
 	DeleteAuth(context.Context, *DeleteAuthRequest) (*DeleteAuthReply, error)
 	// DeleteOAuth DeleteOAuth 删除渠道授权信息
 	DeleteOAuth(context.Context, *DeleteOAuthRequest) (*DeleteOAuthReply, error)
-	// EmailBind EmailLogin 邮箱注册
+	// EmailBind EmailBind 邮箱绑定
 	EmailBind(context.Context, *EmailBindRequest) (*EmailBindReply, error)
 	// EmailLogin EmailLogin 邮箱登陆
 	EmailLogin(context.Context, *EmailLoginRequest) (*EmailLoginReply, error)
-	// EmailRegister EmailLogin 邮箱注册
+	// EmailRegister EmailRegister 邮箱注册
 	EmailRegister(context.Context, *EmailRegisterRequest) (*EmailRegisterReply, error)
 	// GenAuthCaptcha GenAuthCaptcha 生成二维码
 	GenAuthCaptcha(context.Context, *GenAuthCaptchaRequest) (*GenAuthCaptchaReply, error)
@@ -57,20 +59,26 @@ type AuthHTTPServer interface {
 	ListAuth(context.Context, *ListAuthRequest) (*ListAuthReply, error)
 	// ListOAuth ListOAuth 获取用户授权渠道信息列表
 	ListOAuth(context.Context, *ListOAuthRequest) (*ListOAuthReply, error)
+	// Logout 退出登陆
+	Logout(context.Context, *LogoutRequest) (*LogoutReply, error)
 	// OAuthLogin OAuthLogin 三方渠道登陆
 	OAuthLogin(context.Context, *OAuthLoginRequest) (*OAuthLoginReply, error)
-	// PasswordBind PasswordLogin 密码注册
+	// PasswordBind PasswordBind 密码绑定
 	PasswordBind(context.Context, *PasswordBindRequest) (*PasswordBindReply, error)
 	// PasswordLogin PasswordLogin 密码登陆
 	PasswordLogin(context.Context, *PasswordLoginRequest) (*PasswordLoginReply, error)
-	// PasswordRegister PasswordLogin 密码注册
+	// PasswordRegister PasswordRegister 密码注册
 	PasswordRegister(context.Context, *PasswordRegisterRequest) (*PasswordRegisterReply, error)
+	// RefreshToken 刷新token时长
+	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenReply, error)
 	// UpdateAuthStatus UpdateAuthStatus 更新应用授权信息状态
 	UpdateAuthStatus(context.Context, *UpdateAuthStatusRequest) (*UpdateAuthStatusReply, error)
 }
 
 func RegisterAuthHTTPServer(s *http.Server, srv AuthHTTPServer) {
 	r := s.Route("/")
+	r.POST("/usercenter/client/v1/token/refresh", _Auth_RefreshToken0_HTTP_Handler(srv))
+	r.POST("/usercenter/client/v1/logout", _Auth_Logout0_HTTP_Handler(srv))
 	r.POST("/usercenter/client/v1/auth", _Auth_Auth0_HTTP_Handler(srv))
 	r.GET("/usercenter/api/v1/auths", _Auth_ListAuth0_HTTP_Handler(srv))
 	r.POST("/usercenter/api/v1/auth", _Auth_CreateAuth0_HTTP_Handler(srv))
@@ -86,6 +94,44 @@ func RegisterAuthHTTPServer(s *http.Server, srv AuthHTTPServer) {
 	r.POST("/usercenter/client/v1/register/password", _Auth_PasswordRegister0_HTTP_Handler(srv))
 	r.POST("/usercenter/client/v1/bind/email", _Auth_EmailBind0_HTTP_Handler(srv))
 	r.POST("/usercenter/client/v1/bind/password", _Auth_PasswordBind0_HTTP_Handler(srv))
+}
+
+func _Auth_RefreshToken0_HTTP_Handler(srv AuthHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in RefreshTokenRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAuthRefreshToken)
+		h := ctx.Middleware(func(ctx context.Context, req any) (any, error) {
+			return srv.RefreshToken(ctx, req.(*RefreshTokenRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*RefreshTokenReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Auth_Logout0_HTTP_Handler(srv AuthHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in LogoutRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationAuthLogout)
+		h := ctx.Middleware(func(ctx context.Context, req any) (any, error) {
+			return srv.Logout(ctx, req.(*LogoutRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*LogoutReply)
+		return ctx.Result(200, reply)
+	}
 }
 
 func _Auth_Auth0_HTTP_Handler(srv AuthHTTPServer) func(ctx http.Context) error {
@@ -417,10 +463,12 @@ type AuthHTTPClient interface {
 	GenAuthCaptcha(ctx context.Context, req *GenAuthCaptchaRequest, opts ...http.CallOption) (rsp *GenAuthCaptchaReply, err error)
 	ListAuth(ctx context.Context, req *ListAuthRequest, opts ...http.CallOption) (rsp *ListAuthReply, err error)
 	ListOAuth(ctx context.Context, req *ListOAuthRequest, opts ...http.CallOption) (rsp *ListOAuthReply, err error)
+	Logout(ctx context.Context, req *LogoutRequest, opts ...http.CallOption) (rsp *LogoutReply, err error)
 	OAuthLogin(ctx context.Context, req *OAuthLoginRequest, opts ...http.CallOption) (rsp *OAuthLoginReply, err error)
 	PasswordBind(ctx context.Context, req *PasswordBindRequest, opts ...http.CallOption) (rsp *PasswordBindReply, err error)
 	PasswordLogin(ctx context.Context, req *PasswordLoginRequest, opts ...http.CallOption) (rsp *PasswordLoginReply, err error)
 	PasswordRegister(ctx context.Context, req *PasswordRegisterRequest, opts ...http.CallOption) (rsp *PasswordRegisterReply, err error)
+	RefreshToken(ctx context.Context, req *RefreshTokenRequest, opts ...http.CallOption) (rsp *RefreshTokenReply, err error)
 	UpdateAuthStatus(ctx context.Context, req *UpdateAuthStatusRequest, opts ...http.CallOption) (rsp *UpdateAuthStatusReply, err error)
 }
 
@@ -562,6 +610,19 @@ func (c *AuthHTTPClientImpl) ListOAuth(ctx context.Context, in *ListOAuthRequest
 	return &out, err
 }
 
+func (c *AuthHTTPClientImpl) Logout(ctx context.Context, in *LogoutRequest, opts ...http.CallOption) (*LogoutReply, error) {
+	var out LogoutReply
+	pattern := "/usercenter/client/v1/logout"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationAuthLogout))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
 func (c *AuthHTTPClientImpl) OAuthLogin(ctx context.Context, in *OAuthLoginRequest, opts ...http.CallOption) (*OAuthLoginReply, error) {
 	var out OAuthLoginReply
 	pattern := "/usercenter/client/v1/login/oauth"
@@ -608,6 +669,19 @@ func (c *AuthHTTPClientImpl) PasswordRegister(ctx context.Context, in *PasswordR
 	opts = append(opts, http.Operation(OperationAuthPasswordRegister))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *AuthHTTPClientImpl) RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...http.CallOption) (*RefreshTokenReply, error) {
+	var out RefreshTokenReply
+	pattern := "/usercenter/client/v1/token/refresh"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationAuthRefreshToken))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, nil, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

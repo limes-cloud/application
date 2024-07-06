@@ -20,6 +20,8 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
+	Auth_RefreshToken_FullMethodName     = "/usercenter.api.usercenter.auth.v1.Auth/RefreshToken"
+	Auth_Logout_FullMethodName           = "/usercenter.api.usercenter.auth.v1.Auth/Logout"
 	Auth_Auth_FullMethodName             = "/usercenter.api.usercenter.auth.v1.Auth/Auth"
 	Auth_ListAuth_FullMethodName         = "/usercenter.api.usercenter.auth.v1.Auth/ListAuth"
 	Auth_CreateAuth_FullMethodName       = "/usercenter.api.usercenter.auth.v1.Auth/CreateAuth"
@@ -41,6 +43,10 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AuthClient interface {
+	// 刷新token时长
+	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenReply, error)
+	// 退出登陆
+	Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutReply, error)
 	// 解析token信息
 	Auth(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AuthReply, error)
 	// ListAuth 获取应用授权信息列表
@@ -63,13 +69,13 @@ type AuthClient interface {
 	EmailLogin(ctx context.Context, in *EmailLoginRequest, opts ...grpc.CallOption) (*EmailLoginReply, error)
 	// PasswordLogin 密码登陆
 	PasswordLogin(ctx context.Context, in *PasswordLoginRequest, opts ...grpc.CallOption) (*PasswordLoginReply, error)
-	// EmailLogin 邮箱注册
+	// EmailRegister 邮箱注册
 	EmailRegister(ctx context.Context, in *EmailRegisterRequest, opts ...grpc.CallOption) (*EmailRegisterReply, error)
-	// PasswordLogin 密码注册
+	// PasswordRegister 密码注册
 	PasswordRegister(ctx context.Context, in *PasswordRegisterRequest, opts ...grpc.CallOption) (*PasswordRegisterReply, error)
-	// EmailLogin 邮箱注册
+	// EmailBind 邮箱绑定
 	EmailBind(ctx context.Context, in *EmailBindRequest, opts ...grpc.CallOption) (*EmailBindReply, error)
-	// PasswordLogin 密码注册
+	// PasswordBind 密码绑定
 	PasswordBind(ctx context.Context, in *PasswordBindRequest, opts ...grpc.CallOption) (*PasswordBindReply, error)
 }
 
@@ -79,6 +85,24 @@ type authClient struct {
 
 func NewAuthClient(cc grpc.ClientConnInterface) AuthClient {
 	return &authClient{cc}
+}
+
+func (c *authClient) RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenReply, error) {
+	out := new(RefreshTokenReply)
+	err := c.cc.Invoke(ctx, Auth_RefreshToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authClient) Logout(ctx context.Context, in *LogoutRequest, opts ...grpc.CallOption) (*LogoutReply, error) {
+	out := new(LogoutReply)
+	err := c.cc.Invoke(ctx, Auth_Logout_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *authClient) Auth(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*AuthReply, error) {
@@ -220,6 +244,10 @@ func (c *authClient) PasswordBind(ctx context.Context, in *PasswordBindRequest, 
 // All implementations must embed UnimplementedAuthServer
 // for forward compatibility
 type AuthServer interface {
+	// 刷新token时长
+	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenReply, error)
+	// 退出登陆
+	Logout(context.Context, *LogoutRequest) (*LogoutReply, error)
 	// 解析token信息
 	Auth(context.Context, *emptypb.Empty) (*AuthReply, error)
 	// ListAuth 获取应用授权信息列表
@@ -242,13 +270,13 @@ type AuthServer interface {
 	EmailLogin(context.Context, *EmailLoginRequest) (*EmailLoginReply, error)
 	// PasswordLogin 密码登陆
 	PasswordLogin(context.Context, *PasswordLoginRequest) (*PasswordLoginReply, error)
-	// EmailLogin 邮箱注册
+	// EmailRegister 邮箱注册
 	EmailRegister(context.Context, *EmailRegisterRequest) (*EmailRegisterReply, error)
-	// PasswordLogin 密码注册
+	// PasswordRegister 密码注册
 	PasswordRegister(context.Context, *PasswordRegisterRequest) (*PasswordRegisterReply, error)
-	// EmailLogin 邮箱注册
+	// EmailBind 邮箱绑定
 	EmailBind(context.Context, *EmailBindRequest) (*EmailBindReply, error)
-	// PasswordLogin 密码注册
+	// PasswordBind 密码绑定
 	PasswordBind(context.Context, *PasswordBindRequest) (*PasswordBindReply, error)
 	mustEmbedUnimplementedAuthServer()
 }
@@ -257,6 +285,12 @@ type AuthServer interface {
 type UnimplementedAuthServer struct {
 }
 
+func (UnimplementedAuthServer) RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
+}
+func (UnimplementedAuthServer) Logout(context.Context, *LogoutRequest) (*LogoutReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Logout not implemented")
+}
 func (UnimplementedAuthServer) Auth(context.Context, *emptypb.Empty) (*AuthReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Auth not implemented")
 }
@@ -313,6 +347,42 @@ type UnsafeAuthServer interface {
 
 func RegisterAuthServer(s grpc.ServiceRegistrar, srv AuthServer) {
 	s.RegisterService(&Auth_ServiceDesc, srv)
+}
+
+func _Auth_RefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RefreshTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServer).RefreshToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Auth_RefreshToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServer).RefreshToken(ctx, req.(*RefreshTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Auth_Logout_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LogoutRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthServer).Logout(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Auth_Logout_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthServer).Logout(ctx, req.(*LogoutRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Auth_Auth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -592,6 +662,14 @@ var Auth_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "usercenter.api.usercenter.auth.v1.Auth",
 	HandlerType: (*AuthServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "RefreshToken",
+			Handler:    _Auth_RefreshToken_Handler,
+		},
+		{
+			MethodName: "Logout",
+			Handler:    _Auth_Logout_Handler,
+		},
 		{
 			MethodName: "Auth",
 			Handler:    _Auth_Auth_Handler,

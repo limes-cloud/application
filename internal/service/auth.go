@@ -276,3 +276,23 @@ func (s *AuthService) PasswordBind(c context.Context, req *pb.PasswordBindReques
 		Expire: resp.Expire,
 	}, nil
 }
+
+func (s *AuthService) RefreshToken(ctx context.Context, _ *pb.RefreshTokenRequest) (*pb.RefreshTokenReply, error) {
+	resp, err := s.uc.RefreshToken(kratosx.MustContext(ctx))
+	if err != nil {
+		return nil, err
+	}
+	return &pb.RefreshTokenReply{
+		Token:  resp.Token,
+		Expire: resp.Expire,
+	}, nil
+}
+
+func (s *AuthService) Logout(ctx context.Context, _ *pb.LogoutRequest) (*pb.LogoutReply, error) {
+	err := s.uc.Logout(kratosx.MustContext(ctx))
+	if err != nil {
+		return nil, err
+	}
+
+	return &pb.LogoutReply{}, nil
+}

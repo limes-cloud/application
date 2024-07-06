@@ -209,3 +209,14 @@ message PasswordBindReply{
   string token = 1;
   uint32 expire = 2;
 }
+
+message RefreshTokenRequest{}
+
+message RefreshTokenReply{
+  string token = 1;
+  uint32 expire = 2;
+}
+
+message LogoutRequest{}
+
+message LogoutReply{}

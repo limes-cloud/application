@@ -253,7 +253,7 @@ paths:
         post:
             tags:
                 - Auth
-            description: EmailLogin 邮箱注册
+            description: EmailBind 邮箱绑定
             operationId: Auth_EmailBind
             requestBody:
                 content:
@@ -278,7 +278,7 @@ paths:
         post:
             tags:
                 - Auth
-            description: PasswordLogin 密码注册
+            description: PasswordBind 密码绑定
             operationId: Auth_PasswordBind
             requestBody:
                 content:
@@ -374,11 +374,30 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/Status'
+    /usercenter/client/v1/logout:
+        post:
+            tags:
+                - Auth
+            description: 退出登陆
+            operationId: Auth_Logout
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/LogoutReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
     /usercenter/client/v1/register/email:
         post:
             tags:
                 - Auth
-            description: EmailLogin 邮箱注册
+            description: EmailRegister 邮箱注册
             operationId: Auth_EmailRegister
             requestBody:
                 content:
@@ -403,7 +422,7 @@ paths:
         post:
             tags:
                 - Auth
-            description: PasswordLogin 密码注册
+            description: PasswordRegister 密码注册
             operationId: Auth_PasswordRegister
             requestBody:
                 content:
@@ -418,6 +437,25 @@ paths:
                         application/json:
                             schema:
                                 $ref: '#/components/schemas/PasswordRegisterReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /usercenter/client/v1/token/refresh:
+        post:
+            tags:
+                - Auth
+            description: 刷新token时长
+            operationId: Auth_RefreshToken
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/RefreshTokenReply'
                 default:
                     description: Default error response
                     content:
@@ -627,6 +665,9 @@ components:
                     format: uint32
                 channel:
                     $ref: '#/components/schemas/ListOAuthReply_Channel'
+        LogoutReply:
+            type: object
+            properties: {}
         OAuthLoginReply:
             type: object
             properties:
@@ -715,6 +756,14 @@ components:
                     type: string
                 oAuthUid:
                     type: string
+        RefreshTokenReply:
+            type: object
+            properties:
+                token:
+                    type: string
+                expire:
+                    type: integer
+                    format: uint32
         Status:
             type: object
             properties:

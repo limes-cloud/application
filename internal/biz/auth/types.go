@@ -59,11 +59,6 @@ type EmailLoginRequest struct {
 	App       string `json:"app"`
 }
 
-type EmailLoginReply struct {
-	Token  string `json:"token"`
-	Expire uint32 `json:"expire"`
-}
-
 type PasswordLoginRequest struct {
 	Username  string `json:"username"`
 	Password  string `json:"password"`
@@ -85,11 +80,6 @@ type EmailRegisterRequest struct {
 	OAuthUid  *string `json:"oAuthUid"`
 }
 
-type EmailRegisterReply struct {
-	Token  string `json:"token"`
-	Expire uint32 `json:"expire"`
-}
-
 type PasswordRegisterRequest struct {
 	Username  string  `json:"username"`
 	Password  string  `json:"password"`
@@ -99,22 +89,12 @@ type PasswordRegisterRequest struct {
 	OAuthUid  *string `json:"oAuthUid"`
 }
 
-type PasswordRegisterReply struct {
-	Token  string `json:"token"`
-	Expire uint32 `json:"expire"`
-}
-
 type EmailBindRequest struct {
 	Email     string `json:"email"`
 	Captcha   string `json:"captcha"`
 	CaptchaId string `json:"captchaId"`
 	App       string `json:"app"`
 	OAuthUid  string `json:"oAuthUid"`
-}
-
-type EmailBindReply struct {
-	Token  string `json:"token"`
-	Expire uint32 `json:"expire"`
 }
 
 type PasswordBindRequest struct {
@@ -126,7 +106,7 @@ type PasswordBindRequest struct {
 	OAuthUid  string `json:"oAuthUid"`
 }
 
-type PasswordBindReply struct {
+type TokenInfo struct {
 	Token  string `json:"token"`
 	Expire uint32 `json:"expire"`
 }
