@@ -131,6 +131,21 @@ func (r userRepo) ListUser(ctx kratosx.Context, req *biz.ListUserRequest) ([]*bi
 	if req.AppId != nil {
 		db = db.InnerJoins("Auths", ctx.DB().Where("Auths.app_id=?", *req.AppId))
 	}
+	if req.App != nil {
+		appId := 0
+		if err := ctx.DB().Model(model.App{}).
+			Select("id").Where("keyword=?", *req.App).
+			Scan(&appId).Error; err != nil {
+			return nil, 0, err
+		}
+		db = db.InnerJoins("Auths", ctx.DB().Where("Auths.app_id=?", *req.AppId))
+	}
+	if req.InIds != nil {
+		db = db.Where("id in ?", req.InIds)
+	}
+	if req.NotInIds != nil {
+		db = db.Where("id not in ?", req.NotInIds)
+	}
 
 	if err := db.Count(&total).Error; err != nil {
 		return nil, 0, err

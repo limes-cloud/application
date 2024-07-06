@@ -72,6 +72,9 @@ message ListUserRequest {
   optional string from = 11;
   repeated uint32 createdAts = 12;
   optional uint32 appId = 13;
+  optional string app = 14;
+  repeated uint32 inIds = 15;
+  repeated uint32 notInIds = 16;
 }
 
 message ListUserReply {

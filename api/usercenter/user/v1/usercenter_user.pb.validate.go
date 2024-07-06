@@ -861,6 +861,10 @@ func (m *ListUserRequest) validate(all bool) error {
 		// no validation rules for AppId
 	}
 
+	if m.App != nil {
+		// no validation rules for App
+	}
+
 	if len(errors) > 0 {
 		return ListUserRequestMultiError(errors)
 	}
