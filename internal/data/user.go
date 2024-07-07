@@ -138,13 +138,13 @@ func (r userRepo) ListUser(ctx kratosx.Context, req *biz.ListUserRequest) ([]*bi
 			Scan(&appId).Error; err != nil {
 			return nil, 0, err
 		}
-		db = db.InnerJoins("Auths", ctx.DB().Where("Auths.app_id=?", *req.AppId))
+		db = db.InnerJoins("Auths", ctx.DB().Where("Auths.app_id=?", appId))
 	}
 	if req.InIds != nil {
-		db = db.Where("id in ?", req.InIds)
+		db = db.Where("user.id in ?", req.InIds)
 	}
 	if req.NotInIds != nil {
-		db = db.Where("id not in ?", req.NotInIds)
+		db = db.Where("user.id not in ?", req.NotInIds)
 	}
 
 	if err := db.Count(&total).Error; err != nil {
@@ -153,13 +153,13 @@ func (r userRepo) ListUser(ctx kratosx.Context, req *biz.ListUserRequest) ([]*bi
 	db = db.Offset(int((req.Page - 1) * req.PageSize)).Limit(int(req.PageSize))
 
 	if req.OrderBy == nil || *req.OrderBy == "" {
-		req.OrderBy = proto.String("id")
+		req.OrderBy = proto.String("user.id")
 	}
 	if req.Order == nil || *req.Order == "" {
 		req.Order = proto.String("asc")
 	}
 	db = db.Order(fmt.Sprintf("%s %s", *req.OrderBy, *req.Order))
-	if *req.OrderBy != "id" {
+	if *req.OrderBy != "user.id" {
 		db = db.Order("id asc")
 	}
 
