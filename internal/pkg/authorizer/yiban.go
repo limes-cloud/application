@@ -3,7 +3,6 @@ package authorizer
 import (
 	"errors"
 	"strconv"
-	"time"
 
 	"github.com/forgoer/openssl"
 	json "github.com/json-iterator/go"
@@ -64,7 +63,7 @@ func (y yb) GetAccessToken(ctx kratosx.Context, req GetAccessTokenRequest) (*Get
 
 	return &GetAccessTokenReply{
 		Token:  res.VisitOauth.AccessToken,
-		Expire: time.Duration(y.toInt64(res.VisitOauth.TokenExpires)),
+		Expire: y.toInt64(res.VisitOauth.TokenExpires),
 	}, nil
 }
 

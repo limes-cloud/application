@@ -37,7 +37,7 @@ type GetAccessTokenRequest struct {
 
 type GetAccessTokenReply struct {
 	Token  string
-	Expire time.Duration
+	Expire int64
 }
 
 type Interface interface {
@@ -104,7 +104,7 @@ func (c *authorizer) GetToken(ctx kratosx.Context) (*GetAccessTokenReply, error)
 			return err
 		}
 		resStr, _ := json.MarshalToString(res)
-		ctx.Redis().Set(ctx, key, resStr, res.Expire-10*time.Second)
+		ctx.Redis().Set(ctx, key, resStr, time.Duration(res.Expire-time.Now().Unix()-10)*time.Second)
 		reply = res
 		return nil
 	})

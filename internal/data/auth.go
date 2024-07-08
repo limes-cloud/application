@@ -100,7 +100,18 @@ func (r authRepo) CreateAuth(ctx kratosx.Context, req *biz.Auth) (uint32, error)
 
 // UpdateAuth 更新数据
 func (r authRepo) UpdateAuth(ctx kratosx.Context, req *biz.Auth) error {
-	return ctx.DB().Where("user_id=?", req.UserId).Where("app_id=?", req.AppId).Updates(r.ToAuthModel(req)).Error
+	var count int64
+	if ctx.DB().
+		Model(model.Auth{}).
+		Where("user_id=?", req.UserId).
+		Where("app_id=?", req.AppId).
+		Count(&count); count == 0 {
+		req.Status = proto.Bool(true)
+		return ctx.DB().Create(r.ToAuthModel(req)).Error
+	}
+	return ctx.DB().Where("user_id=?", req.UserId).
+		Where("app_id=?", req.AppId).
+		Updates(r.ToAuthModel(req)).Error
 }
 
 // UpdateAuthStatus 更新数据状态
@@ -216,7 +227,18 @@ func (r authRepo) GetOAuthByUid(ctx kratosx.Context, uid string) (*biz.OAuth, er
 
 // UpdateOAuth 更新数据
 func (r authRepo) UpdateOAuth(ctx kratosx.Context, req *biz.OAuth) error {
-	return ctx.DB().Where("user_id=?", req.UserId).Where("channel_id=?", req.ChannelId).Updates(r.ToOAuthModel(req)).Error
+	var count int64
+	if ctx.DB().
+		Model(model.OAuth{}).
+		Where("user_id=?", req.UserId).
+		Where("channel_id=?", req.ChannelId).
+		Count(&count); count == 0 {
+		return ctx.DB().Create(r.ToOAuthModel(req)).Error
+	}
+	return ctx.DB().
+		Where("user_id=?", req.UserId).
+		Where("channel_id=?", req.ChannelId).
+		Updates(r.ToOAuthModel(req)).Error
 }
 
 // DeleteOAuth 删除数据
@@ -252,6 +274,7 @@ func (r authRepo) HasAppScope(ctx kratosx.Context, aid uint32, uid uint32) error
 		if app.AllowRegistry == nil || !*app.AllowRegistry {
 			return errors.New("无应用权限")
 		}
+		return nil
 	}
 
 	if auth.Status == nil || !*auth.Status {

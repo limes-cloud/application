@@ -40,7 +40,7 @@ func (q qq) GetAccessToken(ctx kratosx.Context, req GetAccessTokenRequest) (*Get
 
 	return &GetAccessTokenReply{
 		Token:  data.AccessToken,
-		Expire: time.Duration(time.Now().Unix() + int64(data.ExpiresIn)),
+		Expire: time.Now().Unix() + int64(data.ExpiresIn),
 	}, nil
 }
 

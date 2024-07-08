@@ -174,7 +174,7 @@ func (u *UseCase) OAuthLogin(ctx kratosx.Context, req *OAuthLoginRequest) (*OAut
 		id, err := u.repo.CreateOAuth(ctx, &OAuth{
 			ChannelId: channel.Id,
 			Token:     ti.Token,
-			ExpiredAt: int64(ti.Expire.Seconds()),
+			ExpiredAt: ti.Expire,
 			LoggedAt:  time.Now().Unix(),
 			AuthId:    ai.AuthId,
 			UnionId:   ai.UnionId,
@@ -205,7 +205,7 @@ func (u *UseCase) OAuthLogin(ctx kratosx.Context, req *OAuthLoginRequest) (*OAut
 			UserId:    &user.Id,
 			ChannelId: channel.Id,
 			Token:     ti.Token,
-			ExpiredAt: int64(ti.Expire.Seconds()),
+			ExpiredAt: ti.Expire,
 			LoggedAt:  time.Now().Unix(),
 			AuthId:    ai.AuthId,
 			UnionId:   ai.UnionId,
