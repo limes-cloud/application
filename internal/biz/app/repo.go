@@ -21,7 +21,7 @@ type Repo interface {
 	UpdateAppStatus(ctx kratosx.Context, req *UpdateAppStatusRequest) error
 
 	// DeleteApp 删除应用信息
-	DeleteApp(ctx kratosx.Context, ids []uint32) (uint32, error)
+	DeleteApp(ctx kratosx.Context, id uint32) error
 
 	// GetAppByKeyword 获取指定的应用信息
 	GetAppByKeyword(ctx kratosx.Context, keyword string) (*App, error)

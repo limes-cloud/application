@@ -790,3 +790,43 @@ func ExistFeedbackError(args ...any) *errors.Error {
 		return errors.New(500, ErrorReason_ExistFeedbackError.String(), "已存在重复的反馈内容:"+msg)
 	}
 }
+
+func IsManagerServerError(err error) bool {
+	if err == nil {
+		return false
+	}
+	e := errors.FromError(err)
+	return e.Reason == ErrorReason_ManagerServerError.String() && e.Code == 500
+}
+
+func ManagerServerError(args ...any) *errors.Error {
+	switch len(args) {
+	case 0:
+		return errors.New(500, ErrorReason_ManagerServerError.String(), "管理中心服务异常")
+	case 1:
+		return errors.New(500, ErrorReason_ManagerServerError.String(), "管理中心服务异常:"+fmt.Sprint(args[0]))
+	default:
+		msg := fmt.Sprintf(fmt.Sprint(args[0]), args[1:]...)
+		return errors.New(500, ErrorReason_ManagerServerError.String(), "管理中心服务异常:"+msg)
+	}
+}
+
+func IsNotPermissionError(err error) bool {
+	if err == nil {
+		return false
+	}
+	e := errors.FromError(err)
+	return e.Reason == ErrorReason_NotPermissionError.String() && e.Code == 500
+}
+
+func NotPermissionError(args ...any) *errors.Error {
+	switch len(args) {
+	case 0:
+		return errors.New(500, ErrorReason_NotPermissionError.String(), "无资源权限")
+	case 1:
+		return errors.New(500, ErrorReason_NotPermissionError.String(), "无资源权限:"+fmt.Sprint(args[0]))
+	default:
+		msg := fmt.Sprintf(fmt.Sprint(args[0]), args[1:]...)
+		return errors.New(500, ErrorReason_NotPermissionError.String(), "无资源权限:"+msg)
+	}
+}

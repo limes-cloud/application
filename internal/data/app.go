@@ -163,7 +163,6 @@ func (r appRepo) UpdateAppStatus(ctx kratosx.Context, req *biz.UpdateAppStatusRe
 }
 
 // DeleteApp 删除数据
-func (r appRepo) DeleteApp(ctx kratosx.Context, ids []uint32) (uint32, error) {
-	db := ctx.DB().Where("id in ?", ids).Delete(&model.App{})
-	return uint32(db.RowsAffected), db.Error
+func (r appRepo) DeleteApp(ctx kratosx.Context, id uint32) error {
+	return ctx.DB().Where("id = ?", id).Delete(&model.App{}).Error
 }

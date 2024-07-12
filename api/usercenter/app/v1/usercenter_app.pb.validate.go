@@ -1575,36 +1575,15 @@ func (m *DeleteAppRequest) validate(all bool) error {
 
 	var errors []error
 
-	if l := len(m.GetIds()); l < 1 || l > 50 {
+	if m.GetId() <= 0 {
 		err := DeleteAppRequestValidationError{
-			field:  "Ids",
-			reason: "value must contain between 1 and 50 items, inclusive",
+			field:  "Id",
+			reason: "value must be greater than 0",
 		}
 		if !all {
 			return err
 		}
 		errors = append(errors, err)
-	}
-
-	_DeleteAppRequest_Ids_Unique := make(map[uint32]struct{}, len(m.GetIds()))
-
-	for idx, item := range m.GetIds() {
-		_, _ = idx, item
-
-		if _, exists := _DeleteAppRequest_Ids_Unique[item]; exists {
-			err := DeleteAppRequestValidationError{
-				field:  fmt.Sprintf("Ids[%v]", idx),
-				reason: "repeated value must contain unique items",
-			}
-			if !all {
-				return err
-			}
-			errors = append(errors, err)
-		} else {
-			_DeleteAppRequest_Ids_Unique[item] = struct{}{}
-		}
-
-		// no validation rules for Ids[idx]
 	}
 
 	if len(errors) > 0 {
@@ -1706,8 +1685,6 @@ func (m *DeleteAppReply) validate(all bool) error {
 	}
 
 	var errors []error
-
-	// no validation rules for Total
 
 	if len(errors) > 0 {
 		return DeleteAppReplyMultiError(errors)

@@ -159,9 +159,8 @@ func (s *AppService) UpdateAppStatus(c context.Context, req *pb.UpdateAppStatusR
 
 // DeleteApp 删除应用信息
 func (s *AppService) DeleteApp(c context.Context, req *pb.DeleteAppRequest) (*pb.DeleteAppReply, error) {
-	total, err := s.uc.DeleteApp(kratosx.MustContext(c), req.Ids)
-	if err != nil {
+	if err := s.uc.DeleteApp(kratosx.MustContext(c), req.Id); err != nil {
 		return nil, err
 	}
-	return &pb.DeleteAppReply{Total: total}, nil
+	return &pb.DeleteAppReply{}, nil
 }
