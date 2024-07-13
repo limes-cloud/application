@@ -1,8 +1,9 @@
 package feedback
 
 type FeedbackCategory struct {
-	Id   uint32 `json:"id"`
-	Name string `json:"name"`
+	Id        uint32 `json:"id"`
+	Name      string `json:"name"`
+	CreatedAt int64  `json:"createdAt"`
 }
 
 type App struct {
