@@ -1,6 +1,9 @@
 package permission
 
 import (
+	"strings"
+
+	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/limes-cloud/kratosx"
 	"github.com/limes-cloud/kratosx/pkg/valx"
 	"github.com/limes-cloud/manager/api/manager/auth"
@@ -14,6 +17,14 @@ const (
 )
 
 func GetPermission(ctx kratosx.Context, keyword string) (bool, []uint32, error) {
+	request, is := http.RequestFromServerContext(ctx)
+	if !is {
+		return true, nil, nil
+	}
+	if strings.Contains(request.RequestURI, "/usercenter/client/") {
+		return true, nil, nil
+	}
+
 	info, err := auth.GetAuthInfo(ctx)
 	if err != nil {
 		return false, nil, err
