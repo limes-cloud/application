@@ -8,8 +8,10 @@ import (
 	"github.com/google/uuid"
 	json "github.com/json-iterator/go"
 	"github.com/limes-cloud/kratosx"
+	"github.com/limes-cloud/kratosx/library/db/gormtranserror"
 	"github.com/limes-cloud/kratosx/pkg/crypto"
 	"google.golang.org/protobuf/proto"
+	"gorm.io/gorm"
 
 	"github.com/limes-cloud/usercenter/api/usercenter/auth"
 	"github.com/limes-cloud/usercenter/api/usercenter/errors"
@@ -398,6 +400,9 @@ func (u *UseCase) EmailRegister(ctx kratosx.Context, req *EmailRegisterRequest) 
 
 		if req.OAuthUid != nil {
 			if err := u.repo.BindOAuthByUid(ctx, user.Id, *req.OAuthUid); err != nil {
+				if gormtranserror.Is(err, gorm.ErrDuplicatedKey) {
+					return errors.AlreadyBindError()
+				}
 				return errors.DatabaseError(err.Error())
 			}
 		}
@@ -489,6 +494,9 @@ func (u *UseCase) PasswordRegister(ctx kratosx.Context, req *PasswordRegisterReq
 
 		if req.OAuthUid != nil {
 			if err := u.repo.BindOAuthByUid(ctx, user.Id, *req.OAuthUid); err != nil {
+				if gormtranserror.Is(err, gorm.ErrDuplicatedKey) {
+					return errors.AlreadyBindError()
+				}
 				return errors.DatabaseError(err.Error())
 			}
 		}
@@ -527,6 +535,9 @@ func (u *UseCase) EmailBind(ctx kratosx.Context, req *EmailBindRequest) (*TokenI
 		}
 
 		if err := u.repo.BindOAuthByUid(ctx, user.Id, req.OAuthUid); err != nil {
+			if gormtranserror.Is(err, gorm.ErrDuplicatedKey) {
+				return errors.AlreadyBindError()
+			}
 			return errors.DatabaseError(err.Error())
 		}
 
@@ -549,9 +560,9 @@ func (u *UseCase) PasswordBind(ctx kratosx.Context, req *PasswordBindRequest) (*
 		return nil, errors.BindError(err.Error())
 	}
 
-	if err := u.verifyCaptcha(ctx, BIND_IMAGE_CAPTCHA, req.CaptchaId, req.Captcha, ""); err != nil {
-		return nil, err
-	}
+	// if err := u.verifyCaptcha(ctx, BIND_IMAGE_CAPTCHA, req.CaptchaId, req.Captcha, ""); err != nil {
+	//	return nil, err
+	// }
 
 	// 获取用户信息
 	user, err := u.repo.GetUserByUsername(ctx, req.Username)
@@ -594,6 +605,9 @@ func (u *UseCase) PasswordBind(ctx kratosx.Context, req *PasswordBindRequest) (*
 		}
 
 		if err := u.repo.BindOAuthByUid(ctx, user.Id, req.OAuthUid); err != nil {
+			if gormtranserror.Is(err, gorm.ErrDuplicatedKey) {
+				return errors.AlreadyBindError()
+			}
 			return errors.DatabaseError(err.Error())
 		}
 		return nil

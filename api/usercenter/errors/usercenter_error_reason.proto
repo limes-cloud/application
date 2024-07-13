@@ -50,4 +50,5 @@ enum ErrorReason {
   ExistFeedbackError = 38[(errors.message)="已存在重复的反馈内容"];
   ManagerServerError = 39[(errors.message)="管理中心服务异常"];
   NotPermissionError = 40[(errors.message)="无资源权限"];
+  AlreadyBindError = 41[(errors.message)="该账号已绑定过其他平台，不能重复绑定"];
 }

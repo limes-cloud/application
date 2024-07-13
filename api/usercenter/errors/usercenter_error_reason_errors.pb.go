@@ -830,3 +830,23 @@ func NotPermissionError(args ...any) *errors.Error {
 		return errors.New(500, ErrorReason_NotPermissionError.String(), "无资源权限:"+msg)
 	}
 }
+
+func IsAlreadyBindError(err error) bool {
+	if err == nil {
+		return false
+	}
+	e := errors.FromError(err)
+	return e.Reason == ErrorReason_AlreadyBindError.String() && e.Code == 500
+}
+
+func AlreadyBindError(args ...any) *errors.Error {
+	switch len(args) {
+	case 0:
+		return errors.New(500, ErrorReason_AlreadyBindError.String(), "该账号已绑定过其他平台，不能重复绑定")
+	case 1:
+		return errors.New(500, ErrorReason_AlreadyBindError.String(), "该账号已绑定过其他平台，不能重复绑定:"+fmt.Sprint(args[0]))
+	default:
+		msg := fmt.Sprintf(fmt.Sprint(args[0]), args[1:]...)
+		return errors.New(500, ErrorReason_AlreadyBindError.String(), "该账号已绑定过其他平台，不能重复绑定:"+msg)
+	}
+}
