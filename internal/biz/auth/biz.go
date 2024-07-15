@@ -255,6 +255,7 @@ func (u *UseCase) EmailLogin(ctx kratosx.Context, req *EmailLoginRequest) (*Toke
 		if err := u.repo.UpdateOAuth(ctx, &OAuth{
 			UserId:    &user.Id,
 			ChannelId: channel.Id,
+			AuthId:    req.Email,
 			ExpiredAt: int64(reply.Expire),
 			LoggedAt:  time.Now().Unix(),
 		}); err != nil {
@@ -327,6 +328,7 @@ func (u *UseCase) PasswordLogin(ctx kratosx.Context, req *PasswordLoginRequest) 
 		if err := u.repo.UpdateOAuth(ctx, &OAuth{
 			UserId:    &user.Id,
 			ChannelId: channel.Id,
+			AuthId:    req.Username,
 			ExpiredAt: int64(reply.Expire),
 			LoggedAt:  time.Now().Unix(),
 		}); err != nil {
