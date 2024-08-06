@@ -509,7 +509,7 @@ func (u *UseCase) PasswordRegister(ctx kratosx.Context, req *PasswordRegisterReq
 	return &reply, nil
 }
 
-// EmailBind 邮箱注册
+// EmailBind 邮箱绑定
 func (u *UseCase) EmailBind(ctx kratosx.Context, req *EmailBindRequest) (*TokenInfo, error) {
 	app, err := u.repo.GetApp(ctx, req.App)
 	if err != nil {

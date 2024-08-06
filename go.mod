@@ -11,7 +11,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/json-iterator/go v1.1.12
 	github.com/limes-cloud/configure v1.0.39
-	github.com/limes-cloud/kratosx v1.0.47
+	github.com/limes-cloud/kratosx v1.0.51
 	github.com/limes-cloud/manager v1.0.20
 	github.com/limes-cloud/resource v1.0.17
 	go.uber.org/automaxprocs v1.5.3

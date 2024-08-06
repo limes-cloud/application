@@ -1,16 +1,25 @@
+
 env: TEST
 server:
   http:
-    addr: 127.0.0.1:7004
+    host: 127.0.0.1
+    port: 7030
     timeout: 10s
     marshal:
       emitUnpopulated: true
       useProtoNames: true
   grpc:
-    addr: 127.0.0.1:8004
+    host: 127.0.0.1
+    port: 8030
     timeout: 10s
+client:
+  - server: Resource
+    type: direct
+    backends:
+      - target: 127.0.0.1:8020
 log:
   level: 0
+  caller: true
   output:
     - stdout
     - file
@@ -20,7 +29,6 @@ log:
     maxBackup: 5
     maxAge: 1
     compress: false
-
 database:
   system:
     enable: true #是否启用数据库
@@ -36,6 +44,9 @@ database:
     config:
       transformError:
         enable: true
+      initializer:
+        enable: true
+        path: deploy/data.sql
       maxLifetime: 2h #最大生存时间
       maxOpenConn: 20 #最大连接数量
       maxIdleConn: 10 #最大空闲数量
@@ -51,7 +62,7 @@ captcha:
   loginImage:
     type: image
     length: 6
-    expire: 30s
+    expire: 180s
     redis: cache
     height: 80
     width: 200
@@ -98,11 +109,6 @@ captcha:
     template: register
 loader:
   password: static/cert/password.pem
-client:
-  - server: Resource
-    type: direct
-    backends:
-      - target: 127.0.0.1:8003
 email:
   template:
     login:
@@ -125,11 +131,9 @@ email:
 jwt:
   redis: cache
   secret: limes-cloud-client-test
-  expire: 2h
-  renewal: 360s
-  whitelist:
-    "*:/usercenter/api/v1*": true #后端接口直接免
-    "*:/usercenter/client/v1/*": true #客户端接口直接豁免
+  expire: 60s
+  renewal: 600s
+  whitelist: {"*:/usercenter/api/*":true,"GET:/usercenter/client/v1/app":true,"POST:/usercenter/client/v1/auth":true,"POST:/usercenter/client/v1/auth/captcha":true,"POST:/usercenter/client/v1/bind/*":true,"POST:/usercenter/client/v1/login/*":true,"POST:/usercenter/client/v1/logout":true,"POST:/usercenter/client/v1/register/*":true,"POST:/usercenter/client/v1/token/refresh":true}
 business:
   defaultPasswordExpire: 10s
   defaultNickName: 用户-
