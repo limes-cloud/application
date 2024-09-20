@@ -131,9 +131,9 @@ email:
 jwt:
   redis: cache
   secret: limes-cloud-client-test
-  expire: 60s
+  expire: 2h
   renewal: 600s
-  whitelist: {"*:/usercenter/api/*":true,"GET:/usercenter/client/v1/app":true,"POST:/usercenter/client/v1/auth":true,"POST:/usercenter/client/v1/auth/captcha":true,"POST:/usercenter/client/v1/bind/*":true,"POST:/usercenter/client/v1/login/*":true,"POST:/usercenter/client/v1/logout":true,"POST:/usercenter/client/v1/register/*":true,"POST:/usercenter/client/v1/token/refresh":true}
+  whitelist: {"POST:/application/client/v1/bind/*":true,"GET:/application/client/v1/app":true,"POST:/application/client/v1/auth":true,"POST:/application/client/v1/token/refresh":true,"POST:/application/client/v1/login/*":true,"POST:/application/client/v1/logout":true,"POST:/application/client/v1/register/*":true,"POST:/application/client/v1/auth/captcha":true,"*:/application/api/*":true}
 business:
   defaultPasswordExpire: 10s
   defaultNickName: 用户-

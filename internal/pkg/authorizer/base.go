@@ -70,19 +70,19 @@ func New(config *Config) Interface {
 	}
 }
 
-func (ath authorizer) GetAuthorizers() map[string]Authorizer {
+func (ath *authorizer) GetAuthorizers() map[string]Authorizer {
 	return ins
 }
 
-func (c *authorizer) GetAuthorizer(platform string) Authorizer {
+func (ath *authorizer) GetAuthorizer(platform string) Authorizer {
 	return ins[platform]
 }
 
-func (c *authorizer) GetToken(ctx kratosx.Context) (*GetAccessTokenReply, error) {
+func (ath *authorizer) GetToken(ctx kratosx.Context) (*GetAccessTokenReply, error) {
 	var (
 		reply   *GetAccessTokenReply
-		key     = "auth:token:" + c.config.Platform
-		lockKey = "auth:token:" + c.config.Platform + ":lock"
+		key     = "auth:token:" + ath.config.Platform
+		lockKey = "auth:token:" + ath.config.Platform + ":lock"
 	)
 
 	lk := lock.New(ctx.Redis(), lockKey)
@@ -90,15 +90,15 @@ func (c *authorizer) GetToken(ctx kratosx.Context) (*GetAccessTokenReply, error)
 		err := ctx.Redis().Get(ctx, key).Scan(reply)
 		return err
 	}, func() error {
-		atr := c.GetAuthorizer(c.config.Platform)
+		atr := ath.GetAuthorizer(ath.config.Platform)
 		if atr == nil {
 			return errors.New("not exist channel authorizer")
 		}
 		res, err := atr.GetAccessToken(ctx, GetAccessTokenRequest{
-			Ak:    c.config.Ak,
-			Sk:    c.config.Sk,
-			Code:  c.config.Code,
-			Extra: c.config.Extra,
+			Ak:    ath.config.Ak,
+			Sk:    ath.config.Sk,
+			Code:  ath.config.Code,
+			Extra: ath.config.Extra,
 		})
 		if err != nil {
 			return err
@@ -112,16 +112,16 @@ func (c *authorizer) GetToken(ctx kratosx.Context) (*GetAccessTokenReply, error)
 	return reply, err
 }
 
-func (c *authorizer) GetAuthInfo(ctx kratosx.Context, token string) (*GetAuthInfoReply, error) {
-	atr := c.GetAuthorizer(c.config.Platform)
+func (ath *authorizer) GetAuthInfo(ctx kratosx.Context, token string) (*GetAuthInfoReply, error) {
+	atr := ath.GetAuthorizer(ath.config.Platform)
 	if atr == nil {
 		return nil, errors.New("not exist channel authorizer")
 	}
 	return atr.GetAuthInfo(ctx, GetAuthInfoRequest{
-		Ak:    c.config.Ak,
-		Sk:    c.config.Sk,
-		Code:  c.config.Code,
-		Extra: c.config.Extra,
+		Ak:    ath.config.Ak,
+		Sk:    ath.config.Sk,
+		Code:  ath.config.Code,
+		Extra: ath.config.Extra,
 		Token: token,
 	})
 }

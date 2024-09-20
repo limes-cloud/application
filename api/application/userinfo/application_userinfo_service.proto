@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package application.api.application.userinfo.v1;
+
+option go_package = "./v1;v1";
+option java_multiple_files = true;
+option java_package = "application.api.application.userinfo.v1";
+option java_outer_classname = "UserinfoV1";
+
+import "api/application/userinfo/application_userinfo.proto";
+import "google/api/annotations.proto";
+
+service Userinfo{
+
+  // ListUserinfo 获取用户扩展信息列表
+  rpc ListUserinfo (ListUserinfoRequest) returns (ListUserinfoReply) {
+    option (google.api.http) = {
+      get: "/application/api/v1/userinfoes",
+    };
+  }
+
+  // CreateUserinfo 创建用户扩展信息
+  rpc CreateUserinfo (CreateUserinfoRequest) returns (CreateUserinfoReply) {
+    option (google.api.http) = {
+      post: "/application/api/v1/userinfo",
+      body: "*"
+    };
+  }
+
+  // UpdateUserinfo 更新用户扩展信息
+  rpc UpdateUserinfo (UpdateUserinfoRequest) returns (UpdateUserinfoReply) {
+    option (google.api.http) = {
+      put: "/application/api/v1/userinfo",
+      body: "*"
+    };
+  }
+
+  // DeleteUserinfo 删除用户扩展信息
+  rpc DeleteUserinfo (DeleteUserinfoRequest) returns (DeleteUserinfoReply) {
+    option (google.api.http) = {
+      delete: "/application/api/v1/userinfo",
+    };
+  }
+
+}

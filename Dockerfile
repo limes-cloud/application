@@ -8,12 +8,12 @@ ADD go.sum .
 RUN go mod download
 WORKDIR /go/build
 ADD . .
-RUN GOOS=linux CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix cgo -o usercenter cmd/usercenter/main.go
+RUN GOOS=linux CGO_ENABLED=0 go build -ldflags="-s -w" -installsuffix cgo -o application cmd/application/main.go
 
 # 构建执行镜像
 FROM alpine
 WORKDIR /go/build
 COPY ./deploy/ /go/build/deploy/
 COPY ./static/ /go/build/static/
-COPY --from=build /go/build/usercenter /go/build/usercenter
-CMD ["./usercenter"]
+COPY --from=build /go/build/application /go/build/application
+CMD ["./application"]

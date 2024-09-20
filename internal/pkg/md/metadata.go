@@ -4,8 +4,8 @@ import (
 	"github.com/limes-cloud/kratosx"
 	"github.com/limes-cloud/kratosx/pkg/valx"
 
-	"github.com/limes-cloud/usercenter/api/usercenter/auth"
-	"github.com/limes-cloud/usercenter/api/usercenter/errors"
+	"github.com/limes-cloud/application/api/application/auth"
+	"github.com/limes-cloud/application/api/application/errors"
 )
 
 func New(in auth.Auth) map[string]any {

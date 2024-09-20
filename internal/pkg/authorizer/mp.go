@@ -24,8 +24,8 @@ func (w wx) GetAccessToken(ctx kratosx.Context, req GetAccessTokenRequest) (*Get
 		ExpiresIn   int    `json:"expires_in"`
 	}{}
 
-	response, err := ctx.Http().Option(func(request *resty.Request) *resty.Request {
-		return request.SetQueryParam("appid", req.Ak).
+	response, err := ctx.Http().Option(func(request *resty.Request) {
+		request.SetQueryParam("appid", req.Ak).
 			SetQueryParam("secret", req.Sk).
 			SetQueryParam("grant_type", "client_credential")
 	}).Post("https://api.weixin.qq.com/cgi-bin/token", nil)
@@ -48,8 +48,8 @@ func (w wx) GetAuthInfo(ctx kratosx.Context, req GetAuthInfoRequest) (*GetAuthIn
 		Openid  string `json:"openid"`
 		Unionid string `json:"unionid"`
 	}{}
-	response, err := ctx.Http().Option(func(request *resty.Request) *resty.Request {
-		return request.SetQueryParam("appid", req.Ak).
+	response, err := ctx.Http().Option(func(request *resty.Request) {
+		request.SetQueryParam("appid", req.Ak).
 			SetQueryParam("secret", req.Sk).
 			SetQueryParam("js_code", req.Code).
 			SetQueryParam("grant_type", "authorization_code")
