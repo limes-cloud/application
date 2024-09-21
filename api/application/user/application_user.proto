@@ -24,7 +24,7 @@ message GetCurrentUserReply{
 }
 
 message GetUserRequest {
-  optional uint32 id = 1[(validate.rules).uint32 = {gt: 0}];
+  optional uint32 id = 1[(validate.rules).uint32 = {gte: 1}];
   optional string phone = 2;
   optional string email = 3;
   optional string username = 4;
@@ -59,8 +59,8 @@ message UpdateCurrentUserReply {
 
 
 message ListUserRequest {
-  uint32 page = 1[(validate.rules).uint32 = {gt: 0}];
-  uint32 pageSize = 2[(validate.rules).uint32 = {gt: 0,lte:50}];
+  uint32 page = 1[(validate.rules).uint32 = {gte: 1}];
+  uint32 pageSize = 2[(validate.rules).uint32 = {gte: 1,lte:50}];
   optional string order = 3[(validate.rules).string = {in: ["asc","desc"]}];
   optional string orderBy = 4[(validate.rules).string = {in: ["id","created_at"]}];
   optional string phone = 5;
@@ -120,14 +120,15 @@ message ImportUserReply {
 }
 
 message ExportUserRequest {
-  optional string phone = 1;
-  optional string email = 2;
-  optional string username = 3;
-  optional string realName = 4;
-  optional string gender = 5;
-  optional bool status = 6;
-  optional string from = 7;
-  repeated uint32 createdAts = 8;
+  uint32 appId = 1[(validate.rules).uint32 = {gte: 1}];
+  optional string phone = 2;
+  optional string email = 3;
+  optional string username = 4;
+  optional string realName = 5;
+  optional string gender = 6;
+  optional bool status = 7;
+  optional string from = 8;
+  repeated uint32 createdAts = 9;
 }
 
 message ExportUserReply {
@@ -135,7 +136,7 @@ message ExportUserReply {
 }
 
 message UpdateUserRequest {
-  uint32 id = 1[(validate.rules).uint32 = {gt: 0}];
+  uint32 id = 1[(validate.rules).uint32 = {gte: 1}];
   optional string phone = 2;
   optional string email = 3;
   optional string username = 4;
@@ -151,7 +152,7 @@ message UpdateUserReply {
 }
 
 message UpdateUserStatusRequest {
-  uint32 id = 1[(validate.rules).uint32 = {gt: 0}];
+  uint32 id = 1[(validate.rules).uint32 = {gte: 1}];
   bool status = 2;
   optional string disableDesc = 3[(validate.rules).string = {min_len: 1}];
 }
@@ -168,7 +169,7 @@ message DeleteUserReply {
 }
 
 message GetTrashUserRequest {
-  uint32 id = 1[(validate.rules).uint32 = {gt: 0}];
+  uint32 id = 1[(validate.rules).uint32 = {gte: 1}];
 }
 
 message GetTrashUserReply {
@@ -192,8 +193,8 @@ message GetTrashUserReply {
 }
 
 message ListTrashUserRequest {
-  uint32 page = 1[(validate.rules).uint32 = {gt: 0}];
-  uint32 pageSize = 2[(validate.rules).uint32 = {gt: 0,lte:50}];
+  uint32 page = 1[(validate.rules).uint32 = {gte: 1}];
+  uint32 pageSize = 2[(validate.rules).uint32 = {gte: 1,lte:50}];
   optional string order = 3[(validate.rules).string = {in: ["asc","desc"]}];
   optional string orderBy = 4[(validate.rules).string = {in: ["id","created_at"]}];
   optional string phone = 5;
@@ -240,7 +241,7 @@ message DeleteTrashUserReply {
 }
 
 message RevertTrashUserRequest {
-  uint32 id = 1[(validate.rules).uint32 = {gt: 0}];
+  uint32 id = 1[(validate.rules).uint32 = {gte: 1}];
 }
 
 message RevertTrashUserReply {

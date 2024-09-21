@@ -42,6 +42,11 @@ func (r Auth) ListAuth(ctx kratosx.Context, req *types.ListAuthRequest) ([]*enti
 	db := ctx.DB().Model(entity.Auth{}).Select(fs).
 		Preload("App", "status=true").
 		Where("user_id = ?", req.UserId)
+
+	if req.AppIds != nil {
+		db = db.Where("app_id in ?", req.AppIds)
+	}
+
 	if err := db.Count(&total).Error; err != nil {
 		return nil, 0, err
 	}

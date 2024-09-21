@@ -44,6 +44,7 @@ type Auth struct {
 	app        repository.App
 	channel    repository.Channel
 	permission repository.Permission
+	file       repository.File
 }
 
 func NewAuth(
@@ -53,6 +54,7 @@ func NewAuth(
 	app repository.App,
 	channel repository.Channel,
 	permission repository.Permission,
+	file repository.File,
 ) *Auth {
 	return &Auth{
 		conf:       conf,
@@ -61,6 +63,7 @@ func NewAuth(
 		app:        app,
 		channel:    channel,
 		permission: permission,
+		file:       file,
 	}
 }
 
@@ -75,9 +78,24 @@ func (u *Auth) Auth(ctx kratosx.Context) (*auth.Auth, error) {
 
 // ListAuth 获取应用授权信息列表
 func (u *Auth) ListAuth(ctx kratosx.Context, req *types.ListAuthRequest) ([]*entity.Auth, uint32, error) {
+	all, scopes, err := u.permission.GetApp(ctx)
+	if err != nil {
+		ctx.Logger().Warnw("msg", "get app permission error", "err", err.Error())
+		return nil, 0, errors.SystemError()
+	}
+	if !all {
+		req.AppIds = scopes
+	}
+
 	list, total, err := u.repo.ListAuth(ctx, req)
 	if err != nil {
 		return nil, 0, errors.ListError(err.Error())
+	}
+	for _, item := range list {
+		if item.App == nil {
+			continue
+		}
+		item.App.Logo = u.file.GetFileURL(ctx, item.App.Logo)
 	}
 	return list, total, nil
 }
@@ -87,6 +105,7 @@ func (u *Auth) CreateAuth(ctx kratosx.Context, auth *entity.Auth) (uint32, error
 	auth.Status = proto.Bool(true)
 	id, err := u.repo.CreateAuth(ctx, auth)
 	if err != nil {
+		ctx.Logger().Warnw("msg", "create auth error", "err", err.Error())
 		return 0, errors.CreateError(err.Error())
 	}
 	return id, nil
@@ -94,7 +113,16 @@ func (u *Auth) CreateAuth(ctx kratosx.Context, auth *entity.Auth) (uint32, error
 
 // UpdateAuthStatus 更新应用授权信息状态
 func (u *Auth) UpdateAuthStatus(ctx kratosx.Context, req *types.UpdateAuthStatusRequest) error {
+	a, err := u.repo.GetAuth(ctx, req.Id)
+	if err != nil {
+		return errors.UpdateError(err.Error())
+	}
+	if !u.permission.HasApp(ctx, a.AppId) {
+		return errors.NotPermissionError()
+	}
+
 	if err := u.repo.UpdateAuthStatus(ctx, req); err != nil {
+		ctx.Logger().Warnw("msg", "update auth status error", "err", err.Error())
 		return errors.UpdateError(err.Error())
 	}
 	return nil
@@ -102,7 +130,12 @@ func (u *Auth) UpdateAuthStatus(ctx kratosx.Context, req *types.UpdateAuthStatus
 
 // DeleteAuth 删除应用授权信息
 func (u *Auth) DeleteAuth(ctx kratosx.Context, userId uint32, appId uint32) error {
+	if !u.permission.HasApp(ctx, appId) {
+		return errors.NotPermissionError()
+	}
+
 	if err := u.repo.DeleteAuth(ctx, userId, appId); err != nil {
+		ctx.Logger().Warnw("msg", "delete auth error", "err", err.Error())
 		return errors.DeleteError(err.Error())
 	}
 	return nil
@@ -135,7 +168,14 @@ func (u *Auth) GenAuthCaptcha(ctx kratosx.Context, req *types.GenAuthCaptchaRequ
 func (u *Auth) ListOAuth(ctx kratosx.Context, req *types.ListOAuthRequest) ([]*entity.OAuth, uint32, error) {
 	list, total, err := u.repo.ListOAuth(ctx, req)
 	if err != nil {
+		ctx.Logger().Warnw("msg", "list oauth error", "err", err.Error())
 		return nil, 0, errors.ListError(err.Error())
+	}
+	for _, item := range list {
+		if item.Channel == nil {
+			continue
+		}
+		item.Channel.Logo = u.file.GetFileURL(ctx, item.Channel.Logo)
 	}
 	return list, total, nil
 }
@@ -143,6 +183,7 @@ func (u *Auth) ListOAuth(ctx kratosx.Context, req *types.ListOAuthRequest) ([]*e
 // DeleteOAuth 删除应用授权信息
 func (u *Auth) DeleteOAuth(ctx kratosx.Context, userId uint32, channelId uint32) error {
 	if err := u.repo.DeleteOAuth(ctx, userId, channelId); err != nil {
+		ctx.Logger().Warnw("msg", "delete oauth error", "err", err.Error())
 		return errors.DeleteError(err.Error())
 	}
 	return nil
@@ -184,6 +225,7 @@ func (u *Auth) GenToken(ctx kratosx.Context, app *entity.App, user *entity.User)
 		Token:     token,
 		ExpiredAt: time.Now().Unix() + int64(ctx.Config().App().JWT.Expire.Seconds()),
 	}); err != nil {
+		ctx.Logger().Warnw("msg", "upsert auth error", "err", err.Error())
 		return "", errors.DatabaseError(err.Error())
 	}
 
@@ -608,9 +650,9 @@ func (u *Auth) PasswordBind(ctx kratosx.Context, req *types.PasswordBindRequest)
 		return nil, errors.BindError(err.Error())
 	}
 
-	// if err := u.verifyCaptcha(ctx, BIND_IMAGE_CAPTCHA, req.CaptchaId, req.Captcha, ""); err != nil {
-	//	return nil, err
-	// }
+	if err := u.verifyCaptcha(ctx, BIND_IMAGE_CAPTCHA, req.CaptchaId, req.Captcha, ""); err != nil {
+		return nil, err
+	}
 
 	// 获取用户信息
 	user, err := u.user.GetUserByUsername(ctx, req.Username)
@@ -649,6 +691,7 @@ func (u *Auth) PasswordBind(ctx kratosx.Context, req *types.PasswordBindRequest)
 	if err := ctx.Transaction(func(ctx kratosx.Context) error {
 		reply.Token, err = u.GenToken(ctx, app, user)
 		if err != nil {
+			ctx.Logger().Warnw("msg", "gen token error", "err", err.Error())
 			return err
 		}
 

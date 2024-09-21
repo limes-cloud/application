@@ -69,6 +69,9 @@ func (r App) ListApp(ctx kratosx.Context, req *types.ListAppRequest) ([]*entity.
 	if req.Status != nil {
 		db = db.Where("status = ?", *req.Status)
 	}
+	if req.Ids != nil {
+		db = db.Where("id in ?", req.Ids)
+	}
 
 	if err := db.Count(&total).Error; err != nil {
 		return nil, 0, err

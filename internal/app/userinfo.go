@@ -55,6 +55,9 @@ func (s *Userinfo) ListUserinfo(c context.Context, req *pb.ListUserinfoRequest) 
 	}
 	reply := pb.ListUserinfoReply{Total: total}
 	for _, item := range list {
+		if item.Field == nil {
+			continue
+		}
 		reply.List = append(reply.List, &pb.ListUserinfoReply_Userinfo{
 			Id:        item.Id,
 			UserId:    item.UserId,

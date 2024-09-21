@@ -7,10 +7,11 @@ require (
 	github.com/forgoer/openssl v1.6.0
 	github.com/go-kratos/kratos/v2 v2.7.3
 	github.com/go-resty/resty/v2 v2.12.0
+	github.com/golang/protobuf v1.5.4
 	github.com/google/uuid v1.6.0
 	github.com/json-iterator/go v1.1.12
 	github.com/limes-cloud/configure v1.0.39
-	github.com/limes-cloud/kratosx v1.0.54
+	github.com/limes-cloud/kratosx v1.0.55
 	github.com/limes-cloud/manager v1.0.20
 	github.com/limes-cloud/resource v1.0.17
 	go.uber.org/automaxprocs v1.5.3
@@ -58,7 +59,6 @@ require (
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect
 	github.com/golang-sql/sqlexp v0.1.0 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
-	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/gorilla/handlers v1.5.2 // indirect
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.19.1 // indirect

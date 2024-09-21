@@ -82,39 +82,39 @@ service User{
   }
 
   // DeleteUser 删除用户信息
-  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply) {
-    option (google.api.http) = {
-      delete: "/application/api/v1/user",
-    };
-  }
+//  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserReply) {
+//    option (google.api.http) = {
+//      delete: "/application/api/v1/user",
+//    };
+//  }
 
   // GetTrashUser 查看指定用户信息回收站数据
-  rpc GetTrashUser (GetTrashUserRequest) returns (GetTrashUserReply) {
-    option (google.api.http) = {
-      get: "/application/api/v1/user/trash",
-    };
-  }
-
-  // ListTrashUser 查看用户信息列表回收站数据
-  rpc ListTrashUser (ListTrashUserRequest) returns (ListTrashUserReply) {
-    option (google.api.http) = {
-      get: "/application/api/v1/user/trashes",
-    };
-  }
-
-  // DeleteTrashUser 彻底删除用户信息
-  rpc DeleteTrashUser (DeleteTrashUserRequest) returns (DeleteTrashUserReply) {
-    option (google.api.http) = {
-      delete: "/application/api/v1/user/trash",
-    };
-  }
-
-  // RevertTrashUser 还原用户信息
-  rpc RevertTrashUser (RevertTrashUserRequest) returns (RevertTrashUserReply) {
-    option (google.api.http) = {
-      put: "/application/api/v1/user/trash",
-      body: "*"
-    };
-  }
+//  rpc GetTrashUser (GetTrashUserRequest) returns (GetTrashUserReply) {
+//    option (google.api.http) = {
+//      get: "/application/api/v1/user/trash",
+//    };
+//  }
+//
+//  // ListTrashUser 查看用户信息列表回收站数据
+//  rpc ListTrashUser (ListTrashUserRequest) returns (ListTrashUserReply) {
+//    option (google.api.http) = {
+//      get: "/application/api/v1/user/trashes",
+//    };
+//  }
+//
+//  // DeleteTrashUser 彻底删除用户信息
+//  rpc DeleteTrashUser (DeleteTrashUserRequest) returns (DeleteTrashUserReply) {
+//    option (google.api.http) = {
+//      delete: "/application/api/v1/user/trash",
+//    };
+//  }
+//
+//  // RevertTrashUser 还原用户信息
+//  rpc RevertTrashUser (RevertTrashUserRequest) returns (RevertTrashUserReply) {
+//    option (google.api.http) = {
+//      put: "/application/api/v1/user/trash",
+//      body: "*"
+//    };
+//  }
 
 }

@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/limes-cloud/kratosx"
 	"github.com/limes-cloud/kratosx/pkg/crypto"
+	"github.com/limes-cloud/kratosx/pkg/valx"
 	ktypes "github.com/limes-cloud/kratosx/types"
 	"google.golang.org/protobuf/proto"
 
@@ -18,6 +19,7 @@ import (
 type User struct {
 	conf       *conf.Config
 	repo       repository.User
+	app        repository.App
 	permission repository.Permission
 	file       repository.File
 }
@@ -25,12 +27,14 @@ type User struct {
 func NewUser(
 	conf *conf.Config,
 	repo repository.User,
+	app repository.App,
 	permission repository.Permission,
 	file repository.File,
 ) *User {
 	return &User{
 		conf:       conf,
 		repo:       repo,
+		app:        app,
 		permission: permission,
 		file:       file,
 	}
@@ -62,11 +66,13 @@ func (u *User) UpdateCurrentUser(ctx kratosx.Context, req *types.UpdateCurrentUs
 
 // GetUser 获取指定的用户信息
 func (u *User) GetUser(ctx kratosx.Context, req *types.GetUserRequest) (*entity.User, error) {
-	var (
-		res *entity.User
-		err error
-	)
+	all, scopes, err := u.permission.GetApp(ctx)
+	if err != nil {
+		ctx.Logger().Warnw("msg", "get app permission error", "err", err.Error())
+		return nil, errors.SystemError()
+	}
 
+	var res *entity.User
 	if req.Id != nil {
 		res, err = u.repo.GetUser(ctx, *req.Id)
 	} else if req.Phone != nil {
@@ -78,16 +84,48 @@ func (u *User) GetUser(ctx kratosx.Context, req *types.GetUserRequest) (*entity.
 	} else {
 		return nil, errors.ParamsError()
 	}
-
 	if err != nil {
 		ctx.Logger().Warnw("msg", "get user error", "err", err.Error())
 		return nil, errors.GetError(err.Error())
 	}
+
+	// 判读是否具有资源权限
+	if !all {
+		inr := valx.New(scopes)
+		has := false
+		for _, item := range res.Auths {
+			if inr.Has(item.AppId) {
+				has = true
+				break
+			}
+		}
+		if !has {
+			return nil, errors.NotPermissionError()
+		}
+	}
+
 	return res, nil
 }
 
 // ListUser 获取用户信息列表
 func (u *User) ListUser(ctx kratosx.Context, req *types.ListUserRequest) ([]*entity.User, uint32, error) {
+	all, scopes, err := u.permission.GetApp(ctx)
+	if err != nil {
+		ctx.Logger().Warnw("msg", "get app permission error", "err", err.Error())
+		return nil, 0, errors.SystemError()
+	}
+	if !all {
+		req.AppIds = scopes
+	}
+
+	if req.App != nil {
+		app, err := u.app.GetAppByKeyword(ctx, *req.App)
+		if err != nil {
+			return nil, 0, errors.GetError(err.Error())
+		}
+		req.AppId = &app.Id
+	}
+
 	list, total, err := u.repo.ListUser(ctx, req)
 	if err != nil {
 		ctx.Logger().Warnw("msg", "list user error", "err", err.Error())
@@ -121,6 +159,9 @@ func (u *User) ImportUser(ctx kratosx.Context, req []*entity.User) (uint32, erro
 
 // ExportUser 导出用户信息
 func (u *User) ExportUser(ctx kratosx.Context, req *types.ExportUserRequest) (string, error) {
+	if !u.permission.HasApp(ctx, req.AppId) {
+		return "", errors.NotPermissionError()
+	}
 	id, err := u.repo.ExportUser(ctx, req)
 	if err != nil {
 		ctx.Logger().Warnw("msg", "export user error", "err", err.Error())
@@ -130,8 +171,34 @@ func (u *User) ExportUser(ctx kratosx.Context, req *types.ExportUserRequest) (st
 }
 
 // UpdateUser 更新用户信息
-func (u *User) UpdateUser(ctx kratosx.Context, req *entity.User) error {
-	if err := u.repo.UpdateUser(ctx, req); err != nil {
+func (u *User) UpdateUser(ctx kratosx.Context, user *entity.User) error {
+	oldUser, err := u.repo.GetUser(ctx, user.Id)
+	if err != nil {
+		return errors.NotUserError()
+	}
+
+	// 判断用户授权应用范围
+	all, scopes, err := u.permission.GetApp(ctx)
+	if err != nil {
+		ctx.Logger().Warnw("msg", "get app permission error", "err", err.Error())
+		return errors.SystemError()
+	}
+	// 判读是否具有资源权限
+	if !all {
+		inr := valx.New(scopes)
+		has := false
+		for _, item := range oldUser.Auths {
+			if inr.Has(item.AppId) {
+				has = true
+				break
+			}
+		}
+		if !has {
+			return errors.NotPermissionError()
+		}
+	}
+
+	if err := u.repo.UpdateUser(ctx, user); err != nil {
 		ctx.Logger().Warnw("msg", "update user error", "err", err.Error())
 		return errors.UpdateError(err.Error())
 	}
@@ -140,6 +207,32 @@ func (u *User) UpdateUser(ctx kratosx.Context, req *entity.User) error {
 
 // UpdateUserStatus 更新用户信息状态
 func (u *User) UpdateUserStatus(ctx kratosx.Context, req *types.UpdateUserStatusRequest) error {
+	oldUser, err := u.repo.GetUser(ctx, req.Id)
+	if err != nil {
+		return errors.NotUserError()
+	}
+
+	// 判断用户授权应用范围
+	all, scopes, err := u.permission.GetApp(ctx)
+	if err != nil {
+		ctx.Logger().Warnw("msg", "get app permission error", "err", err.Error())
+		return errors.SystemError()
+	}
+	// 判读是否具有资源权限
+	if !all {
+		inr := valx.New(scopes)
+		has := false
+		for _, item := range oldUser.Auths {
+			if inr.Has(item.AppId) {
+				has = true
+				break
+			}
+		}
+		if !has {
+			return errors.NotPermissionError()
+		}
+	}
+
 	if err := u.repo.UpdateUserStatus(ctx, req); err != nil {
 		ctx.Logger().Warnw("msg", "update user status error", "err", err.Error())
 		return errors.UpdateError(err.Error())
@@ -148,50 +241,80 @@ func (u *User) UpdateUserStatus(ctx kratosx.Context, req *types.UpdateUserStatus
 }
 
 // DeleteUser 删除用户信息
-func (u *User) DeleteUser(ctx kratosx.Context, ids []uint32) (uint32, error) {
-	total, err := u.repo.DeleteUser(ctx, ids)
-	if err != nil {
-		ctx.Logger().Warnw("msg", "delete user error", "err", err.Error())
-		return 0, errors.DeleteError(err.Error())
-	}
-	return total, nil
-}
-
-// GetTrashUser 获取指定的用户信息
-func (u *User) GetTrashUser(ctx kratosx.Context, id uint32) (*entity.User, error) {
-	user, err := u.repo.GetTrashUser(ctx, id)
-	if err != nil {
-		ctx.Logger().Warnw("msg", "get trash user error", "err", err.Error())
-		return nil, errors.GetTrashError(err.Error())
-	}
-	return user, nil
-}
-
-// ListTrashUser 获取用户信息列表
-func (u *User) ListTrashUser(ctx kratosx.Context, req *types.ListTrashUserRequest) ([]*entity.User, uint32, error) {
-	list, total, err := u.repo.ListTrashUser(ctx, req)
-	if err != nil {
-		ctx.Logger().Warnw("msg", "list trash user error", "err", err.Error())
-		return nil, 0, errors.ListTrashError(err.Error())
-	}
-	return list, total, nil
-}
-
+// func (u *User) DeleteUser(ctx kratosx.Context, ids []uint32) (uint32, error) {
+//	// 获取用户应用权限
+//	all, scopes, err := u.permission.GetApp(ctx)
+//	if err != nil {
+//		ctx.Logger().Warnw("msg", "get app permission error", "err", err.Error())
+//		return 0, errors.SystemError()
+//	}
+//
+//	// 判断用户是否都在权限范围内
+//	for _, id := range ids {
+//		oldUser, err := u.repo.GetUser(ctx, id)
+//		if err != nil {
+//			return 0, errors.NotUserError()
+//		}
+//
+//		// 判读是否具有资源权限
+//		if !all {
+//			inr := valx.New(scopes)
+//			has := false
+//			for _, item := range oldUser.Auths {
+//				if inr.Has(item.AppId) {
+//					has = true
+//					break
+//				}
+//			}
+//			if !has {
+//				return 0, errors.NotPermissionError()
+//			}
+//		}
+//	}
+//
+//	total, err := u.repo.DeleteUser(ctx, ids)
+//	if err != nil {
+//		ctx.Logger().Warnw("msg", "delete user error", "err", err.Error())
+//		return 0, errors.DeleteError(err.Error())
+//	}
+//	return total, nil
+// }
+//
+// // GetTrashUser 获取指定的用户信息
+// func (u *User) GetTrashUser(ctx kratosx.Context, id uint32) (*entity.User, error) {
+//	user, err := u.repo.GetTrashUser(ctx, id)
+//	if err != nil {
+//		ctx.Logger().Warnw("msg", "get trash user error", "err", err.Error())
+//		return nil, errors.GetTrashError(err.Error())
+//	}
+//	return user, nil
+// }
+//
+// // ListTrashUser 获取用户信息列表
+// func (u *User) ListTrashUser(ctx kratosx.Context, req *types.ListTrashUserRequest) ([]*entity.User, uint32, error) {
+//	list, total, err := u.repo.ListTrashUser(ctx, req)
+//	if err != nil {
+//		ctx.Logger().Warnw("msg", "list trash user error", "err", err.Error())
+//		return nil, 0, errors.ListTrashError(err.Error())
+//	}
+//	return list, total, nil
+// }
+//
 // DeleteTrashUser 彻底删除用户信息
-func (u *User) DeleteTrashUser(ctx kratosx.Context, ids []uint32) (uint32, error) {
-	total, err := u.repo.DeleteTrashUser(ctx, ids)
-	if err != nil {
-		ctx.Logger().Warnw("msg", "delete trash user error", "err", err.Error())
-		return 0, errors.DeleteTrashError(err.Error())
-	}
-	return total, nil
-}
-
-// RevertTrashUser 还原删除用户信息
-func (u *User) RevertTrashUser(ctx kratosx.Context, id uint32) error {
-	if err := u.repo.RevertTrashUser(ctx, id); err != nil {
-		ctx.Logger().Warnw("msg", "revert trash user error", "err", err.Error())
-		return errors.RevertTrashError(err.Error())
-	}
-	return nil
-}
+// func (u *User) DeleteTrashUser(ctx kratosx.Context, ids []uint32) (uint32, error) {
+//	total, err := u.repo.DeleteTrashUser(ctx, ids)
+//	if err != nil {
+//		ctx.Logger().Warnw("msg", "delete trash user error", "err", err.Error())
+//		return 0, errors.DeleteTrashError(err.Error())
+//	}
+//	return total, nil
+// }
+//
+// // RevertTrashUser 还原删除用户信息
+// func (u *User) RevertTrashUser(ctx kratosx.Context, id uint32) error {
+//	if err := u.repo.RevertTrashUser(ctx, id); err != nil {
+//		ctx.Logger().Warnw("msg", "revert trash user error", "err", err.Error())
+//		return errors.RevertTrashError(err.Error())
+//	}
+//	return nil
+// }

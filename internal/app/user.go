@@ -211,82 +211,83 @@ func (s *User) UpdateUserStatus(c context.Context, req *pb.UpdateUserStatusReque
 	})
 }
 
-// DeleteUser 删除用户信息
-func (s *User) DeleteUser(c context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserReply, error) {
-	total, err := s.srv.DeleteUser(kratosx.MustContext(c), req.Ids)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.DeleteUserReply{Total: total}, nil
-}
-
-// GetTrashUser 获取回收站指定的用户信息
-func (s *User) GetTrashUser(c context.Context, req *pb.GetTrashUserRequest) (*pb.GetTrashUserReply, error) {
-	user, err := s.srv.GetTrashUser(kratosx.MustContext(c), req.Id)
-	if err != nil {
-		return nil, err
-	}
-
-	return &pb.GetTrashUserReply{
-		Id:        user.Id,
-		Phone:     user.Phone,
-		Email:     user.Email,
-		Username:  user.Username,
-		NickName:  user.NickName,
-		RealName:  user.RealName,
-		Avatar:    user.Avatar,
-		AvatarUrl: user.AvatarUrl,
-		Gender:    user.Gender,
-	}, nil
-}
-
-// ListTrashUser 获取回收站用户信息列表
-func (s *User) ListTrashUser(c context.Context, req *pb.ListTrashUserRequest) (*pb.ListTrashUserReply, error) {
-	list, total, err := s.srv.ListTrashUser(kratosx.MustContext(c), &types.ListTrashUserRequest{
-		Page:       req.Page,
-		PageSize:   req.PageSize,
-		Order:      req.Order,
-		OrderBy:    req.OrderBy,
-		Phone:      req.Phone,
-		Email:      req.Email,
-		Username:   req.Username,
-		RealName:   req.RealName,
-		Gender:     req.Gender,
-		Status:     req.Status,
-		From:       req.From,
-		CreatedAts: req.CreatedAts,
-	})
-	if err != nil {
-		return nil, err
-	}
-
-	reply := pb.ListTrashUserReply{Total: total}
-	for _, item := range list {
-		reply.List = append(reply.List, &pb.ListTrashUserReply_User{
-			Id:        item.Id,
-			Phone:     item.Phone,
-			Email:     item.Email,
-			Username:  item.Username,
-			NickName:  item.NickName,
-			RealName:  item.RealName,
-			Avatar:    item.Avatar,
-			AvatarUrl: item.AvatarUrl,
-			Gender:    item.Gender,
-		})
-	}
-	return &reply, nil
-}
-
-// DeleteTrashUser 删除回收站用户信息
-func (s *User) DeleteTrashUser(ctx context.Context, req *pb.DeleteTrashUserRequest) (*pb.DeleteTrashUserReply, error) {
-	total, err := s.srv.DeleteTrashUser(kratosx.MustContext(ctx), req.Ids)
-	if err != nil {
-		return nil, err
-	}
-	return &pb.DeleteTrashUserReply{Total: total}, nil
-}
-
-// RevertTrashUser 还原回收站用户信息
-func (s *User) RevertTrashUser(ctx context.Context, req *pb.RevertTrashUserRequest) (*pb.RevertTrashUserReply, error) {
-	return &pb.RevertTrashUserReply{}, s.srv.RevertTrashUser(kratosx.MustContext(ctx), req.Id)
-}
+//
+// // DeleteUser 删除用户信息
+// func (s *User) DeleteUser(c context.Context, req *pb.DeleteUserRequest) (*pb.DeleteUserReply, error) {
+//	total, err := s.srv.DeleteUser(kratosx.MustContext(c), req.Ids)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &pb.DeleteUserReply{Total: total}, nil
+// }
+//
+// // GetTrashUser 获取回收站指定的用户信息
+// func (s *User) GetTrashUser(c context.Context, req *pb.GetTrashUserRequest) (*pb.GetTrashUserReply, error) {
+//	user, err := s.srv.GetTrashUser(kratosx.MustContext(c), req.Id)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	return &pb.GetTrashUserReply{
+//		Id:        user.Id,
+//		Phone:     user.Phone,
+//		Email:     user.Email,
+//		Username:  user.Username,
+//		NickName:  user.NickName,
+//		RealName:  user.RealName,
+//		Avatar:    user.Avatar,
+//		AvatarUrl: user.AvatarUrl,
+//		Gender:    user.Gender,
+//	}, nil
+// }
+//
+// // ListTrashUser 获取回收站用户信息列表
+// func (s *User) ListTrashUser(c context.Context, req *pb.ListTrashUserRequest) (*pb.ListTrashUserReply, error) {
+//	list, total, err := s.srv.ListTrashUser(kratosx.MustContext(c), &types.ListTrashUserRequest{
+//		Page:       req.Page,
+//		PageSize:   req.PageSize,
+//		Order:      req.Order,
+//		OrderBy:    req.OrderBy,
+//		Phone:      req.Phone,
+//		Email:      req.Email,
+//		Username:   req.Username,
+//		RealName:   req.RealName,
+//		Gender:     req.Gender,
+//		Status:     req.Status,
+//		From:       req.From,
+//		CreatedAts: req.CreatedAts,
+//	})
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	reply := pb.ListTrashUserReply{Total: total}
+//	for _, item := range list {
+//		reply.List = append(reply.List, &pb.ListTrashUserReply_User{
+//			Id:        item.Id,
+//			Phone:     item.Phone,
+//			Email:     item.Email,
+//			Username:  item.Username,
+//			NickName:  item.NickName,
+//			RealName:  item.RealName,
+//			Avatar:    item.Avatar,
+//			AvatarUrl: item.AvatarUrl,
+//			Gender:    item.Gender,
+//		})
+//	}
+//	return &reply, nil
+// }
+//
+// // DeleteTrashUser 删除回收站用户信息
+// func (s *User) DeleteTrashUser(ctx context.Context, req *pb.DeleteTrashUserRequest) (*pb.DeleteTrashUserReply, error) {
+//	total, err := s.srv.DeleteTrashUser(kratosx.MustContext(ctx), req.Ids)
+//	if err != nil {
+//		return nil, err
+//	}
+//	return &pb.DeleteTrashUserReply{Total: total}, nil
+// }
+//
+// // RevertTrashUser 还原回收站用户信息
+// func (s *User) RevertTrashUser(ctx context.Context, req *pb.RevertTrashUserRequest) (*pb.RevertTrashUserReply, error) {
+//	return &pb.RevertTrashUserReply{}, s.srv.RevertTrashUser(kratosx.MustContext(ctx), req.Id)
+// }

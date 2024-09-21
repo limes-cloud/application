@@ -87,12 +87,10 @@ message ListOAuthReply {
   message OAuth {
     uint32 id = 1;
     uint32 channelId = 2;
-    optional bool status = 3;
-    optional string disableDesc = 4;
-    uint32 loggedAt = 5;
-    uint32 expiredAt = 6;
-    uint32 createdAt = 7;
-    optional Channel channel = 8;
+    uint32 loggedAt = 3;
+    uint32 expiredAt = 4;
+    uint32 createdAt = 5;
+    optional Channel channel = 6;
   }
 
   uint32 total = 1;

@@ -21,6 +21,7 @@ type ListUserRequest struct {
 	From       *string  `json:"from"`
 	CreatedAts []uint32 `json:"createdAts"`
 	AppId      *uint32  `json:"appId"`
+	AppIds     []uint32 `json:"appIds"`
 	App        *string  `json:"app"`
 	InIds      []uint32 `json:"inIds"`
 	NotInIds   []uint32 `json:"notInIds"`
@@ -43,6 +44,7 @@ type ListTrashUserRequest struct {
 }
 
 type ExportUserRequest struct {
+	AppId      uint32   `json:"appId"`
 	Phone      *string  `json:"phone"`
 	Email      *string  `json:"email"`
 	Username   *string  `json:"username"`
@@ -51,7 +53,6 @@ type ExportUserRequest struct {
 	Status     *bool    `json:"status"`
 	From       *string  `json:"from"`
 	CreatedAts []uint32 `json:"createdAts"`
-	AppId      *uint32  `json:"appId"`
 }
 
 type UpdateUserStatusRequest struct {

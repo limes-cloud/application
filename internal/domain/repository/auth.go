@@ -23,6 +23,9 @@ type Auth interface {
 	// DeleteAuth 删除应用授权信息
 	DeleteAuth(ctx kratosx.Context, userId uint32, appId uint32) error
 
+	// GetAuth 获取指定的应用授权信息
+	GetAuth(ctx kratosx.Context, id uint32) (*entity.Auth, error)
+
 	// GetAuthByUA 获取指定的应用授权信息
 	GetAuthByUA(ctx kratosx.Context, uid uint32, aid uint32) (*entity.Auth, error)
 

@@ -115,15 +115,10 @@ func (r User) ListUser(ctx kratosx.Context, req *types.ListUserRequest) ([]*enti
 	if req.AppId != nil {
 		db = db.InnerJoins("Auths", ctx.DB().Where("Auths.app_id=?", *req.AppId))
 	}
-	if req.App != nil {
-		appId := 0
-		if err := ctx.DB().Model(entity.App{}).
-			Select("id").Where("keyword=?", *req.App).
-			Scan(&appId).Error; err != nil {
-			return nil, 0, err
-		}
-		db = db.InnerJoins("Auths", ctx.DB().Where("Auths.app_id=?", appId))
+	if req.AppId == nil && req.AppIds != nil {
+		db = db.InnerJoins("Auths", ctx.DB().Where("Auths.app_id in ?", req.AppIds))
 	}
+
 	if req.InIds != nil {
 		db = db.Where("user.id in ?", req.InIds)
 	}
