@@ -11,7 +11,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/json-iterator/go v1.1.12
 	github.com/limes-cloud/configure v1.0.49
-	github.com/limes-cloud/kratosx v1.0.56
+	github.com/limes-cloud/kratosx v1.0.57
 	github.com/limes-cloud/manager v1.0.27
 	github.com/limes-cloud/resource v1.0.17
 	go.uber.org/automaxprocs v1.5.3
@@ -125,6 +125,8 @@ require (
 	golang.org/x/sys v0.20.0 // indirect
 	golang.org/x/text v0.15.0 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240429193739-8cf5692501f6 // indirect
+	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
+	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df // indirect
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gorm.io/driver/clickhouse v0.6.0 // indirect
