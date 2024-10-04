@@ -47,6 +47,10 @@ func (u *User) GetCurrentUser(ctx kratosx.Context) (*entity.User, error) {
 		ctx.Logger().Warnw("msg", "get cur user error", "err", err.Error())
 		return nil, errors.GetError(err.Error())
 	}
+	if user.Avatar != nil {
+		url := u.file.GetFileURL(ctx, *user.Avatar)
+		user.AvatarUrl = &url
+	}
 	return user, nil
 }
 
@@ -148,8 +152,14 @@ func (u *User) CreateUser(ctx kratosx.Context, req *entity.User) (uint32, error)
 }
 
 // ImportUser 导入用户信息
-func (u *User) ImportUser(ctx kratosx.Context, req []*entity.User) (uint32, error) {
-	total, err := u.repo.ImportUser(ctx, req)
+func (u *User) ImportUser(ctx kratosx.Context, list []*entity.User) (uint32, error) {
+	for ind := range list {
+		list[ind].NickName = u.conf.DefaultNickName + crypto.MD5([]byte(uuid.NewString()))[:8]
+		list[ind].Status = proto.Bool(true)
+		list[ind].From = "system"
+		list[ind].FromDesc = "管理员导入"
+	}
+	total, err := u.repo.ImportUser(ctx, list)
 	if err != nil {
 		ctx.Logger().Warnw("msg", "import user error", "err", err.Error())
 		return 0, errors.ImportError(err.Error())

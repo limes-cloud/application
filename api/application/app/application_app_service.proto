@@ -11,14 +11,10 @@ import "api/application/app/application_app.proto";
 import "google/api/annotations.proto";
 
 service App{
-
   // GetApp 获取指定的应用信息
   rpc GetApp (GetAppRequest) returns (GetAppReply) {
     option (google.api.http) = {
-      get: "/application/api/v1/app",
-      additional_bindings:{
-        get: "/application/client/v1/app",
-      }
+      get: "/application/api/v1/app"
     };
   }
 

@@ -41,24 +41,20 @@ func (u *App) GetApp(ctx kratosx.Context, req *types.GetAppRequest) (*entity.App
 	)
 
 	if req.Id != nil {
-		if !u.permission.HasApp(ctx, *req.Id) {
-			return nil, errors.NotPermissionError()
-		}
 		res, err = u.repo.GetApp(ctx, *req.Id)
 	} else if req.Keyword != nil {
 		res, err = u.repo.GetAppByKeyword(ctx, *req.Keyword)
-		if !u.permission.HasApp(ctx, res.Id) {
-			return nil, errors.NotPermissionError()
-		}
 	} else {
 		return nil, errors.ParamsError()
 	}
-
 	if err != nil {
 		ctx.Logger().Warnw("msg", "get app error", "err", err.Error())
 		return nil, errors.GetError(err.Error())
 	}
 	res.LogoUrl = u.file.GetFileURL(ctx, res.Logo)
+	for _, item := range res.Channels {
+		item.Logo = u.file.GetFileURL(ctx, item.Logo)
+	}
 	return res, nil
 }
 

@@ -5,8 +5,9 @@ import (
 	"sync"
 
 	"github.com/limes-cloud/kratosx"
+	"github.com/limes-cloud/kratosx/library/db/gormtranserror"
 	"google.golang.org/protobuf/proto"
-	"gorm.io/gorm/clause"
+	"gorm.io/gorm"
 
 	"github.com/limes-cloud/application/internal/domain/entity"
 	"github.com/limes-cloud/application/internal/types"
@@ -83,7 +84,8 @@ func (r User) ListUser(ctx kratosx.Context, req *types.ListUserRequest) ([]*enti
 	var (
 		list  []*entity.User
 		total int64
-		fs    = []string{"*"}
+		fs    = []string{"user.id", "user.username", "user.nick_name", "user.real_name", "user.phone", "user.email", "user.gender", "user.from",
+			"user.from_desc", "user.avatar", "user.status", "user.disable_desc", "user.created_at", "user.updated_at"}
 	)
 
 	db := ctx.DB().Model(entity.User{}).Select(fs)
@@ -104,7 +106,7 @@ func (r User) ListUser(ctx kratosx.Context, req *types.ListUserRequest) ([]*enti
 		db = db.Where("gender = ?", *req.Gender)
 	}
 	if req.Status != nil {
-		db = db.Where("status = ?", *req.Status)
+		db = db.Where("user.status = ?", *req.Status)
 	}
 	if req.From != nil {
 		db = db.Where("from = ?", *req.From)
@@ -152,8 +154,23 @@ func (r User) CreateUser(ctx kratosx.Context, user *entity.User) (uint32, error)
 
 // ImportUser 导入数据
 func (r User) ImportUser(ctx kratosx.Context, users []*entity.User) (uint32, error) {
-	db := ctx.DB().Clauses(clause.OnConflict{UpdateAll: true}).CreateInBatches(users, 1000)
-	return uint32(db.RowsAffected), db.Error
+	for _, user := range users {
+		var oldUser entity.User
+		if err := ctx.DB().Where("phone=?", user.Phone).First(&oldUser).Error; err != nil {
+			if !gormtranserror.Is(err, gorm.ErrRecordNotFound) {
+				return 0, err
+			}
+			if err := ctx.DB().Create(user).Error; err != nil {
+				return 0, err
+			}
+		} else {
+			user.Id = oldUser.Id
+			if err := ctx.DB().Updates(user).Error; err != nil {
+				return 0, err
+			}
+		}
+	}
+	return uint32(len(users)), nil
 }
 
 // ExportUser 导出数据

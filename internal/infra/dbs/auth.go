@@ -109,11 +109,20 @@ func (r Auth) DeleteAuth(ctx kratosx.Context, userId uint32, appId uint32) error
 func (r Auth) GetAuthByUA(ctx kratosx.Context, userId uint32, appId uint32) (*entity.Auth, error) {
 	var (
 		auth = entity.Auth{}
-		fs   = []string{"id", "status", "disable_desc", "token", "logged_at", "expired_at", "created_at"}
+		fs   = []string{"*"}
 	)
 	return &auth, ctx.DB().Select(fs).
-		Where("userId = ?", userId).
-		Where("appId = ?", appId).First(&auth).Error
+		Where("user_id = ?", userId).
+		Where("app_id = ?", appId).First(&auth).Error
+}
+
+// GetAuth 获取指定数据
+func (r Auth) GetAuth(ctx kratosx.Context, id uint32) (*entity.Auth, error) {
+	var (
+		auth = entity.Auth{}
+		fs   = []string{"*"}
+	)
+	return &auth, ctx.DB().Select(fs).Where("id = ?", id).First(&auth).Error
 }
 
 // ListOAuth 获取列表
@@ -200,7 +209,7 @@ func (r Auth) DeleteOAuth(ctx kratosx.Context, userId uint32, channelId uint32) 
 func (r Auth) IsBindOAuth(ctx kratosx.Context, cid uint32, aid string) bool {
 	var count int64
 	ctx.DB().Model(entity.OAuth{}).
-		Where("`user_id` IS NOT NULL").
+		Where("user_id is not null").
 		Where("channel_id=?", cid).
 		Where("auth_id=?", aid).
 		Count(&count)

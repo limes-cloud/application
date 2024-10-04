@@ -7,6 +7,7 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/limes-cloud/kratosx"
 	ktypes "github.com/limes-cloud/kratosx/types"
+	"google.golang.org/protobuf/proto"
 
 	pb "github.com/limes-cloud/application/api/application/user/v1"
 	"github.com/limes-cloud/application/internal/conf"
@@ -27,6 +28,7 @@ func NewUser(conf *conf.Config) *User {
 		srv: service.NewUser(
 			conf,
 			dbs.NewUser(),
+			dbs.NewApp(),
 			rpc.NewPermission(),
 			rpc.NewFile(),
 		),
@@ -83,15 +85,21 @@ func (s *User) GetUser(c context.Context, req *pb.GetUserRequest) (*pb.GetUserRe
 	}
 
 	return &pb.GetUserReply{
-		Id:        user.Id,
-		Phone:     user.Phone,
-		Email:     user.Email,
-		Username:  user.Username,
-		NickName:  user.NickName,
-		RealName:  user.RealName,
-		Avatar:    user.Avatar,
-		AvatarUrl: user.AvatarUrl,
-		Gender:    user.Gender,
+		Id:          user.Id,
+		Phone:       user.Phone,
+		Email:       user.Email,
+		Username:    user.Username,
+		NickName:    user.NickName,
+		RealName:    user.RealName,
+		Avatar:      user.Avatar,
+		AvatarUrl:   user.AvatarUrl,
+		Gender:      user.Gender,
+		Status:      user.Status,
+		DisableDesc: user.DisableDesc,
+		From:        user.From,
+		FromDesc:    user.FromDesc,
+		CreatedAt:   uint32(user.CreatedAt),
+		UpdatedAt:   uint32(user.UpdatedAt),
 	}, nil
 }
 
@@ -122,15 +130,21 @@ func (s *User) ListUser(c context.Context, req *pb.ListUserRequest) (*pb.ListUse
 	reply := pb.ListUserReply{Total: total}
 	for _, item := range list {
 		reply.List = append(reply.List, &pb.ListUserReply_User{
-			Id:        item.Id,
-			Phone:     item.Phone,
-			Email:     item.Email,
-			Username:  item.Username,
-			NickName:  item.NickName,
-			RealName:  item.RealName,
-			Avatar:    item.Avatar,
-			AvatarUrl: item.AvatarUrl,
-			Gender:    item.Gender,
+			Id:          item.Id,
+			Phone:       item.Phone,
+			Email:       item.Email,
+			Username:    item.Username,
+			NickName:    item.NickName,
+			RealName:    item.RealName,
+			Avatar:      item.Avatar,
+			AvatarUrl:   item.AvatarUrl,
+			Gender:      item.Gender,
+			Status:      item.Status,
+			DisableDesc: item.DisableDesc,
+			From:        item.From,
+			FromDesc:    item.FromDesc,
+			CreatedAt:   uint32(item.CreatedAt),
+			UpdatedAt:   uint32(item.UpdatedAt),
 		})
 	}
 	return &reply, nil
@@ -154,12 +168,19 @@ func (s *User) CreateUser(c context.Context, req *pb.CreateUserRequest) (*pb.Cre
 func (s *User) ImportUser(c context.Context, req *pb.ImportUserRequest) (*pb.ImportUserReply, error) {
 	var list []*entity.User
 	for _, item := range req.List {
-		list = append(list, &entity.User{
+		user := &entity.User{
 			Phone:    item.Phone,
 			Email:    item.Email,
 			RealName: item.RealName,
 			Gender:   item.Gender,
-		})
+		}
+		if item.AppId != nil {
+			user.Auths = append(user.Auths, &entity.Auth{
+				AppId:  *item.AppId,
+				Status: proto.Bool(true),
+			})
+		}
+		list = append(list, user)
 	}
 
 	total, err := s.srv.ImportUser(kratosx.MustContext(c), list)

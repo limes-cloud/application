@@ -112,7 +112,14 @@ message CreateUserReply {
 }
 
 message ImportUserRequest {
-  repeated CreateUserRequest list = 1;
+  message User{
+    optional string phone = 1;
+    optional string email = 2;
+    optional string realName = 3;
+    optional string gender = 4;
+    optional uint32 appId = 5;
+  }
+  repeated User list = 1;
 }
 
 message ImportUserReply {

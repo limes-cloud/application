@@ -295,10 +295,10 @@ func (m *GetUserRequest) validate(all bool) error {
 
 	if m.Id != nil {
 
-		if m.GetId() <= 0 {
+		if m.GetId() < 1 {
 			err := GetUserRequestValidationError{
 				field:  "Id",
-				reason: "value must be greater than 0",
+				reason: "value must be greater than or equal to 1",
 			}
 			if !all {
 				return err
@@ -777,10 +777,10 @@ func (m *ListUserRequest) validate(all bool) error {
 
 	var errors []error
 
-	if m.GetPage() <= 0 {
+	if m.GetPage() < 1 {
 		err := ListUserRequestValidationError{
 			field:  "Page",
-			reason: "value must be greater than 0",
+			reason: "value must be greater than or equal to 1",
 		}
 		if !all {
 			return err
@@ -788,10 +788,10 @@ func (m *ListUserRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if val := m.GetPageSize(); val <= 0 || val > 50 {
+	if val := m.GetPageSize(); val < 1 || val > 50 {
 		err := ListUserRequestValidationError{
 			field:  "PageSize",
-			reason: "value must be inside range (0, 50]",
+			reason: "value must be inside range [1, 50]",
 		}
 		if !all {
 			return err
@@ -1569,6 +1569,17 @@ func (m *ExportUserRequest) validate(all bool) error {
 
 	var errors []error
 
+	if m.GetAppId() < 1 {
+		err := ExportUserRequestValidationError{
+			field:  "AppId",
+			reason: "value must be greater than or equal to 1",
+		}
+		if !all {
+			return err
+		}
+		errors = append(errors, err)
+	}
+
 	if m.Phone != nil {
 		// no validation rules for Phone
 	}
@@ -1801,10 +1812,10 @@ func (m *UpdateUserRequest) validate(all bool) error {
 
 	var errors []error
 
-	if m.GetId() <= 0 {
+	if m.GetId() < 1 {
 		err := UpdateUserRequestValidationError{
 			field:  "Id",
-			reason: "value must be greater than 0",
+			reason: "value must be greater than or equal to 1",
 		}
 		if !all {
 			return err
@@ -2057,10 +2068,10 @@ func (m *UpdateUserStatusRequest) validate(all bool) error {
 
 	var errors []error
 
-	if m.GetId() <= 0 {
+	if m.GetId() < 1 {
 		err := UpdateUserStatusRequestValidationError{
 			field:  "Id",
-			reason: "value must be greater than 0",
+			reason: "value must be greater than or equal to 1",
 		}
 		if !all {
 			return err
@@ -2525,10 +2536,10 @@ func (m *GetTrashUserRequest) validate(all bool) error {
 
 	var errors []error
 
-	if m.GetId() <= 0 {
+	if m.GetId() < 1 {
 		err := GetTrashUserRequestValidationError{
 			field:  "Id",
-			reason: "value must be greater than 0",
+			reason: "value must be greater than or equal to 1",
 		}
 		if !all {
 			return err
@@ -2794,10 +2805,10 @@ func (m *ListTrashUserRequest) validate(all bool) error {
 
 	var errors []error
 
-	if m.GetPage() <= 0 {
+	if m.GetPage() < 1 {
 		err := ListTrashUserRequestValidationError{
 			field:  "Page",
-			reason: "value must be greater than 0",
+			reason: "value must be greater than or equal to 1",
 		}
 		if !all {
 			return err
@@ -2805,10 +2816,10 @@ func (m *ListTrashUserRequest) validate(all bool) error {
 		errors = append(errors, err)
 	}
 
-	if val := m.GetPageSize(); val <= 0 || val > 50 {
+	if val := m.GetPageSize(); val < 1 || val > 50 {
 		err := ListTrashUserRequestValidationError{
 			field:  "PageSize",
-			reason: "value must be inside range (0, 50]",
+			reason: "value must be inside range [1, 50]",
 		}
 		if !all {
 			return err
@@ -3362,10 +3373,10 @@ func (m *RevertTrashUserRequest) validate(all bool) error {
 
 	var errors []error
 
-	if m.GetId() <= 0 {
+	if m.GetId() < 1 {
 		err := RevertTrashUserRequestValidationError{
 			field:  "Id",
-			reason: "value must be greater than 0",
+			reason: "value must be greater than or equal to 1",
 		}
 		if !all {
 			return err
@@ -3704,6 +3715,128 @@ var _ interface {
 	Cause() error
 	ErrorName() string
 } = ListUserReply_UserValidationError{}
+
+// Validate checks the field values on ImportUserRequest_User with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ImportUserRequest_User) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ImportUserRequest_User with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ImportUserRequest_UserMultiError, or nil if none found.
+func (m *ImportUserRequest_User) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ImportUserRequest_User) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	if m.Phone != nil {
+		// no validation rules for Phone
+	}
+
+	if m.Email != nil {
+		// no validation rules for Email
+	}
+
+	if m.RealName != nil {
+		// no validation rules for RealName
+	}
+
+	if m.Gender != nil {
+		// no validation rules for Gender
+	}
+
+	if m.AppId != nil {
+		// no validation rules for AppId
+	}
+
+	if len(errors) > 0 {
+		return ImportUserRequest_UserMultiError(errors)
+	}
+
+	return nil
+}
+
+// ImportUserRequest_UserMultiError is an error wrapping multiple validation
+// errors returned by ImportUserRequest_User.ValidateAll() if the designated
+// constraints aren't met.
+type ImportUserRequest_UserMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ImportUserRequest_UserMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ImportUserRequest_UserMultiError) AllErrors() []error { return m }
+
+// ImportUserRequest_UserValidationError is the validation error returned by
+// ImportUserRequest_User.Validate if the designated constraints aren't met.
+type ImportUserRequest_UserValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ImportUserRequest_UserValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ImportUserRequest_UserValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ImportUserRequest_UserValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ImportUserRequest_UserValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ImportUserRequest_UserValidationError) ErrorName() string {
+	return "ImportUserRequest_UserValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ImportUserRequest_UserValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sImportUserRequest_User.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ImportUserRequest_UserValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ImportUserRequest_UserValidationError{}
 
 // Validate checks the field values on ListTrashUserReply_User with the rules
 // defined in the proto definition for this message. If any rules are
