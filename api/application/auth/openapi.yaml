@@ -650,10 +650,6 @@ components:
                 channelId:
                     type: integer
                     format: uint32
-                status:
-                    type: boolean
-                disableDesc:
-                    type: string
                 loggedAt:
                     type: integer
                     format: uint32

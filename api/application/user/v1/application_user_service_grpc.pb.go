@@ -28,11 +28,6 @@ const (
 	User_ExportUser_FullMethodName        = "/application.api.application.user.v1.User/ExportUser"
 	User_UpdateUser_FullMethodName        = "/application.api.application.user.v1.User/UpdateUser"
 	User_UpdateUserStatus_FullMethodName  = "/application.api.application.user.v1.User/UpdateUserStatus"
-	User_DeleteUser_FullMethodName        = "/application.api.application.user.v1.User/DeleteUser"
-	User_GetTrashUser_FullMethodName      = "/application.api.application.user.v1.User/GetTrashUser"
-	User_ListTrashUser_FullMethodName     = "/application.api.application.user.v1.User/ListTrashUser"
-	User_DeleteTrashUser_FullMethodName   = "/application.api.application.user.v1.User/DeleteTrashUser"
-	User_RevertTrashUser_FullMethodName   = "/application.api.application.user.v1.User/RevertTrashUser"
 )
 
 // UserClient is the client API for User service.
@@ -57,16 +52,6 @@ type UserClient interface {
 	UpdateUser(ctx context.Context, in *UpdateUserRequest, opts ...grpc.CallOption) (*UpdateUserReply, error)
 	// UpdateUserStatus 更新用户信息状态
 	UpdateUserStatus(ctx context.Context, in *UpdateUserStatusRequest, opts ...grpc.CallOption) (*UpdateUserStatusReply, error)
-	// DeleteUser 删除用户信息
-	DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserReply, error)
-	// GetTrashUser 查看指定用户信息回收站数据
-	GetTrashUser(ctx context.Context, in *GetTrashUserRequest, opts ...grpc.CallOption) (*GetTrashUserReply, error)
-	// ListTrashUser 查看用户信息列表回收站数据
-	ListTrashUser(ctx context.Context, in *ListTrashUserRequest, opts ...grpc.CallOption) (*ListTrashUserReply, error)
-	// DeleteTrashUser 彻底删除用户信息
-	DeleteTrashUser(ctx context.Context, in *DeleteTrashUserRequest, opts ...grpc.CallOption) (*DeleteTrashUserReply, error)
-	// RevertTrashUser 还原用户信息
-	RevertTrashUser(ctx context.Context, in *RevertTrashUserRequest, opts ...grpc.CallOption) (*RevertTrashUserReply, error)
 }
 
 type userClient struct {
@@ -158,51 +143,6 @@ func (c *userClient) UpdateUserStatus(ctx context.Context, in *UpdateUserStatusR
 	return out, nil
 }
 
-func (c *userClient) DeleteUser(ctx context.Context, in *DeleteUserRequest, opts ...grpc.CallOption) (*DeleteUserReply, error) {
-	out := new(DeleteUserReply)
-	err := c.cc.Invoke(ctx, User_DeleteUser_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userClient) GetTrashUser(ctx context.Context, in *GetTrashUserRequest, opts ...grpc.CallOption) (*GetTrashUserReply, error) {
-	out := new(GetTrashUserReply)
-	err := c.cc.Invoke(ctx, User_GetTrashUser_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userClient) ListTrashUser(ctx context.Context, in *ListTrashUserRequest, opts ...grpc.CallOption) (*ListTrashUserReply, error) {
-	out := new(ListTrashUserReply)
-	err := c.cc.Invoke(ctx, User_ListTrashUser_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userClient) DeleteTrashUser(ctx context.Context, in *DeleteTrashUserRequest, opts ...grpc.CallOption) (*DeleteTrashUserReply, error) {
-	out := new(DeleteTrashUserReply)
-	err := c.cc.Invoke(ctx, User_DeleteTrashUser_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *userClient) RevertTrashUser(ctx context.Context, in *RevertTrashUserRequest, opts ...grpc.CallOption) (*RevertTrashUserReply, error) {
-	out := new(RevertTrashUserReply)
-	err := c.cc.Invoke(ctx, User_RevertTrashUser_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -225,16 +165,6 @@ type UserServer interface {
 	UpdateUser(context.Context, *UpdateUserRequest) (*UpdateUserReply, error)
 	// UpdateUserStatus 更新用户信息状态
 	UpdateUserStatus(context.Context, *UpdateUserStatusRequest) (*UpdateUserStatusReply, error)
-	// DeleteUser 删除用户信息
-	DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserReply, error)
-	// GetTrashUser 查看指定用户信息回收站数据
-	GetTrashUser(context.Context, *GetTrashUserRequest) (*GetTrashUserReply, error)
-	// ListTrashUser 查看用户信息列表回收站数据
-	ListTrashUser(context.Context, *ListTrashUserRequest) (*ListTrashUserReply, error)
-	// DeleteTrashUser 彻底删除用户信息
-	DeleteTrashUser(context.Context, *DeleteTrashUserRequest) (*DeleteTrashUserReply, error)
-	// RevertTrashUser 还原用户信息
-	RevertTrashUser(context.Context, *RevertTrashUserRequest) (*RevertTrashUserReply, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -268,21 +198,6 @@ func (UnimplementedUserServer) UpdateUser(context.Context, *UpdateUserRequest) (
 }
 func (UnimplementedUserServer) UpdateUserStatus(context.Context, *UpdateUserStatusRequest) (*UpdateUserStatusReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserStatus not implemented")
-}
-func (UnimplementedUserServer) DeleteUser(context.Context, *DeleteUserRequest) (*DeleteUserReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteUser not implemented")
-}
-func (UnimplementedUserServer) GetTrashUser(context.Context, *GetTrashUserRequest) (*GetTrashUserReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetTrashUser not implemented")
-}
-func (UnimplementedUserServer) ListTrashUser(context.Context, *ListTrashUserRequest) (*ListTrashUserReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListTrashUser not implemented")
-}
-func (UnimplementedUserServer) DeleteTrashUser(context.Context, *DeleteTrashUserRequest) (*DeleteTrashUserReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteTrashUser not implemented")
-}
-func (UnimplementedUserServer) RevertTrashUser(context.Context, *RevertTrashUserRequest) (*RevertTrashUserReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RevertTrashUser not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -459,96 +374,6 @@ func _User_UpdateUserStatus_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _User_DeleteUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServer).DeleteUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: User_DeleteUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).DeleteUser(ctx, req.(*DeleteUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _User_GetTrashUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetTrashUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServer).GetTrashUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: User_GetTrashUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).GetTrashUser(ctx, req.(*GetTrashUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _User_ListTrashUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListTrashUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServer).ListTrashUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: User_ListTrashUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).ListTrashUser(ctx, req.(*ListTrashUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _User_DeleteTrashUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteTrashUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServer).DeleteTrashUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: User_DeleteTrashUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).DeleteTrashUser(ctx, req.(*DeleteTrashUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _User_RevertTrashUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RevertTrashUserRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(UserServer).RevertTrashUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: User_RevertTrashUser_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServer).RevertTrashUser(ctx, req.(*RevertTrashUserRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -591,26 +416,6 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateUserStatus",
 			Handler:    _User_UpdateUserStatus_Handler,
-		},
-		{
-			MethodName: "DeleteUser",
-			Handler:    _User_DeleteUser_Handler,
-		},
-		{
-			MethodName: "GetTrashUser",
-			Handler:    _User_GetTrashUser_Handler,
-		},
-		{
-			MethodName: "ListTrashUser",
-			Handler:    _User_ListTrashUser_Handler,
-		},
-		{
-			MethodName: "DeleteTrashUser",
-			Handler:    _User_DeleteTrashUser_Handler,
-		},
-		{
-			MethodName: "RevertTrashUser",
-			Handler:    _User_RevertTrashUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

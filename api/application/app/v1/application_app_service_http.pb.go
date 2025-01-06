@@ -43,8 +43,7 @@ type AppHTTPServer interface {
 
 func RegisterAppHTTPServer(s *http.Server, srv AppHTTPServer) {
 	r := s.Route("/")
-	r.GET("/application/client/v1/app", _App_GetApp0_HTTP_Handler(srv))
-	r.GET("/application/api/v1/app", _App_GetApp1_HTTP_Handler(srv))
+	r.GET("/application/api/v1/app", _App_GetApp0_HTTP_Handler(srv))
 	r.GET("/application/api/v1/apps", _App_ListApp0_HTTP_Handler(srv))
 	r.POST("/application/api/v1/app", _App_CreateApp0_HTTP_Handler(srv))
 	r.PUT("/application/api/v1/app", _App_UpdateApp0_HTTP_Handler(srv))
@@ -53,25 +52,6 @@ func RegisterAppHTTPServer(s *http.Server, srv AppHTTPServer) {
 }
 
 func _App_GetApp0_HTTP_Handler(srv AppHTTPServer) func(ctx http.Context) error {
-	return func(ctx http.Context) error {
-		var in GetAppRequest
-		if err := ctx.BindQuery(&in); err != nil {
-			return err
-		}
-		http.SetOperation(ctx, OperationAppGetApp)
-		h := ctx.Middleware(func(ctx context.Context, req any) (any, error) {
-			return srv.GetApp(ctx, req.(*GetAppRequest))
-		})
-		out, err := h(ctx, &in)
-		if err != nil {
-			return err
-		}
-		reply := out.(*GetAppReply)
-		return ctx.Result(200, reply)
-	}
-}
-
-func _App_GetApp1_HTTP_Handler(srv AppHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in GetAppRequest
 		if err := ctx.BindQuery(&in); err != nil {

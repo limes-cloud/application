@@ -3,8 +3,406 @@
 
 openapi: 3.0.3
 info:
-    title: ""
+    title: App API
     version: 0.0.1
-paths: {}
+paths:
+    /application/api/v1/app:
+        get:
+            tags:
+                - App
+            description: GetApp 获取指定的应用信息
+            operationId: App_GetApp
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: keyword
+                  in: query
+                  schema:
+                    type: string
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/GetAppReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        put:
+            tags:
+                - App
+            description: UpdateApp 更新应用信息
+            operationId: App_UpdateApp
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateAppRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateAppReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        post:
+            tags:
+                - App
+            description: CreateApp 创建应用信息
+            operationId: App_CreateApp
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateAppRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/CreateAppReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+        delete:
+            tags:
+                - App
+            description: DeleteApp 删除应用信息
+            operationId: App_DeleteApp
+            parameters:
+                - name: id
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/DeleteAppReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /application/api/v1/app/status:
+        put:
+            tags:
+                - App
+            description: UpdateAppStatus 更新应用信息状态
+            operationId: App_UpdateAppStatus
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/UpdateAppStatusRequest'
+                required: true
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/UpdateAppStatusReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
+    /application/api/v1/apps:
+        get:
+            tags:
+                - App
+            description: ListApp 获取应用信息列表
+            operationId: App_ListApp
+            parameters:
+                - name: page
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: pageSize
+                  in: query
+                  schema:
+                    type: integer
+                    format: uint32
+                - name: order
+                  in: query
+                  schema:
+                    type: string
+                - name: orderBy
+                  in: query
+                  schema:
+                    type: string
+                - name: keyword
+                  in: query
+                  schema:
+                    type: string
+                - name: name
+                  in: query
+                  schema:
+                    type: string
+                - name: status
+                  in: query
+                  schema:
+                    type: boolean
+            responses:
+                "200":
+                    description: OK
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/ListAppReply'
+                default:
+                    description: Default error response
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Status'
 components:
-    schemas: {}
+    schemas:
+        CreateAppReply:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+        CreateAppRequest:
+            type: object
+            properties:
+                logo:
+                    type: string
+                keyword:
+                    type: string
+                name:
+                    type: string
+                allowRegistry:
+                    type: boolean
+                version:
+                    type: string
+                copyright:
+                    type: string
+                extra:
+                    type: string
+                description:
+                    type: string
+                channelIds:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+                fieldIds:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+        DeleteAppReply:
+            type: object
+            properties: {}
+        GetAppReply:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                logo:
+                    type: string
+                logoUrl:
+                    type: string
+                keyword:
+                    type: string
+                name:
+                    type: string
+                status:
+                    type: boolean
+                disableDesc:
+                    type: string
+                allowRegistry:
+                    type: boolean
+                version:
+                    type: string
+                copyright:
+                    type: string
+                extra:
+                    type: string
+                description:
+                    type: string
+                createdAt:
+                    type: integer
+                    format: uint32
+                updatedAt:
+                    type: integer
+                    format: uint32
+                channels:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GetAppReply_Channel'
+                fields:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GetAppReply_Field'
+        GetAppReply_Channel:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                logo:
+                    type: string
+                name:
+                    type: string
+                keyword:
+                    type: string
+        GetAppReply_Field:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                keyword:
+                    type: string
+                name:
+                    type: string
+                type:
+                    type: string
+        GoogleProtobufAny:
+            type: object
+            properties:
+                '@type':
+                    type: string
+                    description: The type of the serialized message.
+            additionalProperties: true
+            description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+        ListAppReply:
+            type: object
+            properties:
+                total:
+                    type: integer
+                    format: uint32
+                list:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/ListAppReply_App'
+        ListAppReply_App:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                logo:
+                    type: string
+                logoUrl:
+                    type: string
+                keyword:
+                    type: string
+                name:
+                    type: string
+                status:
+                    type: boolean
+                disableDesc:
+                    type: string
+                allowRegistry:
+                    type: boolean
+                version:
+                    type: string
+                copyright:
+                    type: string
+                extra:
+                    type: string
+                description:
+                    type: string
+                createdAt:
+                    type: integer
+                    format: uint32
+                updatedAt:
+                    type: integer
+                    format: uint32
+        Status:
+            type: object
+            properties:
+                code:
+                    type: integer
+                    description: The status code, which should be an enum value of [google.rpc.Code][google.rpc.Code].
+                    format: int32
+                message:
+                    type: string
+                    description: A developer-facing error message, which should be in English. Any user-facing error message should be localized and sent in the [google.rpc.Status.details][google.rpc.Status.details] field, or localized by the client.
+                details:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/GoogleProtobufAny'
+                    description: A list of messages that carry the error details.  There is a common set of message types for APIs to use.
+            description: 'The `Status` type defines a logical error model that is suitable for different programming environments, including REST APIs and RPC APIs. It is used by [gRPC](https://github.com/grpc). Each `Status` message contains three pieces of data: error code, error message, and error details. You can find out more about this error model and how to work with it in the [API Design Guide](https://cloud.google.com/apis/design/errors).'
+        UpdateAppReply:
+            type: object
+            properties: {}
+        UpdateAppRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                logo:
+                    type: string
+                keyword:
+                    type: string
+                name:
+                    type: string
+                allowRegistry:
+                    type: boolean
+                version:
+                    type: string
+                copyright:
+                    type: string
+                extra:
+                    type: string
+                description:
+                    type: string
+                channelIds:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+                fieldIds:
+                    type: array
+                    items:
+                        type: integer
+                        format: uint32
+        UpdateAppStatusReply:
+            type: object
+            properties: {}
+        UpdateAppStatusRequest:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    format: uint32
+                status:
+                    type: boolean
+                disableDesc:
+                    type: string
+tags:
+    - name: App
