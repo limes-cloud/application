@@ -1562,10 +1562,15 @@ github.com/limes-cloud/configure v1.0.49 h1:3iXHL9MJm6BNWxfJ/tsJ0iPfUvcjHDs74rH5
 github.com/limes-cloud/configure v1.0.49/go.mod h1:nFIiU4egJcKmUOYSb7DfwojO/NDsTbgJqM0ZUkPwmy4=
 github.com/limes-cloud/kratosx v1.0.57 h1:woEfeJ0KgwTLXnW4lZ3FYXO3JEeGd9A55tehxstpWtQ=
 github.com/limes-cloud/kratosx v1.0.57/go.mod h1:yhHS9jzL2esYafzHsu+jueHDnAc6vMn1U0hraY8NSuc=
+github.com/limes-cloud/kratosx v1.0.59/go.mod h1:1Hp9xtVt39Ekg9cJKqE5vuDjk73IMaUzplHbhg/A8fQ=
 github.com/limes-cloud/manager v1.0.27 h1:6AN5bybGubtjkgdGo5gecO9WycXDzSkE5xUKLkgVpkM=
 github.com/limes-cloud/manager v1.0.27/go.mod h1:MUMGjv0NWErsMEK4ffj68OcYGNx9AnCVxmyblhkde04=
+github.com/limes-cloud/manager v1.0.32/go.mod h1:2mfMJrXKX+QUKCXNqMhO9Vajf8YFQWzXrmj9fcIMm50=
 github.com/limes-cloud/resource v1.0.17 h1:APazkDyS6j9WOwNpaDP9vK4p6UCg1bEMQKAP2JVpB8k=
 github.com/limes-cloud/resource v1.0.17/go.mod h1:YfoTHNDFPNF9BC9vwhQnRNpAmJjRPcmYtn2hVXs77q0=
+github.com/limes-cloud/resource v1.0.23/go.mod h1:o/+8BXvGZu2J1ktbSB9mLUyj4HGabYbvo5e2drMYMic=
+github.com/limes-cloud/resource v1.0.27 h1:mPMV8oHmG4ypzV+vC3hlQ/O/cRnJ2XitTokDfgHYGkg=
+github.com/limes-cloud/resource v1.0.27/go.mod h1:Iw+MKgbmHVg89bOy3WoOiq6sFTIcwdIZwojUjnshALY=
 github.com/linuxkit/virtsock v0.0.0-20201010232012-f8cee7dfc7a3/go.mod h1:3r6x7q95whyfWQpmGZTu3gk3v2YkMi05HEzl7Tf7YEo=
 github.com/lufia/plan9stats v0.0.0-20211012122336-39d0f177ccd0/go.mod h1:zJYVVT2jmtg6P3p1VtQj7WsuWi/y4VnjVBn7F8KPB3I=
 github.com/lufia/plan9stats v0.0.0-20240408141607-282e7b5d6b74 h1:1KuuSOy4ZNgW0KA2oYIngXVFhQcXxhLqCVK7cBcldkk=
